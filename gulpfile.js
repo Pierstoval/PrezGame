@@ -641,3 +641,464 @@ gulp.task('default', function(done){
 // License: MIT
 // Author: 2016 - Alex "Pierstoval" Rock Ancelet <alex@orbitale.io>
 // Repository: https://github.com/Orbitale/Gulpfile
+
+// Required extensions
+const yaml = require('js-yaml');
+
+const yamlFilesDir = 'slides/';
+const dumpDir = process.cwd()+'/templates/slides/';
+
+gulp.task('dump-slides', function (done) {
+    // List of presentations with details
+    let presentations = {};
+
+    let files = glob.sync(yamlFilesDir+'/**/*.yaml');
+
+    for (let i in files) {
+        if (!files.hasOwnProperty(i)) { continue; }
+        files[i] = files[i].replace(yamlFilesDir, '');
+    }
+
+    /**
+     ****************************************************
+     *               FETCH PRESENTATIONS                *
+     ****************************************************
+     */
+    for (let i in files) {
+        if (!files.hasOwnProperty(i)) { continue; }
+        let file = files[i];
+
+        if (!file.match(/\.yaml$/gi)) {
+            console.error('File '+file+' is not a yaml file.');
+            continue;
+        }
+
+        files[yamlFilesDir] = {};
+
+        let data = fs.readFileSync(yamlFilesDir+file, 'utf8');
+
+        // Here, we're parsing ONE file
+        let document;
+
+        try {
+            document = yaml.safeLoad(data);
+        } catch (e) {
+            throw 'File '+file+' seems not to be a valid yaml file.'+"\n"+e.message;
+        }
+
+        /**
+         * One file may have a lot of different presentations inside, so we parse them sequentially.
+         */
+        for (let presentationName in document) {
+            if (!document.hasOwnProperty(presentationName)) { continue; }
+            let presentations_slides = document[presentationName];
+            let numberOfSlides = 0;
+
+            if (presentations.hasOwnProperty(presentationName)) {
+                throw 'Directory "'+presentationName+'" has been already processed!';
+            }
+
+            if (!presentations_slides) {
+                return;
+            }
+
+            presentations[presentationName] = {
+                'data': {},
+                'views': {},
+            };
+
+            /**
+             * And for each presentation, we have lots of slides to process.
+             */
+            for (let slideName in presentations_slides) {
+                if (!presentations_slides.hasOwnProperty(slideName)) { continue; }
+
+                let slide = presentations_slides[slideName];
+                let content_to_prepend = '';
+
+                if (!slide) {
+                    continue;
+                }
+
+                /**
+                 * Default slide properties values
+                 */
+                let slideData = {
+                    title: '',
+                    title_style: '',
+                    title_tag: 'h2',
+                    icon: null,
+                    icon_size: '2x',
+                    type: '',
+                    style: '',
+                    content: '',
+                    notes: '',
+                    sections: [],
+                };
+
+                slideData.notes = (slide.notes || slideData.notes).trim();
+                slideData.type = (slide.type || slideData.style).trim().toLowerCase();
+                slideData.style = (slide.style || slideData.style).trim();
+                slideData.title_style = (slide.title_style || slideData.title_style).trim();
+                slideData.title_tag = (slide.title_tag || slideData.title_tag).trim();
+
+                let title_color = '#47b0c7';
+
+                switch (slide.type) {
+                    case 'splash':
+                        if (slideData.style.match(/data-background-color/gi)) {
+                            slideData.style = slideData.style.replace(/data-background-color(=['"]?[^"]+['"]?(\s|$))?/gi, '');
+                        }
+                        if (slideData.title_style.match(/class=gi/)) {
+                            slideData.title_style = slideData.title_style.replace(/(class=["'])/gi, '$1 white em4');
+                            slideData.title_tag = 'h1';
+                        }
+                        slideData.style += ' data-background-color="#47b0c7"';
+                        title_color = 'white';
+                        break;
+
+                    case 'best-practice':
+                        if (slideData.style.match(/data-background-color/gi)) {
+                            slideData.style = slideData.style.replace(/(data-background-color)(?:=['"]?[^"]+['"]?(\?:s|$))?/gi, '$1="#fff8dc"');
+                        } else {
+                            slideData.style += ' data-background-color="#fff8dc"'
+                        }
+                        if (slideData.title_style.match(/class=gi/)) {
+                            slideData.title_style = slideData.title_style.replace(/(class=["'])/gi, '$1 white em4');
+                            slideData.title_tag = 'h1';
+                        }
+                        content_to_prepend += '<div class="best-practice-icon"></div>';
+                        title_color = 'black';
+                        break;
+
+                    case 'exercise':
+                        slideData.title_tag = 'h1';
+                        slideData.style += ' data-background-color="#FFF" class="chalkboard" style="font-family: chalkboard; background-color: #444; border: 13px solid #564126 !important; border-radius: 10px; background-image:url(\'/images/slides-chalkboard-background.jpg\'); background-size:cover; -webkit-box-shadow: inset 5px 5px 5px 0px rgba(0,0,0,0.75); -moz-box-shadow: inset 5px 5px 5px 0px rgba(0,0,0,0.75); box-shadow: inset 5px 5px 5px 0px rgba(0,0,0,0.75);"';
+                        title_color = 'white';
+                        break;
+                }
+
+                if (slideData.style) { slideData.style = ' '+slideData.style; }
+
+                slideData.content += "<section"+slideData.style+">\n";
+                slideData.content += content_to_prepend;
+
+                /**
+                 * Show a <h2> tag if we have a title
+                 */
+                if (slide.title) {
+                    if (slideData.title_style.match(/style=["']/) && !slideData.title_style.match(/style=["'][^"']+color:?/gi)) {
+                        slideData.title_style = slideData.title_style.replace('style="', 'style="color:'+title_color+';')
+                    } else {
+                        slideData.title_style += ' style="color:'+title_color+';"'
+                    }
+                    slideData.title_style = ' '+(slideData.title_style.trim());
+                    slideData.content += '<'+slideData.title_tag+slideData.title_style+'>';
+                    slideData.content += slide.title;
+                    slideData.content += '</'+slideData.title_tag+">\n"
+                }
+
+                /**
+                 * Add a big icon under the title, sometimes it's cool, and it's FontAwesome-based!
+                 */
+                let icon = slide.icon || slideData.icon;
+                let icon_size = slide.icon_size || slideData.icon_size;
+                if (icon) {
+                    slideData.content += '<i class="fa fa-'+icon+' fa-'+icon_size+'" aria-hidden="true"></i>';
+                }
+
+                /**
+                 * Permits the use of "sections: { content: ... }"
+                 * where "content: ..." corresponds to one single section.
+                 */
+                if (!slide.sections && slide.content) {
+                    let content = slide.content;
+                    if (!content.content) {
+                        content = {content: content};
+                    }
+                    slide.sections = [content];
+                }
+
+                /**
+                 * One slide can be a list of different sections, each under a <p> tag (or <pre> for code).
+                 * By default, it's important to have at least one section,
+                 *  unless you're making a "splash screen" slide.
+                 */
+                if (slide.sections && slide.sections.length) {
+                    for (let i = 0, l = slide.sections.length; i < l; i++) {
+                        /**
+                         * Default section properties
+                         */
+                        let sectionData = {
+                            title: '',
+                            title_style: '',
+                            is_fragment: false,
+                            type: 'markdown',
+                            code_language: 'php',
+                            highlight_line: null,
+                            display_line_numbers: null,
+                            quote_source: '',
+                            style: '',
+                            content: ''
+                        };
+
+                        let section = slide.sections[i];
+
+                        sectionData.type = section.type || sectionData.type;
+                        sectionData.is_fragment = section.is_fragment || sectionData.is_fragment;
+                        sectionData.style = (section.style || sectionData.style).trim();
+                        sectionData.content = (section.content || sectionData.content).trim();
+                        sectionData.title = (section.title || sectionData.title).trim();
+                        sectionData.title_style = (section.title_style || sectionData.title_style).trim();
+
+                        // Make sure attributes are prepended with a space to avoid html tag collision
+                        if (sectionData.style) { sectionData.style = ' '+sectionData.style; }
+                        if (sectionData.title_style) { sectionData.title_style = ' '+sectionData.title_style; }
+
+                        switch (sectionData.type.toLowerCase()) {
+                            /**
+                             * PHP code parser
+                             */
+                            case 'code':
+                                sectionData.code_language = (section.code_language || sectionData.code_language).trim();
+                                sectionData.highlight_line = (section.highlight_line || sectionData.highlight_line);
+                                sectionData.display_line_numbers = (section.display_line_numbers || sectionData.display_line_numbers);
+                                if (null === sectionData.display_line_numbers) {
+                                    if ('twig' === sectionData.code_language) {
+                                        sectionData.display_line_numbers = true;
+                                    }
+                                    if ('php' === sectionData.code_language) {
+                                        sectionData.display_line_numbers = true;
+                                    }
+                                    if ('yaml' === sectionData.code_language) {
+                                        sectionData.display_line_numbers = true;
+                                    }
+                                    if ('xml' === sectionData.code_language) {
+                                        sectionData.display_line_numbers = true;
+                                    }
+                                }
+                                if (sectionData.is_fragment) {
+                                    slideData.content += '<div class="fragment">';
+                                }
+
+                                if (sectionData.title) {
+                                    slideData.content += '<h3'+sectionData.title_style+'>';
+                                    slideData.content += sectionData.title;
+                                    slideData.content += '</h3>';
+                                }
+
+                                // Force relative positioning for div, because of Prism highlight language
+                                if (!sectionData.style.match(/style=/gi)) {
+                                    sectionData.style += ' style="position:relative;width:100%"';
+                                } else {
+                                    let posRegex = new RegExp('(["\';]|\s*)position: ?([^;]+);?', 'gi');
+                                    if (sectionData.style.match(posRegex)) {
+                                        sectionData.style = sectionData.style.replace(posRegex, '$1position: relative;')
+                                    } else {
+                                        sectionData.style = sectionData.style.replace(/(style=['"])/gi, '$1position: relative;')
+                                    }
+                                }
+
+                                slideData.content += '<div'+(sectionData.style || '')+'>';
+                                slideData.content += '    <pre'+(sectionData.highlight_line ? ' data-line="'+sectionData.highlight_line+'"' : '')+(sectionData.display_line_numbers ? ' class="line-numbers"' : '')+' class="hljs" data-trim><code class="'+sectionData.code_language+'">';
+
+                                if ('twig' === sectionData.code_language) {
+                                    slideData.content += '{%- verbatim -%}';
+                                }
+
+                                // This is like htmlspecialchars, but for code only.
+                                slideData.content += sectionData.content
+                                .replace(/&/g, "&amp;")
+                                .replace(/</g, "&lt;")
+                                .replace(/>/g, "&gt;")
+                                .replace(/"/g, "&quot;")
+                                .replace(/'/g, "&#039;")
+                                ;
+
+                                if ('twig' === sectionData.code_language) {
+                                    slideData.content += '{%- endverbatim -%}';
+                                }
+
+                                slideData.content += '</code></pre>';
+
+                                if (sectionData.is_fragment) {
+                                    slideData.content += '</div>';
+                                }
+
+                                slideData.content += '</div>';
+                                break;
+
+                            /**
+                             * Raw text parser
+                             */
+                            case 'raw':
+                                slideData.content += "\n<div"+(sectionData.is_fragment ? ' class="fragment"' : '') + ">";
+                                if (sectionData.title) {
+                                    slideData.content += '<h3'+(sectionData.title_style || '')+'>';
+                                    slideData.content += sectionData.title;
+                                    slideData.content += '</h3>';
+                                }
+                                slideData.content += '<div'+sectionData.style+'>'+sectionData.content+'</div>';
+                                slideData.content += "</div>\n";
+                                break;
+
+                            /**
+                             * Raw text parser
+                             */
+                            case 'browser-image':
+                                slideData.content += "\n<div"+(sectionData.is_fragment ? ' class="fragment"' : '') + ">";
+                                if (sectionData.title) {
+                                    slideData.content += '<h3'+(sectionData.title_style || '')+'>';
+                                    slideData.content += sectionData.title;
+                                    slideData.content += '</h3>';
+                                }
+                                slideData.content += '<p'+sectionData.style+'>'+sectionData.content+'</p>';
+                                slideData.content += "</div>\n";
+                                break;
+
+                            case 'terminal':
+                                slideData.content += "<div class=\"highlight-terminal"+(sectionData.is_fragment ? ' fragment' : '')+"\">";
+                                slideData.content += "    <table class=\"highlighttable\">";
+                                slideData.content += "        <tbody>";
+
+                                if (sectionData.title) {
+                                    slideData.content += "        <tr"+(sectionData.title_style || '')+">";
+                                    slideData.content += "            <th colspan=\"2\">"+sectionData.title+"</th>";
+                                    slideData.content += "        </tr>";
+                                }
+
+                                let numberOfLines = (sectionData.content || '').split("\n").length || 0;
+
+                                slideData.content += "            <tr>";
+                                slideData.content += "                <td class=\"linenos\">";
+                                slideData.content += "                    <div class=\"linenodiv\"><pre>";
+                                for (let i = 1; i <= numberOfLines; i++) {
+                                    slideData.content += i+"\n";
+                                }
+                                slideData.content += "</pre></div>";
+                                slideData.content += "                </td>";
+                                slideData.content += "                <td class=\"code\">";
+                                slideData.content += "                    <div class=\"highlight\"><pre"+sectionData.style+">"+sectionData.content+"</pre></div>";
+                                slideData.content += "                </td>";
+                                slideData.content += "            </tr>";
+                                slideData.content += "        </tbody>";
+                                slideData.content += "    </table>";
+                                slideData.content += "</div>";
+                                break;
+
+                            /**
+                             * "Best practice" block
+                             */
+                            case 'best-practice':
+                                let className = 'admonition-best-practice';
+                                if (sectionData.is_fragment) {
+                                    className += ' fragment';
+                                }
+                                sectionData.title = sectionData.title || 'Best practice';
+                                slideData.content += '<div class="'+className+'">';
+                                if (sectionData.title) {
+                                    slideData.content += '<h3'+(sectionData.title_style || '')+'>';
+                                    slideData.content += sectionData.title;
+                                    slideData.content += '</h3>';
+                                }
+                                slideData.content += '<p'+(sectionData.style || ' data-markdown')+'>'+sectionData.content+'</p>';
+                                slideData.content += '</div>';
+                                break;
+
+                            /**
+                             * Quote
+                             */
+                            case 'quote':
+                                sectionData.quote_source = (section.quote_source || sectionData.quote_source).trim();
+                                slideData.content += "\n<div class=\"quote"+(sectionData.is_fragment ? ' fragment' : '') + "\">";
+                                slideData.content += '<div class="quote-content" data-markdown>'+sectionData.content+'</div>';
+                                if (sectionData.quote_source) {
+                                    slideData.content +=
+                                        '<div class="quote-source">Source: ' +
+                                        '<strong style="display: inline-block;" data-markdown>'+sectionData.quote_source+'</strong>' +
+                                        '</div>';
+                                }
+                                slideData.content += "</div>\n";
+                                break;
+                            /**
+                             * Markdown parser (default one)
+                             */
+                            case 'markdown':
+                            default:
+                                slideData.content += "\n<div"+(sectionData.is_fragment ? ' class="fragment"' : '') + ">";
+                                if (sectionData.title) {
+                                    slideData.content += '<h3'+(sectionData.title_style || '')+'>';
+                                    slideData.content += sectionData.title;
+                                    slideData.content += '</h3>';
+                                }
+                                if (!sectionData.style.match(/data-markdown/gi)) {
+                                    sectionData.style = ' data-markdown '+sectionData.style;
+                                }
+                                slideData.content += '<p'+(sectionData.style || ' data-markdown')+'>'+sectionData.content+'</p>';
+                                slideData.content += "</div>\n";
+                                break;
+                        } // End switch type
+
+                        slideData.sections.push(sectionData);
+                    } // End sections loop
+                } // End if sections
+
+                if (slideData.notes) {
+                    slideData.content += '<aside class="notes" data-markdown>';
+                    slideData.content += slideData.notes;
+                    slideData.content += '</aside>';
+                }
+
+                slideData.content += "</section>\n";
+
+                presentations[presentationName].data[slideName] = slideData;
+
+            } // End presentations loop
+
+        } // End document/yaml file loop
+
+    } // end file loop
+
+    /**
+     ****************************************************
+     *           DUMP METADATA AND TWIG FILES           *
+     ****************************************************
+     */
+    let finalMetadata = {};
+    for (let name in presentations) {
+        if (!presentations.hasOwnProperty(name)) { continue; }
+        let presentation = presentations[name];
+
+        // Basically, they will contain just the views that have to be loaded for this presentation.
+        finalMetadata[name] = [];
+
+        let fileName = dumpDir.replace(/\/$/g, '')+'/'+name+'.html.twig';
+
+        /**
+         * First, remove all existing templates.
+         * This will allow to remove not used slides from git tree.
+         */
+        fs.exists(fileName, function(exists){
+            if (exists) {
+                fs.unlink(fileName);
+            }
+        });
+        if (fs.existsSync(fileName)) {
+            fs.unlinkSync(fileName);
+        }
+
+        let slideContent = '';
+
+        /**
+         * Dump files contents
+         */
+        for (let slideName in presentation.data) {
+            if (!presentation.data.hasOwnProperty(slideName)) { continue; }
+            slideContent += presentation.data[slideName].content;
+        }
+        console.info(fileName);
+        fs.writeFileSync(fileName, slideContent);
+    }
+
+    done();
+});
