@@ -4,3 +4,11 @@ default:
         sections:
             - content:
                 Such wow!
+        notes:
+            Omg there are NOTES!!
+
+    second_slide:
+        title: Oh yeah!
+        sections:
+            - content:
+                Another one!!
