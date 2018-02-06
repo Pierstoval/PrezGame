@@ -1,13 +1,26 @@
 {
-    "devDependencies": {
-        "@symfony/webpack-encore": "^0.17.0"
-    },
-    "license": "UNLICENSED",
-    "private": true,
+    "name": "@pierstoval/prez_game",
+    "description": "Small presentation game",
+    "author": "Alex \"Pierstoval\" Ancelet <pierstoval@gmail.com>",
     "scripts": {
-        "dev-server": "encore dev-server",
-        "dev": "encore dev",
-        "watch": "encore dev --watch",
-        "build": "encore production"
+        "start": "node ./node_modules/gulp4/bin/gulp dump --prod",
+        "gulp": "node ./node_modules/gulp4/bin/gulp"
+    },
+    "dependencies": {
+        "glob": "^7.0",
+        "gulp-clean-css": "^3.7",
+        "gulp-concat": "^2.6",
+        "gulp-if": "^2.0",
+        "gulp-imagemin": "^3.3",
+        "gulp-less": "^3.3",
+        "gulp-sass": "^3.1",
+        "gulp-uglify": "^3.0",
+        "gulp-watch": "^4.3",
+        "gulp4": "^4.0",
+        "pump": "^1.0"
+    },
+    "engines": {
+        "node": "^8.9",
+        "yarn": "^1.3"
     }
 }

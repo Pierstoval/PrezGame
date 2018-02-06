@@ -101,6 +101,18 @@
     "psr/simple-cache": {
         "version": "1.0.0"
     },
+    "sensio/framework-extra-bundle": {
+        "version": "4.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.0",
+            "ref": "aaddfdf43cdecd4cf91f992052d76c2cadc04543"
+        }
+    },
+    "symfony/asset": {
+        "version": "v4.0.4"
+    },
     "symfony/cache": {
         "version": "v4.0.4"
     },
@@ -172,6 +184,15 @@
     },
     "symfony/lts": {
         "version": "4-dev"
+    },
+    "symfony/maker-bundle": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
+        }
     },
     "symfony/monolog-bridge": {
         "version": "v4.0.4"
@@ -249,15 +270,6 @@
             "branch": "master",
             "version": "3.3",
             "ref": "c72d107d077f1654428edaed69415d0228c1aefe"
-        }
-    },
-    "symfony/webpack-encore-pack": {
-        "version": "1.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "1.0",
-            "ref": "a2f276eff6e95ca94be135d2d3e5c1247c6f8807"
         }
     },
     "symfony/yaml": {
