@@ -1,8 +1,8 @@
-
 node_modules
 public/css/
 public/js/
 public/reveal/
+templates/slides/
 
 ###> symfony/framework-bundle ###
 .env
@@ -10,12 +10,6 @@ public/reveal/
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
-
-###> symfony/phpunit-bridge ###
-.phpunit
-/phpunit.xml
-###< symfony/phpunit-bridge ###
-
 ###> symfony/web-server-bundle ###
 .web-server-pid
 ###< symfony/web-server-bundle ###
