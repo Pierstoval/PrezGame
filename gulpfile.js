@@ -1074,19 +1074,6 @@ gulp.task('dump-slides', function (done) {
 
         let fileName = dumpDir.replace(/\/$/g, '')+'/'+name+'.html.twig';
 
-        /**
-         * First, remove all existing templates.
-         * This will allow to remove not used slides from git tree.
-         */
-        fs.exists(fileName, function(exists){
-            if (exists) {
-                fs.unlink(fileName);
-            }
-        });
-        if (fs.existsSync(fileName)) {
-            fs.unlinkSync(fileName);
-        }
-
         let slideContent = '';
 
         /**
