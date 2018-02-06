@@ -1,0 +1,6 @@
+default:
+    test:
+        title: Test
+        sections:
+            - content:
+                Such wow!
