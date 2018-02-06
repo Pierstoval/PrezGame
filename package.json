@@ -3,8 +3,8 @@
     "description": "Small presentation game",
     "author": "Alex \"Pierstoval\" Ancelet <pierstoval@gmail.com>",
     "scripts": {
-        "start": "node ./node_modules/gulp4/bin/gulp dump --prod",
-        "gulp": "node ./node_modules/gulp4/bin/gulp"
+        "start": "gulp4 dump --prod && gulp4 dump-slides --prod",
+        "gulp": "gulp"
     },
     "dependencies": {
         "glob": "^7.0",
