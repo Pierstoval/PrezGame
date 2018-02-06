@@ -744,6 +744,8 @@ gulp.task('dump-slides', function (done) {
 
                 let title_color = '#47b0c7';
 
+                slideData.style = ('id="'+presentationName+'_'+slideName+'" '+slideData.style).trim();
+
                 switch (slide.type) {
                     case 'splash':
                         if (slideData.style.match(/data-background-color/gi)) {
@@ -1084,7 +1086,7 @@ gulp.task('dump-slides', function (done) {
             slideContent += presentation.data[slideName].content;
         }
         console.info(fileName);
-        fs.writeFileSync(fileName, slideContent);
+        fs.writeFile(fileName, slideContent);
     }
 
     done();
