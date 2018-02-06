@@ -20,7 +20,7 @@ const config = {
             "node_modules/reveal.js/lib/**/*",
         ],
         "reveal/plugin/": [
-            "node_modules/reveal.js/plugin/**/*.js",
+            "node_modules/reveal.js/plugin/**/*",
         ]
     },
 
