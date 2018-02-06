@@ -1,49 +1,14 @@
 <!doctype html>
 <html lang="{{ app.request.locale }}">
 <head>
-    <meta charset="utf-8">
-    <title>{% block title %}Welcome!{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('reveal/css/reveal.css') }}">
-    <script type="application/javascript">
-        var link = document.createElement('link');link.rel = 'stylesheet';link.type = 'text/css';
-        link.href = window.location.search.match(/print-pdf/gi) ? '{{ asset('reveal/css/print/pdf.css') }}' : '{{ asset('reveal/css/print/paper.css') }}';
-        document.getElementsByTagName('head')[0].appendChild(link);
-    </script>
-    <link rel="stylesheet" href="{{ asset('/reveal/css/theme/black.css') }}" id="theme">
-    <link rel="stylesheet" href="{{ asset('reveal/lib/css/zenburn.css') }}">
-    <!--[if lt IE 9]><script src="{{ asset('reveal/lib/js/html5shiv.js') }}"></script><![endif]-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Aidez-moi!</title>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
-
-<body>
-
-<div class="reveal">
-    <div class="slides">
-        {% block body %}{% endblock %}
-    </div>
-</div>
-
-<script src="{{ asset('reveal/lib/js/head.min.js') }}"></script>
-<script src="{{ asset('reveal/js/reveal.js') }}"></script>
+<body id="button">
+{% block body %}{% endblock %}
 <script src="{{ asset('js/app.js') }}"></script>
-<script type="application/javascript">
-    Reveal.initialize({
-        controls: true,
-        progress: true,
-        history: true,
-        center: true,
-        transition: 'slide', // none/fade/slide/convex/concave/zoom
-        dependencies: [
-            { src: '{{ asset('reveal/lib/js/classList.js') }}', condition: function() { return !document.body.classList; } },
-            { src: '{{ asset('reveal/plugin/markdown/marked.js') }}', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-            { src: '{{ asset('reveal/plugin/markdown/markdown.js') }}', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-            { src: '{{ asset('reveal/plugin/highlight/highlight.js') }}', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-            { src: '{{ asset('reveal/plugin/search/search.js') }}', async: true },
-            { src: '{{ asset('reveal/plugin/zoom-js/zoom.js') }}', async: true },
-            { src: '{{ asset('reveal/plugin/notes/notes.js') }}', async: true }
-        ]
-    });
-</script>
 </body>
 </html>

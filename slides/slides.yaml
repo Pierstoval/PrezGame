@@ -12,3 +12,18 @@ default:
         sections:
             - content:
                 Another one!!
+
+    third:
+        title: And again
+        sections:
+            - content:
+                This should be visible after 60 seconds only.
+
+    fourth:
+        title: May this slide be with you
+        sections:
+            - type: code
+              code_language: raw
+              content: |
+                may the 4th
+

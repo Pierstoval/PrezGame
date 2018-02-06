@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div id="message"></div>
+    <button id="help-me" type="button">
+        Aidez-moi!
+    </button>
+    <script type="application/javascript">
+        (function(d){
+            var msgbox = d.getElementById('message');
+            d.getElementById('help-me').addEventListener('click', function(){
+                ajax('POST', '{{ path('button') }}', null, function(response){
+
+                    var timeToRemove = 4000;
+                    console.info(response);
+                    var element = d.createElement('p');
+                    if ('1' === response) {
+                        element.innerHTML = 'Merci ! ☺ +5 secondes ajoutées à mon temps de parole ! ♥';
+                        element.style.color = '#lightgreen';
+                        timeToRemove = 8000;
+                    } else if ('0' === response) {
+                        element.innerHTML = 'Vous m\'avez déjà aidé, mais je ne peux pas non plus vous permettre de m\'octroyer des heures de bavardage...';
+                    } else {
+                        element.innerHTML = 'Vous avez peut-être appuyé trop vite !';
+                    }
+                    msgbox.appendChild(element);
+
+                    setTimeout(function() {
+                        //msgbox.removeChild(element);
+                    }, timeToRemove);
+                });
+            });
+        })(document);
+    </script>
+{% endblock %}
+
