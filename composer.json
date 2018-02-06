@@ -52,7 +52,6 @@
             "@auto-scripts"
         ],
         "compile": [
-            "yarn start",
             "php bin/console d:d:c && php bin/console d:s:c"
         ]
     },

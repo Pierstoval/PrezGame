@@ -4,7 +4,8 @@
     "author": "Alex \"Pierstoval\" Ancelet <pierstoval@gmail.com>",
     "scripts": {
         "start": "node ./node_modules/gulp4/bin/gulp dump --prod && node ./node_modules/gulp4/bin/gulp dump-slides --prod",
-        "gulp": "node ./node_modules/gulp4/bin/gulp"
+        "gulp": "node ./node_modules/gulp4/bin/gulp",
+        "postinstall": "yarn start"
     },
     "dependencies": {
         "glob": "^7.0",
