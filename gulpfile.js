@@ -7,85 +7,45 @@
 const config = {
 
     // The base output directory for all your assets
-    "output_directory": "web",
+    "output_directory": "public",
 
-    /**
-     * This option is used to simply copy files into a new directory.
-     * This is very useful when copying dist files of external components.
-     * Example:
-     *     "fonts/": [
-     *         "node_modules/materialize-css/dist/fonts/*",
-     *         "node_modules/bootstrap/dist/fonts/*"
-     *     ]
-     */
     "copy": {
+        "reveal/css/": [
+            "node_modules/reveal.js/css/**/*.css",
+        ],
+        "reveal/js/": [
+            "node_modules/reveal.js/js/**/*.js",
+        ],
+        "reveal/lib/": [
+            "node_modules/reveal.js/lib/**/*",
+        ],
+        "reveal/plugin/": [
+            "node_modules/reveal.js/plugin/**/*.js",
+        ]
     },
 
-    /**
-     * Here you can add other files to watch when using "gulp watch".
-     * They will automatically run the "dump" command when modified.
-     * It is VERY useful when you use massively less/sass "import" rules, for example.
-     * Example:
-     *     "src/AppBundle/Resources/public/less/*.less"
-     */
     "files_to_watch": [
     ],
 
-    /**
-     * All files here are images that will be optimized/compressed with imagemin.
-     * The key corresponds to the output directory (prepended with "output_directory" previous option).
-     * Example:
-     *     "images/": [
-     *         "src/AppBundle/Resources/public/images/*"
-     *     ]
-     */
     "images": {
     },
 
-    /**
-     * All files from this section are parsed with LESS plugin and dumped into a CSS file.
-     * If using "--prod" in command line, will minify with "clean-css".
-     * Example:
-     *     "css/main_less.css": [
-     *         "node_modules/bootstrap/less/bootstrap.less",
-     *         "src/AppBundle/Resources/public/less/main.less"
-     *     ]
-     */
     "less": {
     },
 
-    /**
-     * All files from this section are parsed with SASS plugin and dumped into a CSS file.
-     * If using "--prod" in command line, will minify with "clean-css".
-     * Example:
-     *     "css/main_sass.css": [
-     *         "src/AppBundle/Resources/public/less/main.scss"
-     *     ]
-     */
     "sass": {
+        "css/app.css": [
+            "assets/app.scss"
+        ]
     },
 
-    /**
-     * All files from this section are just concatenated and dumped into a CSS file.
-     * If using "--prod" in command line, will minify with "clean-css".
-     * Example:
-     *     "css/main.css": [
-     *         "src/AppBundle/Resources/public/css/main.css"
-     *     ]
-     */
     "css": {
     },
 
-    /**
-     * All files from this section are just concatenated and dumped into a JS file.
-     * If using "--prod" in command line, will minify with "uglifyjs".
-     * Example:
-     *     "js/main.js": [
-     *         "web/components/bootstrap/dist/bootstrap-src.js",
-     *         "src/AppBundle/Resources/public/css/main.js"
-     *     ]
-     */
     "js": {
+        "js/app.js": [
+            "assets/app.js"
+        ]
     }
 };
 
@@ -164,6 +124,10 @@ var erroredFiles = [];
 
 var checkCallback = function(key, values) {
     values.forEach(function(fileName) {
+        if (glob.hasMagic(fileName)) {
+            // Don't handle wildcards
+            return;
+        }
         try {
             // Remove wildcards
             fileName = fileName.replace(/(?:(?:\*\.\w{2,4}(?:$|\/))|(?:\/\*+(?:$|\/)))/gi, '');

@@ -1,7 +1,12 @@
+
+node_modules
+public/css/
+public/js/
+public/reveal/
+
 ###> symfony/framework-bundle ###
 .env
 /public/bundles/
-node_modules
 /var/
 /vendor/
 ###< symfony/framework-bundle ###

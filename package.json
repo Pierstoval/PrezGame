@@ -17,7 +17,8 @@
         "gulp-uglify": "^3.0",
         "gulp-watch": "^4.3",
         "gulp4": "^4.0",
-        "pump": "^1.0"
+        "pump": "^1.0",
+        "reveal.js": "^3.6.0"
     },
     "engines": {
         "node": "^8.9",
