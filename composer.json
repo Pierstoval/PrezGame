@@ -50,9 +50,6 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ],
-        "compile": [
-            "php bin/console d:d:c && php bin/console d:s:c"
         ]
     },
     "conflict": {
