@@ -1074,7 +1074,7 @@ gulp.task('dump-slides', function (done) {
         // Basically, they will contain just the views that have to be loaded for this presentation.
         finalMetadata[name] = [];
 
-        let fileName = dumpDir.replace(/\/$/g, '')+'/'+name+'.html.twig';
+        let fileName = path.resolve(dumpDir.replace(/\/$/g, '')+'/'+name+'.html.twig');
 
         let slideContent = '';
 
@@ -1085,8 +1085,8 @@ gulp.task('dump-slides', function (done) {
             if (!presentation.data.hasOwnProperty(slideName)) { continue; }
             slideContent += presentation.data[slideName].content;
         }
-        console.info(fileName);
-        fs.writeFile(fileName, slideContent);
+        fs.writeFileSync(fileName, slideContent);
+        console.info(" [file+] "+fileName);
     }
 
     done();
