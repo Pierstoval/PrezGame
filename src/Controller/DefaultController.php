@@ -13,6 +13,22 @@ class DefaultController extends Controller
      */
     public function index(): Response
     {
-        return $this->render('default/index.html.twig');
+        return $this->redirectToRoute('presentation');
+    }
+
+    /**
+     * @Route("/presentation/{presentationName}", name="presentation")
+     */
+    public function presentation($presentationName = 'default'): Response
+    {
+        $slidesFile = "slides/$presentationName.html.twig";
+
+        if (!$this->get('twig')->getLoader()->exists($slidesFile)) {
+            throw $this->createNotFoundException('Presentation not found.');
+        }
+
+        return $this->render('default/index.html.twig', [
+            'presentation_slides' => $slidesFile,
+        ]);
     }
 }
