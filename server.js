@@ -32,7 +32,7 @@ socket.on('connection', function(socket){
 
     sessionData[socket.id] = {};
 
-    socket.on('subscribe', function(msg) {
+    socket.on('subscribe', function() {
         if (hostingSocket) {
             socket.emit('message', 'Il y a déjà un hôte pour cette présentation !');
             return;
