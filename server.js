@@ -2,7 +2,7 @@ const spawn = require('child_process').spawn;
 const http = require('http');
 const httpProxy = require('http-proxy');
 const socketio = require('socket.io');
-const envToShare = Object.create(process.env);
+const envToShare = JSON.parse(JSON.stringify(process.env));
 
 /** PHP SCRIPT **/
 const child = process.env.NODE_ENV === 'production'
