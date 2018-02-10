@@ -2,12 +2,12 @@ const spawn = require('child_process').spawn;
 const http = require('http');
 const httpProxy = require('http-proxy');
 const socketio = require('socket.io');
-
+const envToShare = Object.create(process.env);
 
 /** PHP SCRIPT **/
 const child = process.env.NODE_ENV === 'production'
-    ? spawn('php', ['-S', '127.0.0.1:9999', '-t', 'public'])
-    : spawn('php', ['bin/console', 'server:run', '9999', '-vvv', '--no-ansi'])
+    ? spawn('php', ['-S', '127.0.0.1:9999', '-t', 'public'], {env: envToShare})
+    : spawn('php', ['bin/console', 'server:run', '9999', '-vvv', '--no-ansi'], {env: envToShare})
 ;
 child.stdout.on('data', (out) => {process.stdout.write(`[PHP stdout] ${out}\n`)});
 child.stderr.on('data', (out) => {process.stderr.write(`[PHP stderr] ${out}\n`)});
