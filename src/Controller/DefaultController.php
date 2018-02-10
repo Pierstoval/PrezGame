@@ -36,7 +36,8 @@ class DefaultController extends AbstractController
     {
         if ($request->isMethod('POST')) {
 
-            $helped = false;
+            $message = 'Une étrange erreur...';
+            $code = 400;
 
             $cacheItem = $this->cache->getItem('current_slide');
             $values = $cacheItem->get();
@@ -44,17 +45,24 @@ class DefaultController extends AbstractController
             if ($values) {
                 $helpedSlides = $session->get('helped_slides', []);
 
-                if (!isset($helpedSlides[$values['id']])) {
+                if (isset($helpedSlides[$values['id']])) {
+                    $message = 'Tu m\'as déjà aidé, merci ☺';
+                    $code = 200;
+                } else {
                     $values['amount'] = ($values['amount'] ?? 0) + 5000;
+                    if ($values['amount'] > 30000) {
+                        $values['amount'] = 30000;
+                    }
                     $cacheItem->set($values);
                     $this->cache->save($cacheItem);
-                    $helped = true;
+                    $message = true;
                     $helpedSlides[$values['id']] = true;
                     $session->set('helped_slides', $helpedSlides);
+                    $message = 'Merci, tu fais avancer le schmilblick ♥';
                 }
             }
 
-            return new Response($helped ? '1' : '0');
+            return new Response($message ? '1' : '0', $code);
         }
 
         return $this->render('default/button.html.twig');
@@ -73,7 +81,7 @@ class DefaultController extends AbstractController
             throw $this->createNotFoundException('Presentation not found.');
         }
 
-        return $this->render('default/index.html.twig', [
+        return $this->render('default/presentation.html.twig', [
             'presentation_slides' => $slidesFile,
         ]);
     }

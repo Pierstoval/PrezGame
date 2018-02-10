@@ -17,9 +17,12 @@
         "gulp-uglify": "^3.0",
         "gulp-watch": "^4.3",
         "gulp4": "^4.0",
+        "http-proxy": "^1.16.2",
         "js-yaml": "^3.10.0",
+        "nodemon": "^1.14.12",
         "pump": "^1.0",
-        "reveal.js": "^3.6.0"
+        "reveal.js": "^3.6.0",
+        "socket.io": "^2.0.4"
     },
     "engines": {
         "node": "^9.0"

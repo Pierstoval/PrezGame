@@ -29,6 +29,9 @@ const config = {
         ],
         "reveal/plugin/": [
             "node_modules/reveal.js/plugin/**/*",
+        ],
+        "js/": [
+            "node_modules/socket.io-client/dist/socket.io.js"
         ]
     },
 
