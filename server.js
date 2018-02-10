@@ -10,7 +10,7 @@ const envToShare = {
 console.info('envToShare', envToShare);
 
 /** PHP SCRIPT **/
-spawn('php', ['-S', '127.0.0.1:9999', '-t', 'public'], {stdio: 'inherit', env: envToShare});
+spawn('php', ['bin/console', 'server:run', '9999', '-vvv', '--no-ansi'], {stdio: 'inherit', env: process.env});
 /** ********** **/
 
 

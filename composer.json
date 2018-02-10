@@ -13,15 +13,15 @@
         "symfony/lts": "^4@dev",
         "symfony/monolog-bundle": "^3.0",
         "symfony/twig-bundle": "^4.0",
-        "symfony/yaml": "^4.0"
+        "symfony/yaml": "^4.0",
+        "symfony/web-server-bundle": "^4.0"
     },
     "require-dev": {
         "symfony/debug-bundle": "^3.3|^4.0",
         "symfony/dotenv": "^4.0",
         "symfony/maker-bundle": "^1.0",
         "symfony/var-dumper": "^3.3|^4.0",
-        "symfony/web-profiler-bundle": "^3.3|^4.0",
-        "symfony/web-server-bundle": "^4.0"
+        "symfony/web-profiler-bundle": "^3.3|^4.0"
     },
     "config": {
         "preferred-install": {
