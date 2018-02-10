@@ -2,20 +2,15 @@ const spawn = require('child_process').spawn;
 const http = require('http');
 const httpProxy = require('http-proxy');
 const socketio = require('socket.io');
-const envToShare = JSON.parse(JSON.stringify(process.env));
+const envToShare = {
+    'APP_ENV': process.env.APP_ENV || '',
+    'APP_SECRET': process.env.APP_SECRET || '',
+};
 
 console.info('envToShare', envToShare);
 
 /** PHP SCRIPT **/
-const child = process.env.NODE_ENV === 'production'
-    ? spawn('php', ['-S', '127.0.0.1:9999', '-t', 'public'], {env: envToShare})
-    : spawn('php', ['bin/console', 'server:run', '9999', '-vvv', '--no-ansi'], {env: envToShare})
-;
-child.stdout.on('data', (out) => {process.stdout.write(`[PHP stdout] ${out}\n`)});
-child.stderr.on('data', (out) => {process.stderr.write(`[PHP stderr] ${out}\n`)});
-child.on('error', (out) => {process.stderr.write(`[PHP error] ${out}\n`)});
-child.on('exit', (code, signal) => { process.stderr.write('[PHP] Exited with '+`code ${code} and signal ${signal}`); });
-child.on('disconnect', () => { process.stdout.write('[PHP] Disconnected\n'); });
+spawn('php', ['-S', '127.0.0.1:9999', '-t', 'public'], {stdio: 'inherit', env: envToShare});
 /** ********** **/
 
 
