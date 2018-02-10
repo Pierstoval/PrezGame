@@ -28,7 +28,7 @@ let hostingSocket = null;
 const sessionData = {};
 
 socket.on('connection', function(socket){
-    process.stdout.write('a user connected\n');
+    log('ws', 'A user connected');
 
     sessionData[socket.id] = {};
 
@@ -37,7 +37,7 @@ socket.on('connection', function(socket){
             socket.emit('message', 'Il y a déjà un hôte pour cette présentation !');
             return;
         }
-        process.stdout.write('Presentation host connected!');
+        log('ws', 'Presentation host connected!');
         hostingSocket = socket;
     });
 
@@ -46,16 +46,21 @@ socket.on('connection', function(socket){
             socket.emit('message', 'Attendez que l\'hôte ait créé une session de présentation, ne soyez pas trop pressé•e :)');
             return;
         }
-        process.stdout.write(`A message!\n${msg}`);
+        log('ws', `WS message:\t${msg}`);
         hostingSocket.emit('message', 'Someone helped you!');
     });
 });
 
 socket.on('disconnect', function(socket){
-    process.stdout.write('Disconnect\n');
+    log('ws', 'Disconnect');
     if (hostingSocket && socket.id === hostingSocket.id) {
         hostingSocket = null;
-        process.stdout.write('Presentation host disconnected.\n');
+        log('ws', 'Presentation host disconnected.');
     }
 });
 /** **************** **/
+
+function log(type, message) {
+    let date = (new Date()).toISOString().replace(/[TZ]/gi, ' ').trim();
+    process.stdout.write(`[${date}] [${type}] ${message}\n`);
+}
