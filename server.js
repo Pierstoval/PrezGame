@@ -5,7 +5,10 @@ const socketio = require('socket.io');
 
 
 /** PHP SCRIPT **/
-const child = spawn('php', ['bin/console', 'server:run', '9999', '-vvv', '--no-ansi']);
+const child = process.env.NODE_ENV === 'production'
+    ? spawn('php', ['bin/console', 'server:run', '9999', '-vvv', '--no-ansi'])
+    : spawn('php', ['-S', '127.0.0.1:9999', '-t', 'public'])
+;
 child.stdout.on('data', (out) => {process.stdout.write(`[PHP stdout] ${out}\n`)});
 child.stderr.on('data', (out) => {process.stderr.write(`[PHP stderr] ${out}\n`)});
 child.on('error', (out) => {process.stderr.write(`[PHP error] ${out}\n`)});
