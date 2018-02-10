@@ -29,7 +29,7 @@ child.on('disconnect', function () {
 /** HTTP Proxy to PHP **/
 http.createProxyServer({
     target: 'http://127.0.0.1:9999'
-}).listen(80);
+}).listen(process.env.PORT || 80);
 /** ***************** **/
 
 
