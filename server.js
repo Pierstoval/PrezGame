@@ -6,9 +6,9 @@ const socketio = require('socket.io');
 
 /** PHP SCRIPT **/
 const child = spawn('php', ['bin/console', 'server:run', '9999', '-vvv', '--no-ansi']);
-child.stdout.on('data', process.stdout.write);
-child.stderr.on('data', process.stderr.write);
-child.on('error', process.stderr.write);
+child.stdout.on('data', (out) => {process.stdout.write(`[PHP stdout] ${out}\n`)});
+child.stderr.on('data', (out) => {process.stderr.write(`[PHP stderr] ${out}\n`)});
+child.on('error', (out) => {process.stderr.write(`[PHP error] ${out}\n`)});
 child.on('exit', (code, signal) => { process.stderr.write('[PHP] Exited with '+`code ${code} and signal ${signal}`); });
 child.on('disconnect', () => { process.stdout.write('[PHP] Disconnected\n'); });
 /** ********** **/
