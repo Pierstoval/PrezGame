@@ -1,15 +1,16 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div id="message"></div>
+    <div id="messages"></div>
     <button id="help-me" type="button">
         Aidez-moi!
     </button>
     <script src="{{ asset('js/socket.io.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
     <script type="application/javascript">
         (function(d){
             var msgbox = d.getElementById('message');
-            var socket = io.connect(window.location.protocol+'//'+window.location.hostname+':9998');
+            var socket = io.connect(window.location.protocol+'//'+window.location.hostname);
             d.getElementById('help-me').addEventListener('click', function(){
                 socket.emit('message', 'such wow!!!');
             });

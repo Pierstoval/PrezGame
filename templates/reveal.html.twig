@@ -11,13 +11,15 @@
         link.href = window.location.search.match(/print-pdf/gi) ? '{{ asset('reveal/css/print/pdf.css') }}' : '{{ asset('reveal/css/print/paper.css') }}';
         document.getElementsByTagName('head')[0].appendChild(link);
     </script>
-    <link rel="stylesheet" href="{{ asset('/reveal/css/theme/black.css') }}" id="theme">
+    <link rel="stylesheet" href="{{ asset('reveal/css/theme/black.css') }}" id="theme">
     <link rel="stylesheet" href="{{ asset('reveal/lib/css/zenburn.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <!--[if lt IE 9]><script src="{{ asset('reveal/lib/js/html5shiv.js') }}"></script><![endif]-->
 </head>
 
 <body>
 
+<div id="messages"></div>
 <div class="reveal">
     <div class="slides">
         {% block body %}{% endblock %}

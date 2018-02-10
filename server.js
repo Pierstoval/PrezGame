@@ -1,59 +1,61 @@
 const spawn = require('child_process').spawn;
-const http = require('http-proxy');
+const http = require('http');
+const httpProxy = require('http-proxy');
 const socketio = require('socket.io');
 
 
 /** PHP SCRIPT **/
-const child = process.env.NODE_ENV === 'production'
-    ? spawn('vendor/bin/heroku-php-nginx', ['-C', 'heroku/nginx_vhost.conf', 'public/'])
-    : spawn('php', ['bin/console', 'server:run', '9999', '-vvv', '--no-ansi'])
-;
-child.stdout.on('data', (data) => {
-    console.log(`[PHP] ${data}`);
-});
-child.stderr.on('data', (data) => {
-    console.error(`[PHP][StdErr] ${data}`);
-});
-child.on('error', (data) => {
-    console.error(`[PHP][ERR] ${data}`);
-});
-child.on('exit', function (code, signal) {
-    console.log('[PHP] Exited with '+`code ${code} and signal ${signal}`);
-});
-child.on('disconnect', function () {
-    console.log('[PHP] Disconnected', arguments);
-});
+const child = spawn('php', ['bin/console', 'server:run', '9999', '-vvv', '--no-ansi']);
+child.stdout.on('data', process.stdout.write);
+child.stderr.on('data', process.stderr.write);
+child.on('error', process.stderr.write);
+child.on('exit', (code, signal) => { process.stderr.write('[PHP] Exited with '+`code ${code} and signal ${signal}`); });
+child.on('disconnect', () => { process.stdout.write('[PHP] Disconnected\n'); });
 /** ********** **/
 
 
 /** HTTP Proxy to PHP **/
-http.createProxyServer({
-    target: 'http://127.0.0.1:9999'
+var proxy = httpProxy.createProxyServer({});
+const httpServer = http.createServer(function(req, res) {
+    proxy.web(req, res, {target: 'http://127.0.0.1:9999'});
 }).listen(process.env.PORT || 80);
 /** ***************** **/
 
 
 /** Websocket server **/
-const socket = socketio.listen(9998);
-var hostingSocket = null;
-var sessionData = {};
+const socket      = socketio(httpServer);
+let hostingSocket = null;
+const sessionData = {};
+
 socket.on('connection', function(socket){
-    console.log('a user connected');
+    process.stdout.write('a user connected\n');
+
     sessionData[socket.id] = {};
+
     socket.on('subscribe', function(msg) {
         if (hostingSocket) {
             socket.emit('message', 'Il y a déjà un hôte pour cette présentation !');
             return;
         }
+        process.stdout.write('Presentation host connected!');
         hostingSocket = socket;
     });
+
     socket.on('message', function(msg) {
         if (hostingSocket === null) {
             socket.emit('message', 'Attendez que l\'hôte ait créé une session de présentation, ne soyez pas trop pressé•e :)');
             return;
         }
-        console.info('A message!', msg);
+        process.stdout.write(`A message!\n${msg}`);
         hostingSocket.emit('message', 'Someone helped you!');
     });
+});
+
+socket.on('disconnect', function(socket){
+    process.stdout.write('Disconnect\n');
+    if (hostingSocket && socket.id === hostingSocket.id) {
+        hostingSocket = null;
+        process.stdout.write('Presentation host disconnected.\n');
+    }
 });
 /** **************** **/
