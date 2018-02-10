@@ -4,6 +4,8 @@ const httpProxy = require('http-proxy');
 const socketio = require('socket.io');
 const envToShare = JSON.parse(JSON.stringify(process.env));
 
+console.info('envToShare', envToShare);
+
 /** PHP SCRIPT **/
 const child = process.env.NODE_ENV === 'production'
     ? spawn('php', ['-S', '127.0.0.1:9999', '-t', 'public'], {env: envToShare})
