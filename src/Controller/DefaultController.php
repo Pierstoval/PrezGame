@@ -56,31 +56,6 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/update-session-slide", name="update_session_slide", defaults={"_format": "json"}, methods={"POST"})
-     */
-    public function updateSessionSlide(Request $request, Session $session): JsonResponse
-    {
-        if (!$session->get('slide_id')) {
-            throw new AccessDeniedHttpException();
-        }
-
-        if (!$request->getContent()) {
-            throw new BadRequestHttpException();
-        }
-
-        $session->set('slide_id', $id = $request->getContent());
-
-        $cacheItem = $this->cache->getItem('current_slide');
-        $cacheItem->set([
-            'id' => $id,
-            'amount' => 0,
-        ]);
-        $this->cache->save($cacheItem);
-
-        return new JsonResponse($id);
-    }
-
-    /**
      * @Route("/check-session-slide", name="check_session_slide", defaults={"_format": "json"}, methods={"GET"})
      */
     public function checkSessionSlide(Session $session): JsonResponse

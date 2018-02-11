@@ -41,7 +41,14 @@ body#button {
     top: 0;
     left: 0;
     padding: 10px;
+    z-index: 1;
     p {
         padding-bottom: 5px;
+        a {
+            display: inline-block;
+            border: solid 1px #3f3f3f;
+            color: #f88;
+            padding: 1px 10px;
+        }
     }
 }

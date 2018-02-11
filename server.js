@@ -68,7 +68,7 @@ io.on('connection', function(socket){
 
     socket.on('update_slide', function(slideName) {
         log('ws', `Slide changed to ${slideName}`);
-        if (hostingSocket.id !== socket.id) {
+        if (!hostingSocket || hostingSocket.id !== socket.id) {
             socket.emit('message', 'Seul l\'hôte peut utiliser cet évènement :D');
             return;
         }
@@ -125,6 +125,14 @@ io.on('connection', function(socket){
     /**
      * Global socket interactions
      */
+    socket.on('stats', async function() {
+        log('ws', `Seeking for statistics`);
+
+        let stats = await getStats();
+
+        socket.emit('stats', JSON.stringify(stats));
+    });
+
     socket.on('disconnect', function(){
         log('ws', 'Disconnect');
         if (hostingSocket && socket.id === hostingSocket.id) {
@@ -169,4 +177,21 @@ async function personWhoDidNotUnderstand() {
     });
 
     return number;
+}
+
+async function getStats() {
+    let stats = {};
+
+    await Object.keys(sessionData.sessions).forEach(async function (socketId) {
+        let slides = sessionData.sessions[socketId].helpWantedForSlides;
+
+        await slides.forEach(function(e){
+            if (!stats[e]) {
+                stats[e] = 0;
+            }
+            stats[e] ++;
+        });
+    });
+
+    return stats;
 }

@@ -9,20 +9,7 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script type="application/javascript">
         (function(d){
-            var socket = io.connect(window.location.protocol+'//'+window.location.hostname);
-            d.getElementById('help-me').addEventListener('click', function(){
-                var helped = localStorage.getItem('help') || [];
-                socket.emit('help', JSON.stringify(helped) || []);
-            });
-            socket.on('helpReturn', function(slideName){
-                let item = localStorage.getItem('help');
-                var helped = (item ? item.split(',') : []) || [];
-                helped.push(slideName);
-                localStorage.setItem('help', helped.join(','));
-            });
-            socket.on('message', function(msg) {
-                message(msg);
-            });
+            initButtonInteraction(d);
         })(document);
     </script>
 {% endblock %}
