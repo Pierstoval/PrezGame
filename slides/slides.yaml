@@ -1,22 +1,21 @@
 default:
-    test:
-        title: Test
+    intro:
+        content: |
+            Such wow!
         sections:
-            - content:
-                Such wow!
         notes:
             Omg there are NOTES!!
 
     second_slide:
         title: Oh yeah!
         sections:
-            - content:
+            - content: |
                 Another one!!
 
     third:
         title: And again
         sections:
-            - content:
+            - content: |
                 This should be visible after 60 seconds only.
 
     fourth:

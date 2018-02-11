@@ -1,14 +1,18 @@
 <!doctype html>
 <html lang="{{ app.request.locale }}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Aidez-moi!</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0">
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('css/app.css') }}" type="text/css">
+    {% endblock %}
 </head>
-<body id="button">
+<body id="{% block body_id '' %}">
+<div id="messages"></div>
 {% block body %}{% endblock %}
-<script src="{{ asset('js/app.js') }}"></script>
+{% block javascripts %}
+    <script src="{{ asset('js/app.js') }}"></script>
+{% endblock %}
 </body>
 </html>

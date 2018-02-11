@@ -1,12 +1,20 @@
 {% extends 'base.html.twig' %}
 
+{% block title 'Aidez-moi !' %}
+
+{% block body_id 'button' %}
+
+
 {% block body %}
     <div id="messages"></div>
     <button id="help-me" type="button">
         Aidez-moi!
     </button>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
     <script src="{{ asset('js/socket.io.js') }}"></script>
-    <script src="{{ asset('js/app.js') }}"></script>
     <script type="application/javascript">
         (function(d){
             initButtonInteraction(d);

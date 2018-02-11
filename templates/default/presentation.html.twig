@@ -1,14 +1,33 @@
-{% extends 'reveal.html.twig' %}
+{% extends 'base.html.twig' %}
+
+{% block title 'Présentation' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('reveal/css/reveal.css') }}">
+    <script type="application/javascript">
+        var link = document.createElement('link');link.rel = 'stylesheet';link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? '{{ asset('reveal/css/print/pdf.css') }}' : '{{ asset('reveal/css/print/paper.css') }}';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+    <link rel="stylesheet" href="{{ asset('reveal/css/theme/black.css') }}" id="theme">
+    <link rel="stylesheet" href="{{ asset('reveal/lib/css/zenburn.css') }}">
+    <!--[if lt IE 9]><script src="{{ asset('reveal/lib/js/html5shiv.js') }}"></script><![endif]-->
+    {{ parent() }}
+{% endblock %}
 
 {% block body %}
-    {{ include(presentation_slides) }}
+    <div class="reveal">
+        <div class="slides">
+            {{ include(presentation_slides) }}
+        </div>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
     <script src="{{ asset('reveal/lib/js/head.min.js') }}"></script>
     <script src="{{ asset('reveal/js/reveal.js') }}"></script>
     <script src="{{ asset('js/socket.io.js') }}"></script>
-    <script src="{{ asset('js/app.js') }}"></script>
+    {{ parent() }}
     <script type="application/javascript">
         (function(d){
             Reveal.initialize({
