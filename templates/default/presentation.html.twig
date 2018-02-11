@@ -11,7 +11,6 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script type="application/javascript">
         (function(d){
-            var messageBlock = d.getElementById('messages');
             var autoSlide = 10000;
             var internalTimer = autoSlide;
             var timerStartedAt = Date.now();
@@ -28,8 +27,6 @@
                 progress: true,
                 history: true,
                 center: true,
-                autoSlide: autoSlide,
-                autoSlideMethod: checkNext,
                 overview: false,
                 transition: 'slide', // none/fade/slide/convex/concave/zoom
                 dependencies: [
@@ -43,11 +40,39 @@
                 ]
             });
 
+            // In dev, allows resetting the list of asked help.
+            localStorage.setItem('help', '');
+
+            /**
+             * Events
+             */
             Reveal.addEventListener('slidechanged', function (event) {
                 ajax('POST', '{{ path('update_session_slide') }}', event.currentSlide.id);
                 internalTimer = autoSlide;
                 timerStartedAt = Date.now();
+                updateSlide();
             });
+
+            d.addEventListener('keydown', function(event){
+                if (event.keyCode === 65) {
+                    // key "a"
+                    pause = !pause;
+                    console.info(pause ? 'Pause !' : 'Reprise');
+                }
+            });
+
+            /**
+             * Socket interactions
+             */
+            var socket = io.connect(window.location.protocol+'//'+window.location.hostname);
+            socket.emit('subscribe', 'login');
+            socket.on('message', function(msg) {
+                message(msg);
+            });
+
+            /**
+             * Timer
+             */
             setInterval(function(){
                 {#
                 ajax('GET', '{{ path('check_session_slide') }}', '', function(response){
@@ -76,21 +101,9 @@
                 }
             }
 
-            d.addEventListener('keydown', function(event){
-                if (event.keyCode === 65) {
-                    // key "a"
-                    pause = !pause;
-                    console.info(pause ? 'Pause !' : 'Reprise');
-                }
-            });
-
-            var socket = io.connect(window.location.protocol+'//'+window.location.hostname);
-            socket.emit('subscribe', function(res){
-                console.info(arguments);
-            });
-            socket.on('message', function(msg) {
-                message(msg);
-            });
+            function updateSlide() {
+                socket.emit('update_slide', Reveal.getCurrentSlide().id);
+            }
         })(document);
     </script>
 {% endblock %}

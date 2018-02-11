@@ -7,6 +7,7 @@
         "postinstall": "gulp4 dump"
     },
     "dependencies": {
+        "dateformat": "^3.0.3",
         "glob": "^7.0",
         "gulp-clean-css": "^3.7",
         "gulp-concat": "^2.6",

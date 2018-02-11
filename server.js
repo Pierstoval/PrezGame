@@ -2,6 +2,8 @@ const spawn = require('child_process').spawn;
 const http = require('http');
 const httpProxy = require('http-proxy');
 const socketio = require('socket.io');
+const fs = require('fs');
+const dateFormat = require('dateformat');
 const envToShare = {
     'APP_ENV': process.env.APP_ENV || '',
     'APP_SECRET': process.env.APP_SECRET || '',
@@ -23,44 +25,148 @@ const httpServer = http.createServer(function(req, res) {
 
 
 /** Websocket server **/
-const socket      = socketio(httpServer);
+const io = socketio(httpServer);
 let hostingSocket = null;
-const sessionData = {};
+let currentSlide = null;
+const sessionData = {
+    date: dateFormat(new Date(), 'yyyy-mm-dd HH-MM-ss'),
+    sessions: {}
+};
 
-socket.on('connection', function(socket){
+io.on('connection', function(socket){
     log('ws', 'A user connected');
 
-    sessionData[socket.id] = {};
+    updatePresentationSession();
 
-    socket.on('subscribe', function() {
+    sessionData.sessions[socket.id] = {
+        host: false,
+        helpWantedForSlides: []
+    };
+
+    /**
+     * HOST socket interactions
+     */
+    socket.on('subscribe', function(message) {
         if (hostingSocket) {
-            socket.emit('message', 'Il y a déjà un hôte pour cette présentation !');
+            socket.emit('message', 'Il y a déjà un hôte pour cette présentation ! Les interactions ne fonctionneront pas pour vous !');
+            return;
+        }
+        if (message !== 'login') {
+            socket.emit('message', 'Tu te paies ma tête ou quoi ?');
+            return;
+        }
+        let referer = socket.request.headers['referer'];
+        if (!referer.match(/\/presentation$/gi)) {
+            socket.emit('message', 'Tu te paies VRAIMENT ma tête ou quoi ?');
             return;
         }
         log('ws', 'Presentation host connected!');
         hostingSocket = socket;
+        sessionData.sessions[socket.id].host = true;
+        updatePresentationSession();
     });
 
-    socket.on('message', function(msg) {
-        if (hostingSocket === null) {
+    socket.on('update_slide', function(slideName) {
+        log('ws', `Slide changed to ${slideName}`);
+        if (hostingSocket.id !== socket.id) {
+            socket.emit('message', 'Seul l\'hôte peut utiliser cet évènement :D');
+            return;
+        }
+        currentSlide = slideName;
+        updatePresentationSession();
+    });
+
+    /**
+     * VISITOR socket interactions
+     */
+    socket.on('help', async function (msg) {
+        msg = msg.replace(/^"|"$/gi, '');
+        msg = (msg ? msg.split(',') : []) || [];
+        if (hostingSocket === null || currentSlide === null) {
             socket.emit('message', 'Attendez que l\'hôte ait créé une session de présentation, ne soyez pas trop pressé•e :)');
             return;
         }
-        log('ws', `WS message:\t${msg}`);
-        hostingSocket.emit('message', 'Someone helped you!');
+        if (hostingSocket.id === socket.id) {
+            socket.emit('message', 'Hey, vous ne pensiez tout de même pas vous aider vous-même ? :D');
+            return;
+        }
+
+        let alreadyAsked = await msg.find(function (element) {
+            return currentSlide === element;
+        });
+
+        let found = await sessionData.sessions[socket.id].helpWantedForSlides.find(function (element) {
+            return currentSlide === element;
+        });
+
+        if (found || alreadyAsked) {
+            await socket.emit('message', 'Vous avez déjà demandé de l\'aide pour ce sujet…');
+        } else {
+            sessionData.sessions[socket.id].helpWantedForSlides.push(currentSlide);
+            let nb = await personWhoDidNotUnderstand();
+            let message = 'Uh ?';
+            switch (nb) {
+                case 0:
+                    message = 'Tout le monde a compris ♥ (même si je n\'y crois pas…)'
+                    break;
+                case 1:
+                    message = 'Quelqu\'un n\'a pas compris…';
+                    break;
+                default:
+                    message = `${nb} personnes n'ont pas compris…`
+                    break;
+            }
+            hostingSocket.emit('message', message);
+            socket.emit('helpReturn', currentSlide);
+            updatePresentationSession();
+        }
+    });
+
+    /**
+     * Global socket interactions
+     */
+    socket.on('disconnect', function(){
+        log('ws', 'Disconnect');
+        if (hostingSocket && socket.id === hostingSocket.id) {
+            hostingSocket = null;
+            log('ws', 'Presentation host disconnected.');
+        }
+        updatePresentationSession();
     });
 });
 
-socket.on('disconnect', function(socket){
-    log('ws', 'Disconnect');
-    if (hostingSocket && socket.id === hostingSocket.id) {
-        hostingSocket = null;
-        log('ws', 'Presentation host disconnected.');
-    }
-});
 /** **************** **/
 
 function log(type, message) {
-    let date = (new Date()).toISOString().replace(/[TZ]/gi, ' ').trim();
+    let date = dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss');
     process.stdout.write(`[${date}] [${type}] ${message}\n`);
+}
+
+function updatePresentationSession() {
+    let fileName = __dirname+'/var/presentations/'+sessionData.date.replace(' ', '_')+'.json';
+    fs.writeFile(fileName, JSON.stringify(sessionData, null, 4), function(err){
+        if (err) {
+            throw err;
+        }
+        log('log', `Saved presentation in ${fileName}`);
+    });
+}
+
+async function personWhoDidNotUnderstand() {
+    if (!currentSlide) {
+        return 0;
+    }
+
+    let number = 0;
+
+    await Object.keys(sessionData.sessions).forEach(function (socketId) {
+        let found = sessionData.sessions[socketId].helpWantedForSlides.find(function(element){
+            return element === currentSlide;
+        });
+        if (found) {
+            number++;
+        }
+    });
+
+    return number;
 }
