@@ -30,41 +30,10 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/button", name="button", methods={"GET", "POST"})
+     * @Route("/button", name="button", methods={"GET"})
      */
-    public function button(Request $request, Session $session): Response
+    public function button(): Response
     {
-        if ($request->isMethod('POST')) {
-
-            $message = 'Une étrange erreur...';
-            $code = 400;
-
-            $cacheItem = $this->cache->getItem('current_slide');
-            $values = $cacheItem->get();
-
-            if ($values) {
-                $helpedSlides = $session->get('helped_slides', []);
-
-                if (isset($helpedSlides[$values['id']])) {
-                    $message = 'Tu m\'as déjà aidé, merci ☺';
-                    $code = 200;
-                } else {
-                    $values['amount'] = ($values['amount'] ?? 0) + 5000;
-                    if ($values['amount'] > 30000) {
-                        $values['amount'] = 30000;
-                    }
-                    $cacheItem->set($values);
-                    $this->cache->save($cacheItem);
-                    $message = true;
-                    $helpedSlides[$values['id']] = true;
-                    $session->set('helped_slides', $helpedSlides);
-                    $message = 'Merci, tu fais avancer le schmilblick ♥';
-                }
-            }
-
-            return new Response($message ? '1' : '0', $code);
-        }
-
         return $this->render('default/button.html.twig');
     }
 
