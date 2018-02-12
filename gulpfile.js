@@ -51,6 +51,9 @@ const config = {
     },
 
     "css": {
+        "css/hljs.darcula.css": [
+            "assets/hljs.darcula.css"
+        ]
     },
 
     "js": {
@@ -261,43 +264,9 @@ gulp.task('dump-slides', function (done) {
                 slideData.title_style = (slide.title_style || slideData.title_style).trim();
                 slideData.title_tag = (slide.title_tag || slideData.title_tag).trim();
 
-                let title_color = '#47b0c7';
+                let title_color = 'auto';
 
                 slideData.style = ('id="'+presentationName+'_'+slideName+'" '+slideData.style).trim();
-
-                switch (slide.type) {
-                    case 'splash':
-                        if (slideData.style.match(/data-background-color/gi)) {
-                            slideData.style = slideData.style.replace(/data-background-color(=['"]?[^"]+['"]?(\s|$))?/gi, '');
-                        }
-                        if (slideData.title_style.match(/class=gi/)) {
-                            slideData.title_style = slideData.title_style.replace(/(class=["'])/gi, '$1 white em4');
-                            slideData.title_tag = 'h1';
-                        }
-                        slideData.style += ' data-background-color="#47b0c7"';
-                        title_color = 'white';
-                        break;
-
-                    case 'best-practice':
-                        if (slideData.style.match(/data-background-color/gi)) {
-                            slideData.style = slideData.style.replace(/(data-background-color)(?:=['"]?[^"]+['"]?(\?:s|$))?/gi, '$1="#fff8dc"');
-                        } else {
-                            slideData.style += ' data-background-color="#fff8dc"'
-                        }
-                        if (slideData.title_style.match(/class=gi/)) {
-                            slideData.title_style = slideData.title_style.replace(/(class=["'])/gi, '$1 white em4');
-                            slideData.title_tag = 'h1';
-                        }
-                        content_to_prepend += '<div class="best-practice-icon"></div>';
-                        title_color = 'black';
-                        break;
-
-                    case 'exercise':
-                        slideData.title_tag = 'h1';
-                        slideData.style += ' data-background-color="#FFF" class="chalkboard" style="font-family: chalkboard; background-color: #444; border: 13px solid #564126 !important; border-radius: 10px; background-image:url(\'/images/slides-chalkboard-background.jpg\'); background-size:cover; -webkit-box-shadow: inset 5px 5px 5px 0px rgba(0,0,0,0.75); -moz-box-shadow: inset 5px 5px 5px 0px rgba(0,0,0,0.75); box-shadow: inset 5px 5px 5px 0px rgba(0,0,0,0.75);"';
-                        title_color = 'white';
-                        break;
-                }
 
                 if (slideData.style) { slideData.style = ' '+slideData.style; }
 
@@ -356,8 +325,6 @@ gulp.task('dump-slides', function (done) {
                             is_fragment: false,
                             type: 'markdown',
                             code_language: 'php',
-                            highlight_line: null,
-                            display_line_numbers: null,
                             quote_source: '',
                             style: '',
                             content: ''
@@ -382,22 +349,6 @@ gulp.task('dump-slides', function (done) {
                              */
                             case 'code':
                                 sectionData.code_language = (section.code_language || sectionData.code_language).trim();
-                                sectionData.highlight_line = (section.highlight_line || sectionData.highlight_line);
-                                sectionData.display_line_numbers = (section.display_line_numbers || sectionData.display_line_numbers);
-                                if (null === sectionData.display_line_numbers) {
-                                    if ('twig' === sectionData.code_language) {
-                                        sectionData.display_line_numbers = true;
-                                    }
-                                    if ('php' === sectionData.code_language) {
-                                        sectionData.display_line_numbers = true;
-                                    }
-                                    if ('yaml' === sectionData.code_language) {
-                                        sectionData.display_line_numbers = true;
-                                    }
-                                    if ('xml' === sectionData.code_language) {
-                                        sectionData.display_line_numbers = true;
-                                    }
-                                }
                                 if (sectionData.is_fragment) {
                                     slideData.content += '<div class="fragment">';
                                 }
@@ -421,7 +372,7 @@ gulp.task('dump-slides', function (done) {
                                 }
 
                                 slideData.content += '<div'+(sectionData.style || '')+'>';
-                                slideData.content += '    <pre'+(sectionData.highlight_line ? ' data-line="'+sectionData.highlight_line+'"' : '')+(sectionData.display_line_numbers ? ' class="line-numbers"' : '')+' class="hljs" data-trim><code class="'+sectionData.code_language+'">';
+                                slideData.content += '    <pre class="hljs" data-trim><code class="'+sectionData.code_language+'">';
 
                                 if ('twig' === sectionData.code_language) {
                                     slideData.content += '{%- verbatim -%}';
@@ -508,25 +459,6 @@ gulp.task('dump-slides', function (done) {
                                 break;
 
                             /**
-                             * "Best practice" block
-                             */
-                            case 'best-practice':
-                                let className = 'admonition-best-practice';
-                                if (sectionData.is_fragment) {
-                                    className += ' fragment';
-                                }
-                                sectionData.title = sectionData.title || 'Best practice';
-                                slideData.content += '<div class="'+className+'">';
-                                if (sectionData.title) {
-                                    slideData.content += '<h3'+(sectionData.title_style || '')+'>';
-                                    slideData.content += sectionData.title;
-                                    slideData.content += '</h3>';
-                                }
-                                slideData.content += '<p'+(sectionData.style || ' data-markdown')+'>'+sectionData.content+'</p>';
-                                slideData.content += '</div>';
-                                break;
-
-                            /**
                              * Quote
                              */
                             case 'quote':
@@ -541,6 +473,7 @@ gulp.task('dump-slides', function (done) {
                                 }
                                 slideData.content += "</div>\n";
                                 break;
+
                             /**
                              * Markdown parser (default one)
                              */
