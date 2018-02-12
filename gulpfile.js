@@ -251,7 +251,7 @@ gulp.task('dump-slides', function (done) {
                 let slideData = {
                     title: '',
                     title_style: '',
-                    title_tag: 'h2',
+                    title_tag: 'h3',
                     icon: null,
                     icon_size: '2x',
                     type: '',

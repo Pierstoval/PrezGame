@@ -1,70 +1,23 @@
 sf4:
     intro:
         sections:
-            -
-                content: |
-                    **Alex Rock**
+            - content: |
+                ![Alex Rock avatar](//fr.gravatar.com/userimage/41973088/0fbe36bcaaf555341ef5cd2fd1017128.jpg?size=250)
 
-                    PHP / Symfony trainer
+                **Alex Rock**
 
-                    Follow me `@pierstoval` **(everywhere)**
-        notes: |
-            My
+                PHP / Symfony trainer
 
-            super
+                Follow me `@pierstoval` **(everywhere)**
 
-            notes
-
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-    splash:
-        title: Splash test
-        type: splash
+    whats_new:
+        title: 'Quoi de neuf chez Symfony ?'
         sections:
             - content: |
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                tempor incididunt `ut` labore et dolore magna aliqua. Ut enim ad minim veniam,
-                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                Programme :
 
-    second_slide:
-        title: Oh yeah!
-        sections:
-            - content: |
-                Another one!!
-
-    third:
-        title: And again
-        sections:
-            - content: |
-                This should be visible after 60 seconds only.
-
-    fourth:
-        title: May this slide be with you
-        sections:
-            - type: code
-              code_language: raw
-              content: |
-                may the 4th
-
-
-    code_slide:
-        title: 'Code slinde'
-        sections:
-            - type: code
-              code_language: php
-              content: |
-                <?php
-
-                echo "Such wow";
-
-                dump('Yeah');
-
-                $veryVariable = throw new \Exception('Oh yeah');
+                * Programme
+                * Interactivité
+                * Symfony 3.x
+                * Symfony 4.x
+                * Création d'un projet Flex

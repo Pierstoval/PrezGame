@@ -15,14 +15,6 @@ body {
     }
 }
 
-img,
-.reveal section img.noborder {
-    border: none transparent;
-    max-width: 100%;
-    background: transparent;
-    box-shadow: none;
-}
-
 #help-me {
     background: indianred;
     border-radius: 100px;
@@ -73,6 +65,15 @@ img,
         border: solid 2px #222222;
         padding-left: 9px;
         padding-right: 9px;
-        color: #A9B7C6;
+        color: #a9b7c6;
+    }
+    section img {
+        border-color: #222;
+        .noborder {
+            border: none transparent;
+            max-width: 100%;
+            background: transparent;
+            box-shadow: none;
+        }
     }
 }

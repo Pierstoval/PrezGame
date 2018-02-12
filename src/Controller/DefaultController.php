@@ -38,7 +38,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/presentation/{name}", name="presentation", methods={"GET"})
      */
-    public function presentation($name = 'default', Session $session): Response
+    public function presentation($name = 'sf4', Session $session): Response
     {
         $session->set('slide_id', 'first');
 
