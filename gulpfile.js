@@ -39,6 +39,9 @@ const config = {
     ],
 
     "images": {
+        "": [
+            "assets/orbitale.svg"
+        ]
     },
 
     "less": {

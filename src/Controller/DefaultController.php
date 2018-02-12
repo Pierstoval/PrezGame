@@ -24,7 +24,7 @@ class DefaultController extends AbstractController
      */
     public function index(): Response
     {
-        return $this->redirectToRoute('presentation');
+        return $this->render('default/index.html.twig');
     }
 
     /**
@@ -36,13 +36,13 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/presentation/{presentationName}", name="presentation", methods={"GET"})
+     * @Route("/presentation/{name}", name="presentation", methods={"GET"})
      */
-    public function presentation($presentationName = 'default', Session $session): Response
+    public function presentation($name = 'default', Session $session): Response
     {
         $session->set('slide_id', 'first');
 
-        $slidesFile = "slides/$presentationName.html.twig";
+        $slidesFile = "slides/$name.html.twig";
 
         if (!$this->get('twig')->getLoader()->exists($slidesFile)) {
             throw $this->createNotFoundException('Presentation not found.');

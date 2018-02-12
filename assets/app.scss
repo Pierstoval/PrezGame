@@ -6,8 +6,21 @@
     box-sizing: border-box;
 }
 
-body#button {
-    background: black;
+body {
+    &#body_reveal {
+        background: radial-gradient(circle, #333, #222);
+    }
+    &#button {
+        background: black;
+    }
+}
+
+img,
+.reveal section img.noborder {
+    border: none transparent;
+    max-width: 100%;
+    background: transparent;
+    box-shadow: none;
 }
 
 #help-me {
@@ -50,5 +63,16 @@ body#button {
             color: #f88;
             padding: 1px 10px;
         }
+    }
+}
+
+.reveal {
+    p code {
+        background: #2b2b2b;
+        border-radius: 8px;
+        border: solid 2px #222222;
+        padding-left: 9px;
+        padding-right: 9px;
+        color: #A9B7C6;
     }
 }
