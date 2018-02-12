@@ -75,15 +75,13 @@
 
         /**
          * Timer
-         */
+         *
         setInterval(function(){
-            /*
             ajax('GET', '{{ path('check_session_slide') }}', '', function(response){
                 timerStartedAt = parseInt(timerStartedAt, 10);
                 amount = (-1) * parseInt(response, 10);
                 console.info(amount);
             });
-            */
         }, 500);
         setInterval(function(){
             if (pause) {
@@ -95,6 +93,7 @@
                 internalTimer = autoSlide;
             }
         }, 100);
+        //*/
 
         function checkNext() {
             console.info('checking next', internalTimer, amount);
