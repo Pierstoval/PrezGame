@@ -2,6 +2,7 @@ node_modules
 public/css/
 public/js/
 public/reveal/
+public/img/
 templates/slides/
 !templates/slides/.gitkeep
 

@@ -39,7 +39,7 @@ const config = {
     ],
 
     "images": {
-        "": [
+        "img/": [
             "assets/orbitale.svg"
         ]
     },
