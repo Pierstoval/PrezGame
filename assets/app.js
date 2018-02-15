@@ -1,5 +1,9 @@
-(function(w, d){
+(function(w, d, io, Reveal){
     var messageBlock = d.getElementById('messages');
+
+    if (!Reveal || !io) {
+        throw 'This app needs Reveal and socket.io to be available.';
+    }
 
     function message(msg, waitAndDelete){
         if (typeof waitAndDelete === 'undefined') {
@@ -36,6 +40,7 @@
     var timerStartedAt = Date.now();
     var amount = 0;
     var pause = false;
+
     function initPresentation(d) {
 
         // In dev, allows resetting the list of asked help.
@@ -115,7 +120,7 @@
             socket.emit('help', JSON.stringify(helped) || []);
         });
         socket.on('helpReturn', function(slideName){
-            let item = localStorage.getItem('help');
+            var item = localStorage.getItem('help');
             var helped = (item ? item.split(',') : []) || [];
             helped.push(slideName);
             localStorage.setItem('help', helped.join(','));
@@ -127,4 +132,4 @@
 
     w.initButtonInteraction = initButtonInteraction;
     w.initPresentation = initPresentation;
-})(window, document);
+})(window, document, io, Reveal);
