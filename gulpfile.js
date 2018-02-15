@@ -40,7 +40,6 @@ const config = {
 
     "images": {
         "img/": [
-            "assets/orbitale.svg",
             "assets/img/*"
         ]
     },
@@ -98,7 +97,6 @@ const GulpfileHelpers = {
      * @returns {Object}
      */
     objectForEach: function(object, callback) {
-        "use strict";
         for (let key in object) {
             if (object.hasOwnProperty(key)) {
                 callback.apply(object, [key, object[key]]);
@@ -905,8 +903,8 @@ gulp.task('test', gulp.series('dump', async function(done) {
     /**
      * Retrieve files from globs or specific file names.
      */
-    let pushFromDirectory = async function(outDir, list){
-        await list.forEach(function(element){
+    GulpfileHelpers.objectForEach(config.images, function(outDir, list){
+        list.forEach(function(element){
             outDir = outDir.replace(/[\\\/]$/gi, '');
             let basename = path.basename(element);
             let finalPath = config.output_directory+'/'+outDir+'/'+basename;
@@ -919,10 +917,7 @@ gulp.task('test', gulp.series('dump', async function(done) {
                 outputFilesList.push(finalPath);
             }
         });
-    };
-
-    await GulpfileHelpers.objectForEach(config.images, pushFromDirectory);
-    await GulpfileHelpers.objectForEach(config.copy, pushFromDirectory);
+    });
 
     console.info('Check files that are not dumped according to config.');
     console.info(outputFilesList);
@@ -942,21 +937,23 @@ gulp.task('test', gulp.series('dump', async function(done) {
     // Manual "left-pad"
     let pad = (s, p) => { if (typeof p === 'undefined') { p = padString; } return String(p+s).slice(-p.length); };
 
-    await outputFilesList.forEach(function(file){
+    for (let i = 0, l = outputFilesList.length; i < l; i++) {
+        let file = outputFilesList[i];
         let fullPath = path.resolve(file);
-        fs.access(fullPath, function(err){
+        console.info(`Accessing file ${file} ////// ${fullPath}`);
+        fs.access(fullPath, fs.constants.R_OK, async function(err){
+            processedFiles++;
             if (!err) {
                 valid++;
-                process.stdout.write('.');
+                //process.stdout.write('.');
             } else {
                 invalid.push(fullPath);
-                process.stdout.write('F');
+                //process.stdout.write('F');
             }
 
-            processedFiles++;
 
             if (processedFiles % 50 === 0 && processedFiles !== number) {
-                process.stdout.write(' '+pad(processedFiles)+' / ' + number + ' (' + pad((Math.floor(100 * processedFiles / number)), '   ') + "%)\n");
+                //process.stdout.write(' '+pad(processedFiles)+' / ' + number + ' (' + pad((Math.floor(100 * processedFiles / number)), '   ') + "%)\n");
             }
 
             if (processedFiles === number) {
@@ -965,25 +962,35 @@ gulp.task('test', gulp.series('dump', async function(done) {
                 for (let i = 0; i < rest; i++) {
                     spaces += ' ';
                 }
-                process.stdout.write(' '+spaces+valid+' / ' + processedFiles + " (100%)\n");
+                //process.stdout.write(' '+spaces+valid+' / ' + processedFiles + " (100%)\n");
             }
+
+            await checkFinish();
         });
-    });
-
-    if (invalid.length) {
-        process.stdout.write("These files seem not to have been dumped by Gulp flow:\n");
-        invalid.forEach((file) => {
-            process.stdout.write(" > "+file+"\n");
-        });
-
-        done();
-        process.exit(1);
-    } else {
-        process.stdout.write("All files seem to have been dumped correctly 👍\n");
-
-        done();
-        process.exit(0);
     }
+
+    function checkFinish (){
+
+        if (processedFiles !== number) {
+            return;
+        }
+
+        if (invalid.length) {
+            process.stdout.write("These files seem not to have been dumped by Gulp flow:\n");
+            invalid.forEach((file) => {
+                process.stdout.write(" > "+file+"\n");
+            });
+
+            done();
+            process.exit(1);
+        } else {
+            process.stdout.write("All files seem to have been dumped correctly 👍\n");
+
+            done();
+            process.exit(0);
+        }
+    }
+
 }));
 
 /**
