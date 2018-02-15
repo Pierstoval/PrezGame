@@ -1,10 +1,6 @@
 (function(w, d, io, Reveal){
     var messageBlock = d.getElementById('messages');
 
-    if (!Reveal || !io) {
-        throw 'This app needs Reveal and socket.io to be available.';
-    }
-
     function message(msg, waitAndDelete){
         if (typeof waitAndDelete === 'undefined') {
             waitAndDelete = true;
@@ -42,6 +38,10 @@
     var pause = false;
 
     function initPresentation(d) {
+
+        if (!Reveal || !io) {
+            throw 'This app needs Reveal and socket.io to be available.';
+        }
 
         // In dev, allows resetting the list of asked help.
         localStorage.setItem('help', '');
@@ -114,6 +114,10 @@
     }
 
     function initButtonInteraction(d) {
+        if (!io) {
+            throw 'This app needs Reveal and socket.io to be available.';
+        }
+
         var socket = io.connect(window.location.protocol+'//'+window.location.hostname);
         d.getElementById('help-me').addEventListener('click', function(){
             var helped = localStorage.getItem('help') || [];

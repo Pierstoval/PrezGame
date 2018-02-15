@@ -13,8 +13,8 @@
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
     <script src="{{ asset('js/socket.io.js') }}"></script>
+    {{ parent() }}
     <script type="application/javascript">
         (function(d){
             initButtonInteraction(d);
