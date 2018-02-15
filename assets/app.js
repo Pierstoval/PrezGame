@@ -1,4 +1,4 @@
-(function(w, d, io, Reveal){
+(function(w, d){
     var messageBlock = d.getElementById('messages');
 
     function message(msg, waitAndDelete){
@@ -136,4 +136,4 @@
 
     w.initButtonInteraction = initButtonInteraction;
     w.initPresentation = initPresentation;
-})(window, document, io, Reveal);
+})(window, document);
