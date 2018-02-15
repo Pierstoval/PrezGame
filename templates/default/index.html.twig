@@ -2,20 +2,12 @@
 
 {% block title 'Présentation' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style type="text/css">
-        body {
-        }
-    </style>
-{% endblock %}
-
 {% block body %}
     <div class="reveal">
         <div class="slides">
             <section>
                 <a href="{{ path('presentation', {'name': 'sf4'}) }}">
-                    <img src="{{ asset('img/orbitale.svg') }}" alt="Orbitale logo" class="noborder" style="width: 50%;">
+                    <img src="{{ asset('img/orbitale.svg') }}" alt="Orbitale logo" class="noborder" style="width:750px;height:750px;">
                 </a>
             </section>
         </div>
