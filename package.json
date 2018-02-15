@@ -4,7 +4,7 @@
     "author": "Alex \"Pierstoval\" Ancelet <pierstoval@gmail.com>",
     "scripts": {
         "gulp": "node ./node_modules/gulp4/bin/gulp",
-        "postinstall": "gulp4 dump --prod"
+        "postinstall": "gulp4 test --prod"
     },
     "dependencies": {
         "dateformat": "^3.0.3",

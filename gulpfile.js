@@ -138,6 +138,7 @@ const imagemin = hasImages ? require('gulp-imagemin') : function(){ return {}; }
 /************** Files checks **************/
 
 var erroredFiles = [];
+config.output_directory = config.output_directory.replace(/[\\\/]$/gi, '');
 
 var checkCallback = function(key, values) {
     values.forEach(function(fileName) {
@@ -250,43 +251,43 @@ gulp.task('dump-slides', function (done) {
                  */
                 let slideData = {
                     title: '',
-                    title_style: '',
+                    title_htmlattr: '',
                     title_tag: 'h3',
                     icon: null,
                     icon_size: '2x',
                     type: '',
-                    style: '',
+                    htmlattr: '',
                     content: '',
                     notes: '',
                     sections: [],
                 };
 
                 slideData.notes = (slide.notes || slideData.notes).trim();
-                slideData.type = (slide.type || slideData.style).trim().toLowerCase();
-                slideData.style = (slide.style || slideData.style).trim();
-                slideData.title_style = (slide.title_style || slideData.title_style).trim();
+                slideData.type = (slide.type || slideData.htmlattr).trim().toLowerCase();
+                slideData.htmlattr = (slide.htmlattr || slideData.htmlattr).trim();
+                slideData.title_htmlattr = (slide.title_htmlattr || slideData.title_htmlattr).trim();
                 slideData.title_tag = (slide.title_tag || slideData.title_tag).trim();
 
                 let title_color = 'auto';
 
-                slideData.style = ('id="'+presentationName+'_'+slideName+'" '+slideData.style).trim();
+                slideData.htmlattr = ('id="'+presentationName+'_'+slideName+'" '+slideData.htmlattr).trim();
 
-                if (slideData.style) { slideData.style = ' '+slideData.style; }
+                if (slideData.htmlattr) { slideData.htmlattr = ' '+slideData.htmlattr; }
 
-                slideData.content += "<section"+slideData.style+">\n";
+                slideData.content += "<section"+slideData.htmlattr+">\n";
                 slideData.content += content_to_prepend;
 
                 /**
                  * Show a <h2> tag if we have a title
                  */
                 if (slide.title) {
-                    if (slideData.title_style.match(/style=["']/) && !slideData.title_style.match(/style=["'][^"']+color:?/gi)) {
-                        slideData.title_style = slideData.title_style.replace('style="', 'style="color:'+title_color+';')
+                    if (slideData.title_htmlattr.match(/style=["']/) && !slideData.title_htmlattr.match(/style=["'][^"']+color:?/gi)) {
+                        slideData.title_htmlattr = slideData.title_htmlattr.replace('style="', 'style="color:'+title_color+';')
                     } else {
-                        slideData.title_style += ' style="color:'+title_color+';"'
+                        slideData.title_htmlattr += ' style="color:'+title_color+';"'
                     }
-                    slideData.title_style = ' '+(slideData.title_style.trim());
-                    slideData.content += '<'+slideData.title_tag+slideData.title_style+'>';
+                    slideData.title_htmlattr = ' '+(slideData.title_htmlattr.trim());
+                    slideData.content += '<'+slideData.title_tag+slideData.title_htmlattr+'>';
                     slideData.content += slide.title;
                     slideData.content += '</'+slideData.title_tag+">\n"
                 }
@@ -324,12 +325,12 @@ gulp.task('dump-slides', function (done) {
                          */
                         let sectionData = {
                             title: '',
-                            title_style: '',
+                            title_htmlattr: '',
                             is_fragment: false,
                             type: 'markdown',
                             code_language: 'php',
                             quote_source: '',
-                            style: '',
+                            htmlattr: '',
                             content: ''
                         };
 
@@ -337,14 +338,14 @@ gulp.task('dump-slides', function (done) {
 
                         sectionData.type = section.type || sectionData.type;
                         sectionData.is_fragment = section.is_fragment || sectionData.is_fragment;
-                        sectionData.style = (section.style || sectionData.style).trim();
+                        sectionData.htmlattr = (section.htmlattr || sectionData.htmlattr).trim();
                         sectionData.content = (section.content || sectionData.content).trim();
                         sectionData.title = (section.title || sectionData.title).trim();
-                        sectionData.title_style = (section.title_style || sectionData.title_style).trim();
+                        sectionData.title_htmlattr = (section.title_htmlattr || sectionData.title_htmlattr).trim();
 
                         // Make sure attributes are prepended with a space to avoid html tag collision
-                        if (sectionData.style) { sectionData.style = ' '+sectionData.style; }
-                        if (sectionData.title_style) { sectionData.title_style = ' '+sectionData.title_style; }
+                        if (sectionData.htmlattr) { sectionData.htmlattr = ' '+sectionData.htmlattr; }
+                        if (sectionData.title_htmlattr) { sectionData.title_htmlattr = ' '+sectionData.title_htmlattr; }
 
                         switch (sectionData.type.toLowerCase()) {
                             /**
@@ -357,24 +358,24 @@ gulp.task('dump-slides', function (done) {
                                 }
 
                                 if (sectionData.title) {
-                                    slideData.content += '<h3'+sectionData.title_style+'>';
+                                    slideData.content += '<h3'+sectionData.title_htmlattr+'>';
                                     slideData.content += sectionData.title;
                                     slideData.content += '</h3>';
                                 }
 
                                 // Force relative positioning for div, because of Prism highlight language
-                                if (!sectionData.style.match(/style=/gi)) {
-                                    sectionData.style += ' style="position:relative;width:100%"';
+                                if (!sectionData.htmlattr.match(/style=/gi)) {
+                                    sectionData.htmlattr += ' style="position:relative;width:100%"';
                                 } else {
                                     let posRegex = new RegExp('(["\';]|\s*)position: ?([^;]+);?', 'gi');
-                                    if (sectionData.style.match(posRegex)) {
-                                        sectionData.style = sectionData.style.replace(posRegex, '$1position: relative;')
+                                    if (sectionData.htmlattr.match(posRegex)) {
+                                        sectionData.htmlattr = sectionData.htmlattr.replace(posRegex, '$1position: relative;')
                                     } else {
-                                        sectionData.style = sectionData.style.replace(/(style=['"])/gi, '$1position: relative;')
+                                        sectionData.htmlattr = sectionData.htmlattr.replace(/(style=['"])/gi, '$1position: relative;')
                                     }
                                 }
 
-                                slideData.content += '<div'+(sectionData.style || '')+'>';
+                                slideData.content += '<div'+(sectionData.htmlattr || '')+'>';
                                 slideData.content += '    <pre class="hljs" data-trim><code class="'+sectionData.code_language+'">';
 
                                 if ('twig' === sectionData.code_language) {
@@ -409,11 +410,11 @@ gulp.task('dump-slides', function (done) {
                             case 'raw':
                                 slideData.content += "\n<div"+(sectionData.is_fragment ? ' class="fragment"' : '') + ">";
                                 if (sectionData.title) {
-                                    slideData.content += '<h3'+(sectionData.title_style || '')+'>';
+                                    slideData.content += '<h3'+(sectionData.title_htmlattr || '')+'>';
                                     slideData.content += sectionData.title;
                                     slideData.content += '</h3>';
                                 }
-                                slideData.content += '<div'+sectionData.style+'>'+sectionData.content+'</div>';
+                                slideData.content += '<div'+sectionData.htmlattr+'>'+sectionData.content+'</div>';
                                 slideData.content += "</div>\n";
                                 break;
 
@@ -423,11 +424,11 @@ gulp.task('dump-slides', function (done) {
                             case 'browser-image':
                                 slideData.content += "\n<div"+(sectionData.is_fragment ? ' class="fragment"' : '') + ">";
                                 if (sectionData.title) {
-                                    slideData.content += '<h3'+(sectionData.title_style || '')+'>';
+                                    slideData.content += '<h3'+(sectionData.title_htmlattr || '')+'>';
                                     slideData.content += sectionData.title;
                                     slideData.content += '</h3>';
                                 }
-                                slideData.content += '<p'+sectionData.style+'>'+sectionData.content+'</p>';
+                                slideData.content += '<p'+sectionData.htmlattr+'>'+sectionData.content+'</p>';
                                 slideData.content += "</div>\n";
                                 break;
 
@@ -437,7 +438,7 @@ gulp.task('dump-slides', function (done) {
                                 slideData.content += "        <tbody>";
 
                                 if (sectionData.title) {
-                                    slideData.content += "        <tr"+(sectionData.title_style || '')+">";
+                                    slideData.content += "        <tr"+(sectionData.title_htmlattr || '')+">";
                                     slideData.content += "            <th colspan=\"2\">"+sectionData.title+"</th>";
                                     slideData.content += "        </tr>";
                                 }
@@ -453,7 +454,7 @@ gulp.task('dump-slides', function (done) {
                                 slideData.content += "</pre></div>";
                                 slideData.content += "                </td>";
                                 slideData.content += "                <td class=\"code\">";
-                                slideData.content += "                    <div class=\"highlight\"><pre"+sectionData.style+">"+sectionData.content+"</pre></div>";
+                                slideData.content += "                    <div class=\"highlight\"><pre"+sectionData.htmlattr+">"+sectionData.content+"</pre></div>";
                                 slideData.content += "                </td>";
                                 slideData.content += "            </tr>";
                                 slideData.content += "        </tbody>";
@@ -484,14 +485,14 @@ gulp.task('dump-slides', function (done) {
                             default:
                                 slideData.content += "\n<div"+(sectionData.is_fragment ? ' class="fragment"' : '') + ">";
                                 if (sectionData.title) {
-                                    slideData.content += '<h3'+(sectionData.title_style || '')+'>';
+                                    slideData.content += '<h3'+(sectionData.title_htmlattr || '')+'>';
                                     slideData.content += sectionData.title;
                                     slideData.content += '</h3>';
                                 }
-                                if (!sectionData.style.match(/data-markdown/gi)) {
-                                    sectionData.style = ' data-markdown '+sectionData.style;
+                                if (!sectionData.htmlattr.match(/data-markdown/gi)) {
+                                    sectionData.htmlattr = ' data-markdown '+sectionData.htmlattr;
                                 }
-                                slideData.content += '<p'+(sectionData.style || ' data-markdown')+'>'+sectionData.content+'</p>';
+                                slideData.content += '<p'+(sectionData.htmlattr || ' data-markdown')+'>'+sectionData.content+'</p>';
                                 slideData.content += "</div>\n";
                                 break;
                         } // End switch type
@@ -881,11 +882,12 @@ gulp.task('watch', gulp.series('dump', gulp.parallel(function(done) {
     done();
 })));
 
-gulp.task('test', gulp.series('dump', function(done) {
+gulp.task('test', gulp.series('dump', async function(done) {
     "use strict";
     let filesList = [];
     let forEach = GulpfileHelpers.objectForEach;
     let push = (key) => {
+        key = config.output_directory+'/'+key;
         filesList.push(key);
     };
 
@@ -902,6 +904,7 @@ gulp.task('test', gulp.series('dump', function(done) {
      */
     let pushFromDirectory = (outputDirName, elements) => {
         let finalOutput = config.output_directory+'/'+outputDirName;
+        console.info(`Pushing ${finalOutput}`);
 
         let cleanName = (outputDirectory, sourceName) => {
             let cleanName = outputDirectory.replace(/\/\*+/gi, '');
@@ -937,6 +940,14 @@ gulp.task('test', gulp.series('dump', function(done) {
         });
     };
 
+    await GulpfileHelpers.objectForEach(config.images, function(outDir, list){
+        list.forEach(function(element){
+            outDir = outDir.replace(/[\\\/]$/gi, '');
+            let finalPath = config.output_directory+'/'+outDir+'/'+path.basename(element);
+            console.info(`Pushing ${finalPath}`);
+            filesList.push(finalPath);
+        });
+    });
     forEach(config.images, pushFromDirectory);
     forEach(config.copy, pushFromDirectory);
 
@@ -957,14 +968,14 @@ gulp.task('test', gulp.series('dump', function(done) {
     // Manual "left-pad"
     let pad = (s, p) => { if (typeof p === 'undefined') { p = padString; } return String(p+s).slice(-p.length); };
 
-    filesList.forEach(function(file){
-        let fullPath = path.resolve(config.output_directory.replace(/\/$/, '')+'/'+file.replace(/^\/?/g, ''));
+    await filesList.forEach(function(file){
+        let fullPath = path.resolve(file);
         fs.access(fullPath, function(err){
             if (!err) {
                 valid++;
                 process.stdout.write('.');
             } else {
-                invalid.push(file);
+                invalid.push(fullPath);
                 process.stdout.write('F');
             }
 
@@ -981,28 +992,26 @@ gulp.task('test', gulp.series('dump', function(done) {
                     spaces += ' ';
                 }
                 process.stdout.write(' '+spaces+valid+' / ' + processedFiles + " (100%)\n");
-
-                finish();
             }
         });
     });
 
-    function finish() {
-        if (invalid.length) {
-            process.stdout.write("These files seem not to have been dumped by Gulp flow:\n");
-            invalid.forEach((file) => {
-                process.stdout.write(" > "+file+"\n");
-            });
-
-            done();
-            process.exit(1);
-
-            return;
-        }
+    if (invalid.length) {
+        process.stdout.write("These files seem not to have been dumped by Gulp flow:\n");
+        invalid.forEach((file) => {
+            process.stdout.write(" > "+file+"\n");
+        });
 
         done();
-        process.exit(0);
+        process.exit(1);
+
+        return;
     }
+
+    process.stdout.write("All files seem to have been dumped correctly 👍\n");
+
+    done();
+    process.exit(0);
 }));
 
 /**
