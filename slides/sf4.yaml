@@ -6,9 +6,9 @@ sf4:
 
                 **Alex Rock**
 
-                PHP / Symfony trainer
+                PHP / Symfony dev & trainer
 
-                Follow me `@pierstoval` **(everywhere)**
+                `@pierstoval`
 
     whats_new:
         title: 'Quoi de neuf chez Symfony ?'
@@ -21,3 +21,14 @@ sf4:
                 * Symfony 3.x
                 * Symfony 4.x
                 * Création d'un projet Flex
+
+    interact:
+        title: 'Conférence INTERACTIVE'
+        htmlattr: data-background-image="{{ asset('img/interactive_wall.gif') }}"
+
+    button_url:
+        sections:
+            - content: |
+                Pour participer, accédez à cette url:
+
+                https://piers.ovh/sf4
