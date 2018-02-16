@@ -32,3 +32,97 @@ sf4:
                 Pour participer, accédez à cette url:
 
                 https://piers.ovh/sf4
+
+    start_3.0:
+        title: 'Symfony 3.0'
+        sections:
+            - content: |
+                | _Features_ | Sortie | Fin de maintenance | Fin de vie |
+                | --- | --- | --- | --- |
+                | 0 | 11/2015 | 07/2016 | 01/2017 |
+        notes: |
+            Pas de features, mais suppression des déprécations.
+
+    3.1-strict-image:
+        title: '3.1: Validation d''image stricte'
+        sections:
+            - type: code
+              content: |
+                use Symfony\Component\Validator\Constraints as Assert;
+
+                class Product
+                {
+                    /**
+                     * @Assert\Image(
+                     *     detectCorrupted = true,
+                     *     corruptedMessage = "Product photo is corrupted. Upload it again."
+                     * )
+                     */
+                    protected $photo;
+                }
+        notes: |
+            Utilise `@imagecreatefromstring(file_get_contents($imageFile));`
+
+            Si `$resource === false`, la contrainte échoue.
+
+    3.1-column-width-console:
+        title: '3.1: Taille des colonnes dans les tableaux en console'
+        sections:
+            - type: code
+              content: |
+                  use Symfony\Component\Console\Helper\Table;
+
+                  $table = new Table($output);
+                  $table
+                       ->setHeaders(...)
+                       ->setRows(array(...))
+                       ->setColumnWidth(0, 15)
+                       ->setColumnWidth(3, 10)
+                   ;
+                   $table->render();
+        notes: |
+            Avant : la largeur était calculée automatiquement selon la valeur la plus "large".
+
+            * 1e argument : numéro de colonne.
+            * 2e argument : largeur.
+
+    start_3.1:
+        title: 'Symfony 3.1'
+        sections:
+            - content: |
+                | _Features_ | Sortie | Fin de maintenance | Fin de vie |
+                | --- | --- | --- | --- |
+                | 131 | 05/2016 | 01/2017 | 07/2017 |
+
+    start_3.2:
+        title: 'Symfony 3.2'
+        sections:
+            - content: |
+                | _Features_ | Sortie | Fin de maintenance | Fin de vie |
+                | --- | --- | --- | --- |
+                | 166 | 11/2016 | 07/2017 | 01/2018 |
+
+    start_3.3:
+        title: 'Symfony 3.3'
+        sections:
+            - content: |
+                | _Features_ | Sortie | Fin de maintenance | Fin de vie |
+                | --- | --- | --- | --- |
+                | 267 | 05/2017 | 01/2018 | 07/2018 |
+
+    start_3.4:
+        title: 'Symfony 3.4 (LTS)'
+        sections:
+            - content: |
+                | _Features_ | Sortie | Fin de maintenance | Fin de vie |
+                | --- | --- | --- | --- |
+                | 215 | 11/2017 | 11/2020 | 11/2021 |
+
+    start_4.0:
+        title: 'Symfony 4.0'
+        sections:
+            - content: |
+                | _Features_ | Sortie | Fin de maintenance | Fin de vie |
+                | --- | --- | --- | --- |
+                | 0 | 11/2017 | 07/2018 | 01/2019 |
+
