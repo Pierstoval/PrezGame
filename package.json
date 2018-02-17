@@ -4,7 +4,8 @@
     "author": "Alex \"Pierstoval\" Ancelet <pierstoval@gmail.com>",
     "scripts": {
         "gulp": "node ./node_modules/gulp4/bin/gulp",
-        "postinstall": "gulp4 test"
+        "postinstall": "gulp4 test",
+        "server": "nodemon server.js -e js,twig,php,css,json"
     },
     "dependencies": {
         "dateformat": "^3.0.3",

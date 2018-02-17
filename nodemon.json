@@ -1,0 +1,17 @@
+{
+    "ignore": [
+        ".git",
+        "node_modules",
+        "var",
+        "public",
+        "templates/slides",
+        "vendor"
+    ],
+    "verbose": true,
+    "watch": [
+        "*.*"
+    ],
+    "env": {
+        "NODE_ENV": "development"
+    }
+}

@@ -5,16 +5,42 @@ const socketio = require('socket.io');
 const fs = require('fs');
 const dateFormat = require('dateformat');
 const envToShare = {
-    'APP_ENV': process.env.APP_ENV || '',
-    'APP_SECRET': process.env.APP_SECRET || '',
+    'SOCKET_PORT': process.env.PORT || 80,
 };
+if (process.env.APP_ENV) {
+    envToShare.APP_ENV = process.env.APP_ENV;
+}
+if (process.env.APP_SECRET) {
+    envToShare.APP_SECRET = process.env.APP_SECRET;
+}
 
 console.info('envToShare', envToShare);
 
 /** PHP SCRIPT **/
-spawn('php', ['bin/console', 'server:run', '9999', '-vvv', '--no-ansi'], {stdio: 'inherit', env: process.env});
+log('process', 'Starting PHP process');
+const phpscript = spawn('php', ['bin/console', 'server:run', '9999', '-vvv', '--no-ansi'], {stdio: 'inherit', env: envToShare});
+const exitPHP = () => {
+    log('process', 'Exitting PHP process');
+    phpscript.stdin.pause();
+    phpscript.kill('SIGINT');
+};
+process.on('exit', exitPHP);
+process.on('beforeExit', exitPHP);
+process.on('disconnect', exitPHP);
 /** ********** **/
 
+if (process.env.NODE_ENV !== 'production' || envToShare.APP_ENV === 'dev') {
+    log('process', 'Starting Gulp process');
+    const gulpscript = spawn('./node_modules/.bin/gulp4', ['watch'], {stdio: 'inherit'});
+    const exitGulp = () => {
+        log('process', 'Exitting Gulp process');
+        gulpscript.stdin.pause();
+        gulpscript.kill('SIGINT');
+    };
+    process.on('exit', exitGulp);
+    process.on('beforeExit', exitGulp);
+    process.on('disconnect', exitGulp);
+}
 
 /** HTTP Proxy to PHP **/
 var proxy = httpProxy.createProxyServer({});
