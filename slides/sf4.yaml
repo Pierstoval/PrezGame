@@ -60,6 +60,8 @@ sf4:
                      */
                     protected $photo;
                 }
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-1-strict-image-validation
         notes: |
             Utilise `@imagecreatefromstring(file_get_contents($imageFile));`
 
@@ -80,6 +82,8 @@ sf4:
                        ->setColumnWidth(3, 10)
                    ;
                    $table->render();
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-1-explicit-column-widths-in-console-tables
         notes: |
             Avant : la largeur était calculée automatiquement selon la valeur la plus "large".
 
