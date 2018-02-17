@@ -40,10 +40,16 @@ sf4:
                 | _Features_ | Sortie | Fin de maintenance | Fin de vie |
                 | --- | --- | --- | --- |
                 | 0 | 11/2015 | 07/2016 | 01/2017 |
-        notes: |
-            Pas de features, mais suppression des déprécations.
 
-    3.1-strict-image:
+    start_3.1:
+        title: 'Symfony 3.1'
+        sections:
+            - content: |
+                | _Features_ | Sortie | Fin de maintenance | Fin de vie |
+                | --- | --- | --- | --- |
+                | 131 | 05/2016 | 01/2017 | 07/2017 |
+
+    3-1-strict-image:
         title: '3.1: Validation d''image stricte'
         sections:
             - type: code
@@ -67,7 +73,7 @@ sf4:
 
             Si `$resource === false`, la contrainte échoue.
 
-    3.1-column-width-console:
+    3-1-column-width-console:
         title: '3.1: Taille des colonnes dans les tableaux en console'
         sections:
             - type: code
@@ -76,12 +82,12 @@ sf4:
 
                   $table = new Table($output);
                   $table
-                       ->setHeaders(...)
-                       ->setRows(array(...))
-                       ->setColumnWidth(0, 15)
-                       ->setColumnWidth(3, 10)
-                   ;
-                   $table->render();
+                      ->setHeaders(...)
+                      ->setRows(array(...))
+                      ->setColumnWidth(0, 15)
+                      ->setColumnWidth(3, 10)
+                  ;
+                  $table->render();
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-1-explicit-column-widths-in-console-tables
         notes: |
@@ -90,13 +96,273 @@ sf4:
             * 1e argument : numéro de colonne.
             * 2e argument : largeur.
 
-    start_3.1:
-        title: 'Symfony 3.1'
+    3-1-input-stream-process:
+        title: '3.1: Flux d''entrée pour les Process'
+        sections:
+            - type: code
+              htmlattr: >
+                  style="width: 49%; float: left;"
+              content: |
+                  use Symfony\Component\Process\Process;
+                  use Symfony\Component\Process\InputStream;
+
+                  $input = new InputStream();
+                  $input->write('the');
+
+                  $process = new Process('my_script');
+                  $process->setInput($input);
+                  $process->start();
+
+                  $input->write('awesome');
+                  $input->write('conference');
+                  $input->close();
+            - type: code
+              htmlattr: >
+                  style="width: 49%; float: right;"
+              content: |
+                  use Symfony\Component\Process\Process;
+
+                  $process = new Process('cat');
+                  $process->setInput('file.txt');
+                  $process->run();
+            - htmlattr: >
+                  style="clear:both;"
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-1-input-and-output-stream-for-processes
+        notes: |
+            Avant, on ne pouvait le faire qu'avec qu'une chaîne de caractères, que ce soit dans le constructeur ou dans
+            la méthode `setInput($input)`
+
+    3-1-output-stream-process:
+        title: '3.1: Flux de sortie pour les Process'
+        sections:
+            - type: code
+              content: |
+                  use Symfony\Component\Process\Process;
+
+                  $process = new Process('ls -lsa');
+                  $process->start();
+
+                  foreach ($process as $type => $data) {
+                      if ($type === Process::OUT) {
+                          echo $data."\n";
+                      } elseif ($type === Process::ERR) {
+                          echo "[ERR] ".$data."\n";
+                      }
+                  }
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-1-input-and-output-stream-for-processes
+        notes: |
+            Avant, on ne pouvait le faire qu'avec qu'une callback.
+
+            Désormais, `Process` implémente `IteratorAggregate`, et l'iterator renvoyé renvoie un générateur (PHP5.5)
+            qui récupère le flux de sortie à chaque itération.
+
+    3-1-wtd_and_toolbar:
+        title: '3.1: Améliorations de la _debug toolbar_ et du _profiler_'
+        title_htmlattr: data-markdown
         sections:
             - content: |
-                | _Features_ | Sortie | Fin de maintenance | Fin de vie |
-                | --- | --- | --- | --- |
-                | 131 | 05/2016 | 01/2017 | 07/2017 |
+                  * Affichage des erreurs "silencieuses" dans un onglet à part.
+                  * Recherche d'un profil par code HTTP.
+                  * Un contexte plus verbeux est ajouté dans certaines instructions dans les logs.
+                  * Affiche le code de réponse HTTP pour les requêtes AJAX.
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-1-web-debug-toolbar-and-profiler-enhancements
+        notes: |
+            Les erreurs silencieuses sont celles qui sont mises en sourdine avec un `@`.
+
+    3-1-data_uri_normalizer:
+        title: '3.1: Data URI Normalizer'
+        sections:
+            - type: code
+              content: |
+                  use Symfony\Component\Serializer\Normalizer\DataUriNormalizer;
+
+                  $normalizer = new DataUriNormalizer();
+
+                  $avatar = $normalizer->normalize(new \SplFileObject('avatar.gif'));
+                  // $avatar = 'data:image/gif;base64,R0lGODdhAQABAIAAAP///////ywAAAAAAQABAAACAkQBADs=';
+
+                  $avatar = $normalizer->denormalize('data:image/gif;base64,R0lGODdhAQABAIAAAP///////ywAAAAAAQABAAACAkQBADs=', 'SplFileObject');
+                  // $avatar is a SplFileObject with the GIF image contents
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-1-data-uri-normalizer
+        notes: |
+            Pour des fichiers texte, utilise la fonction `rawurlencode()`, sinon `base64_encode()`.
+
+            La dénormalisation utilise une regex très complexe.
+
+            Très utile pour pouvoir envoyer ces données à des applications Javascript qui peuvent lire les fichiers avec
+            des méthodes comme `FileReader.readAsDataUrl()`.
+
+    3-1-network_mocking_and_dns_sensitive_tests:
+        title: '3.1: _Mocks_ pour les tests liés au réseau ou à des DNS'
+        title_htmlattr: data-markdown
+        sections:
+            - type: code
+              content: |
+                  /** @group dns-sensitive */
+                  public function testEmails()
+                  {
+                      DnsMock::withMockedHosts([ 'example.com' => [
+                          ['type' => 'MX'],
+                          // ['type' => 'A', 'ip' => '1.2.3.4'],
+                          // ['type' => 'AAAA', 'ipv6' => '::12'],
+                      ]]);
+
+                      $constraint = new \Symfony\Component\Validator\Constraints\Email(['checkMX' => true]);
+
+                      $result = $this->createValidator()->validate('foo@example.com', $constraint);
+                  }
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-1-network-mocking-and-dns-sensitive-tests
+        notes: |
+            L'annotation `@group dns-sensitive` est indispensable.
+
+            Utilise le composant `PHPUnitBridge`.
+
+    3-1-improved-the-security-profiler-panel:
+        title: '3.1: Panneau _Security_ dans le profiler'
+        title_htmlattr: data-markdown
+        sections:
+            - content: |
+                  * Rajoute les infos de l'utilisateur connecté (nom, token...).
+                  * Log des actions des _voters_.
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-1-improved-the-security-profiler-panel
+        notes: |
+            Tous les appels à `is_granted` ou `->isGranted()` et à l'`AccessDecisionManager` sont loggués et affichés
+            dans le profiler.
+
+            L'objet passé en tant que "subject" est également affiché.
+
+    3-1-datetime-normalizer:
+        title: '3.1: DateTime Normalizer'
+        sections:
+            - type: code
+              content: |
+                  use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+                  use Symfony\Component\Serializer\Serializer;
+
+                  $serializer = new Serializer(array(new DateTimeNormalizer()));
+
+                  $dateAsString = $serializer->normalize(new \DateTime('2016/01/01'));
+                  // $dateAsString = '2016-01-01T00:00:00+00:00';
+
+                  $dateAsObject = $serializer->denormalize('2016-01-01T00:00:00+00:00', \DateTime::class));
+                  // $dateAsObject = class DateTime#1 (3) {
+                  //   public $date => string(26) "2016-01-01 00:00:00.000000"
+                  //   public $timezone_type => int(1)
+                  //   public $timezone => string(6) "+00:00"
+                  // }
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-1-datetime-normalizer
+        notes: |
+            On peut utiliser l'option de contexte `DateTimeNormalizer::FORMAT_KEY` pour spécifier le format de
+            normalisation/dénormalisation.
+
+            Par défaut, le format est celui de la RFC 3339, soit `Y-m-d\TH:i:sP`, comme montré dans l'exemple.
+
+    3-1-deprecation-helper-improvements:
+        title: '3.1: Deprecation Helper Improvements'
+        sections:
+            - content: |
+                  Création de la variable d'environnement `SYMFONY_DEPRECATIONS_HELPER` :
+
+                  * `disabled`, désactive la gestion des dépréciations.
+                  * Une regex de type `/Passing callable strings .*|Passing a boolean flag .*/`
+                  * Un nombre maximum de dépréciations avant de considérer la suite comme échouée.
+                  * `weak`, ne fait pas échouer la suite de tests s'il y a des dépréciations.
+                  * `weak_vendors`, comme `weak` mais uniquement pour les dépréciations venant des vendors.
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-1-deprecation-helper-improvements
+        notes: |
+            Lorsqu'on utilise une regex, le helper va stopper les tests, pour faciliter la découverte de ce test.
+
+    3-1-yaml-deprecations:
+        title: '3.1: Dépréciations YAML'
+        sections:
+            - type: code
+              code_language: yaml
+              content: |
+                  parameters:
+                      # Avant
+                      my_object: '!!php/object:O:27:"AppBundle\Service\MyService":1:{s:1:"b";s:3:"foo";}'
+                      # Après
+                      my_object: '!php/object:O:27:"AppBundle\Service\MyService":1:{s:1:"b";s:3:"foo";}'
+            - type: code
+              htmlattr: >
+                  style="width: 47%; float: left;margin-left: 50px;"
+              content: |
+                  use Symfony\Component\Yaml\Dumper;
+
+                  // Avant
+                  $yaml = new Dumper();
+                  $yaml->setIndentation(4);
+
+                  // Après
+                  $yaml = new Dumper(4);
+            - type: code
+              code_language: yaml
+              htmlattr: >
+                  style="width: 47%; float: right;margin-right: 50px;"
+              content: |
+                  # Avant
+                  framework:
+                      secret:       %secret%
+                      router:
+                          resource: %kernel.root_dir%/config/routing.yml
+                  # Après
+                  framework:
+                      secret:       '%secret%'
+                      router:
+                          resource: '%kernel.root_dir%/config/routing.yml'
+            - htmlattr: >
+                  style="clear:both;"
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-1-yaml-deprecations
+
+    3-1-frameworkbundle-improvements:
+        title: '3.1: Améliorations du `FrameworkBundle`'
+        title_htmlattr: data-markdown
+        sections:
+            - content: |
+                  * Les `FormType` du framework définis en tant que services sont dépréciés.
+                  * Rajouté une méthode `json()` dans le contrôleur de base:
+                    ```
+                    public function indexAction()
+                    {
+                        // Avant
+                        return new JsonResponse($data);
+
+                        // Après
+                        return $this->json($data);
+                    }
+                    ```
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-1-frameworkbundle-improvements
+        notes: |
+            Pour les forms, cela ne concerne que ceux du framework. C'est pour migrer les services "aliasés" vers
+            l'utilisation du FQCN.
+
+            La méthode `json()` accepte aussi les codes HTTP et les en-têtes de réponse.
+
+    3-1-forwards-and-redirects-in-the-toolbar-and-profiler:
+        title: '3.1: Améliorations de la _debug toolbar_ et du _profiler_'
+        sections:
+            - content: |
+                  * Les redirections et les `forward` sont visibles dans la toolbar et dans le profiler.
+                  * Les sous-requêtes sont désormais affichées dans un onglet dédié du profiler.
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-1-forwards-and-redirects-in-the-toolbar-and-profiler
+
+    3-1-wat:
+        title: '3.1: Improvements'
+        sections:
+            - type: quote
+              quote_source: https://
+
 
     start_3.2:
         title: 'Symfony 3.2'
