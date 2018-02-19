@@ -265,7 +265,8 @@ sf4:
             Par défaut, le format est celui de la RFC 3339, soit `Y-m-d\TH:i:sP`, comme montré dans l'exemple.
 
     3-1-deprecation-helper-improvements:
-        title: '3.1: Deprecation Helper Improvements'
+        title: '3.1: Améliorations du _Deprecations Helper_'
+        title_htmlattr: data-markdown
         sections:
             - content: |
                   Création de la variable d'environnement `SYMFONY_DEPRECATIONS_HELPER` :
@@ -279,6 +280,42 @@ sf4:
               quote_source: https://symfony.com/blog/new-in-symfony-3-1-deprecation-helper-improvements
         notes: |
             Lorsqu'on utilise une regex, le helper va stopper les tests, pour faciliter la découverte de ce test.
+
+    3-1-frameworkbundle-improvements:
+        title: '3.1: Améliorations du `FrameworkBundle`'
+        title_htmlattr: data-markdown
+        sections:
+            - content: |
+                  * Les `FormType` du framework définis en tant que services sont dépréciés.
+                  * Rajouté une méthode `json()` dans le contrôleur de base:
+                    ```
+                    public function indexAction()
+                    {
+                        // Avant
+                        return new JsonResponse($data);
+
+                        // Après
+                        return $this->json($data);
+                    }
+                    ```
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-1-frameworkbundle-improvements
+        notes: |
+            Pour les forms, cela ne concerne que ceux du framework. C'est pour migrer les services "aliasés" vers
+            l'utilisation du FQCN.
+
+            La méthode `json()` accepte aussi les codes HTTP et les en-têtes de réponse.
+
+
+    3-1-forwards-and-redirects-in-the-toolbar-and-profiler:
+        title: '3.1: Améliorations de la _debug toolbar_ et du _profiler_'
+        title_htmlattr: data-markdown
+        sections:
+            - content: |
+                  * Les redirections et les `forward` sont visibles dans la toolbar et dans le profiler.
+                  * Les sous-requêtes sont désormais affichées dans un onglet dédié du profiler.
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-1-forwards-and-redirects-in-the-toolbar-and-profiler
 
     3-1-yaml-deprecations:
         title: '3.1: Dépréciations YAML'
@@ -323,46 +360,77 @@ sf4:
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-1-yaml-deprecations
 
-    3-1-frameworkbundle-improvements:
-        title: '3.1: Améliorations du `FrameworkBundle`'
-        title_htmlattr: data-markdown
+    3-1-customizable-yaml-parsing-and-dumping:
+        title: '3.1: Configuration du composant Yaml'
         sections:
             - content: |
-                  * Les `FormType` du framework définis en tant que services sont dépréciés.
-                  * Rajouté une méthode `json()` dans le contrôleur de base:
-                    ```
-                    public function indexAction()
-                    {
-                        // Avant
-                        return new JsonResponse($data);
+                  Introduction de flags de configuration.
 
-                        // Après
-                        return $this->json($data);
-                    }
-                    ```
+            - htmlattr: 'style="width: 49%; float: left;"'
+              content: |
+                  Dumper :
+
+                  * `Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE`
+                  * `Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE`
+                  * `Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK`
+                  * `Yaml::DUMP_OBJECT_AS_MAP`
+                  * `Yaml::DUMP_OBJECT`
+
+            - htmlattr: 'style="width: 49%; float: right;"'
+              content: |
+                  Parser :
+
+                  * `Yaml::PARSE_CONSTANT`
+                  * `Yaml::PARSE_CUSTOM_TAGS`
+                  * `Yaml::PARSE_DATETIME`
+                  * `Yaml::PARSE_EXCEPTION_ON_INVALID_TYPE`
+                  * `Yaml::PARSE_OBJECT_FOR_MAP`
+                  * `Yaml::PARSE_OBJECT`
+            - htmlattr: 'style="clear:both;"'
             - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-1-frameworkbundle-improvements
+              quote_source: https://symfony.com/blog/new-in-symfony-3-1-customizable-yaml-parsing-and-dumping
+
+    3-1-cache-component:
+        title: '3.1: Composant Cache'
+        sections:
+            - type: code
+              content: |
+                  // filesystem, apcu, redis, array, doctrine cache, etc.
+                  $cache = new Symfony\Component\Cache\Adapter\FilesystemAdapter();
+
+                  $numProducts = $cache->getItem('stats.num_products');
+                  $numProducts->set(4711);
+                  $cache->save($numProducts);
+
+                  $numProducts = $cache->getItem('stats.num_products');
+                  if (!$numProducts->isHit()) {
+                      // Doesn't exist in the cache!
+                  }
+                  $total = $numProducts->get();
+
+                  $cache->deleteItem('stats.num_products');
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-1-cache-component
         notes: |
-            Pour les forms, cela ne concerne que ceux du framework. C'est pour migrer les services "aliasés" vers
-            l'utilisation du FQCN.
+            Les items sont toujours des instances de `Symfony\Component\Cache\CacheItem` même quand ils sont absents
+            du cache.
 
-            La méthode `json()` accepte aussi les codes HTTP et les en-têtes de réponse.
+            Le cache respecte PSR-6 et plein de composants l'utilisent (Serializer, Validator...)
 
-    3-1-forwards-and-redirects-in-the-toolbar-and-profiler:
-        title: '3.1: Améliorations de la _debug toolbar_ et du _profiler_'
+    3-1-misc:
+        title: '3.1: Autres'
         sections:
             - content: |
-                  * Les redirections et les `forward` sont visibles dans la toolbar et dans le profiler.
-                  * Les sous-requêtes sont désormais affichées dans un onglet dédié du profiler.
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-1-forwards-and-redirects-in-the-toolbar-and-profiler
-
-    3-1-wat:
-        title: '3.1: Improvements'
-        sections:
-            - type: quote
-              quote_source: https://
-
+                  * Amélioration du composant Ldap
+                  * Amélioration des traductions au format XLIFF
+                  * Optimisations des composants DoctrineBridge, Serializer, Process
+                  * Création de l'event `kernel.controller_arguments`
+                  * Dépréciation de `AbstractFormLoginAuthenticator::onAuthenticationSuccess()`
+                  * Dépréciation des chemins de templates absolus
+                  * Dépréciation de `choices_as_values` dans les `FormType`
+        notes: |
+            Pour `AbstractFormLoginAuthenticator::onAuthenticationSuccess`, il faut désormais l'implémenter soi-même et
+            utilise le `TargetPathTrait`, créé pour l'occasion.
 
     start_3.2:
         title: 'Symfony 3.2'
@@ -371,6 +439,18 @@ sf4:
                 | _Features_ | Sortie | Fin de maintenance | Fin de vie |
                 | --- | --- | --- | --- |
                 | 166 | 11/2016 | 07/2017 | 01/2018 |
+
+    3-2-file-controller-helper:
+        title: '3.1: Méthode `->file()` dans le contrôleur'
+        sections:
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-file-controller-helper
+
+    3-2-wat:
+        title: '3.2: Improvements'
+        sections:
+            - type: quote
+              quote_source: https://
 
     start_3.3:
         title: 'Symfony 3.3'
