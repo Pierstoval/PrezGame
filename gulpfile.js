@@ -269,8 +269,6 @@ gulp.task('dump-slides', function (done) {
                 slideData.title_htmlattr = (slide.title_htmlattr || slideData.title_htmlattr).trim();
                 slideData.title_tag = (slide.title_tag || slideData.title_tag).trim();
 
-                let title_color = 'auto';
-
                 slideData.htmlattr = ('id="'+presentationName+'_'+slideName+'" '+slideData.htmlattr).trim();
 
                 if (slideData.htmlattr) { slideData.htmlattr = ' '+slideData.htmlattr; }
@@ -282,11 +280,6 @@ gulp.task('dump-slides', function (done) {
                  * Show a <h2> tag if we have a title
                  */
                 if (slide.title) {
-                    if (slideData.title_htmlattr.match(/style=["']/) && !slideData.title_htmlattr.match(/style=["'][^"']+color:?/gi)) {
-                        slideData.title_htmlattr = slideData.title_htmlattr.replace('style="', 'style="color:'+title_color+';')
-                    } else {
-                        slideData.title_htmlattr += ' style="color:'+title_color+';"'
-                    }
                     slideData.title_htmlattr = ' '+(slideData.title_htmlattr.trim());
                     slideData.content += '<'+slideData.title_tag+slideData.title_htmlattr+'>';
                     slideData.content += slide.title;
