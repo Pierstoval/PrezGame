@@ -31,7 +31,7 @@ process.on('disconnect', exitPHP);
 
 if (process.env.NODE_ENV !== 'production' || envToShare.APP_ENV === 'dev') {
     log('process', 'Starting Gulp process');
-    const gulpscript = spawn('./node_modules/.bin/gulp4', ['watch'], {stdio: 'inherit'});
+    const gulpscript = spawn('node', ['./node_modules/gulp4/bin/gulp', 'watch'], {stdio: 'inherit'});
     const exitGulp = () => {
         log('process', 'Exitting Gulp process');
         gulpscript.stdin.pause();
