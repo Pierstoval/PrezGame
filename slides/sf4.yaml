@@ -370,22 +370,20 @@ sf4:
               content: |
                   Dumper :
 
-                  * `Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE`
-                  * `Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE`
-                  * `Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK`
-                  * `Yaml::DUMP_OBJECT_AS_MAP`
                   * `Yaml::DUMP_OBJECT`
+                  * `Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE`
+                  * `Yaml::DUMP_OBJECT_AS_MAP`
+                  * `Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK`
 
             - htmlattr: 'style="width: 49%; float: right;"'
               content: |
                   Parser :
 
-                  * `Yaml::PARSE_CONSTANT`
-                  * `Yaml::PARSE_CUSTOM_TAGS`
-                  * `Yaml::PARSE_DATETIME`
                   * `Yaml::PARSE_EXCEPTION_ON_INVALID_TYPE`
-                  * `Yaml::PARSE_OBJECT_FOR_MAP`
                   * `Yaml::PARSE_OBJECT`
+                  * `Yaml::PARSE_OBJECT_FOR_MAP`
+                  * `Yaml::PARSE_DATETIME`
+
             - htmlattr: 'style="clear:both;"'
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-1-customizable-yaml-parsing-and-dumping
@@ -442,9 +440,574 @@ sf4:
 
     3-2-file-controller-helper:
         title: '3.1: Méthode `->file()` dans le contrôleur'
+        title_htmlattr: data-markdown
         sections:
+            - type: code
+              content: |
+                  public function downloadAction()
+                  {
+                      $file = new \SplFileInfo('/var/tmp/processed_file');
+                      // Avant
+                      $response = new BinaryFileResponse($file);
+                      $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'new_filename.pdf');
+
+                      // Après
+                      return $this->file($file, 'new_filename.pdf');
+                  }
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-2-file-controller-helper
+
+    3-2-yaml-deprecations:
+        title: '3.2: Dépréciations YAML'
+        sections:
+            - content: |
+                  Espaces manquants après `:`
+            - type: code
+              code_language: yaml
+              content: |
+                  # Avant
+                  foo:bar
+                  default_page:1
+
+                  # Après
+                  foo: bar
+                  default_page: 1
+            - content: |
+                  Clés dupliquées
+            - type: code
+              code_language: yaml
+              content: |
+                  # Avant
+                  foo: bar
+                  foo: baz
+                  # Résolu comme ['foo' => 'bar'] ("baz" était ignoré)
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-yaml-deprecations
+        notes: |
+            Pour les clés dupliquées, c'est la première clé trouvée qui était utilisée, toute clé dupliquée plus tard
+            était ignorée.<br>
+            Cependant, on peut dupliquer des clés dans plusieurs fichiers de config Symfony, parce que chaque fichier
+            est indépendamment chargé par le `YamlFileLoader` du composant DI.
+
+    3-2-php-constants-in-yaml-files:
+        title: '3.2: Constantes PHP dans les fichiers YAML'
+        sections:
+            - type: code
+              code_language: yaml
+              content: |
+                  parameters:
+                      # Resolved as a simple int
+                      foo: PHP_INT_MAX
+
+                      # Resolved as the PHP constant's value
+                      bar: !php/const:PHP_INT_MAX
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-php-constants-in-yaml-files
+        notes: |
+            Si on utilise le composant de façon standalone, il faut rajouter le flag `Yaml::PARSE_CONSTANT` au parser.
+
+    3-2-better-readability-for-yaml-numeric-literals:
+        title: '3.2: Better readability for YAML numeric literals'
+        sections:
+            - type: code
+              code_language: yaml
+              content: |
+                  # Avant
+                  parameters:
+                      credit_card_number: 1234567890123456
+                      long_number: 10000000000
+                      pi: 3.141592653589793
+                      hex_words: 0xCAFEF00D
+
+                  # Après
+                  parameters:
+                      credit_card_number: 1234_5678_9012_3456
+                      long_number: 10_000_000_000
+                      pi: 3.14159_26535_89793
+                      hex_words: 0x_CAFE_F00D
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-better-readability-for-yaml-numeric-literals
+        notes: |
+            Chacune des valeurs présentées sera parsée comme un nombre.
+
+            C'est dans la spec de Yaml et déjà utilisé dans les langages Java, Ruby, Rust, Swift...
+
+            Par contre, c'est uniquement avec des `_`. Les `,` sont désormais dépréciées et seront bientôt parsées
+            comme de simples chaînes de caractères.
+
+            Si on veut échapper le `_`, il suffit d'utiliser des guillemets simples ou doubles pour que ce soit traité
+            comme une chaîne de caractères.
+
+    3-2-compiler-passes-improvements:
+        title: '3.2: Amélioration des passes de compilation'
+        sections:
+            - content: |
+                  Ajouté une priorité :
+            - type: code
+              content: |
+                  public function addCompilerPass(CompilerPassInterface $pass, $type = PassConfig::TYPE_BEFORE_OPTIMIZATION, int $priority = 0);
+            - content: |
+                  Tri des services tagués par un champ `priority` :
+            - type: code
+              code_language: yaml
+              htmlattr: >
+                  style="width: 37%; float: left;"
+              content: |
+                  services:
+                      App\Test\MonthlyTest:
+                          tags:
+                              - { name: app.test, priority: 2 }
+                      App\Test\DailyTest:
+                          tags:
+                              - { name: app.test, priority: 1 }
+            - type: code
+              htmlattr: >
+                  style="width: 63%; float: right;"
+              content: |
+                  class CustomPass implements CompilerPassInterface
+                  {
+                      use PriorityTaggedServiceTrait;
+
+                      public function process(ContainerBuilder $container)
+                      {
+                          $tests = $this->findAndSortTaggedServices('app.test', $container);
+
+                          // ...
+                      }
+                  }
+            - htmlattr: 'style="clear: both;"'
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-compiler-passes-improvements
+        notes: |
+            Chiffre plus élevé = plus haut dans la liste.
+
+    3-2-dateinterval-form-type:
+        title: '3.2: `DateIntervalType`'
+        title_htmlattr: data-markdown
+        sections:
+            - type: code
+              content: |
+                  $builder
+                      ->add('remindEvery', DateIntervalType::class)
+                  ;
+
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-dateinterval-form-type
+        notes: |
+            On peut spécifier si on veut les années/mois/heures.
+
+            On peut changer l'input pour un choice/text/integer/single_text.
+
+            On peut choisir le type de valeur de retour : un objet DateInterval, une chaîne de caractères ISO (de type
+            `P7Y6M5DT12H15M30S`) , ou un tableau avec des clés type "days", "hours", etc.
+
+            Le format d'intervalle est ISO 8601.
+
+    3-2-tagged-cache:
+        title: '3.2: Tags dans le cache'
+        sections:
+            - type: code
+              content: |
+
+                  $review = $cacheAdapter->getItem('reviews-'.$reviewId);
+
+                  $review->set('...');
+
+                  $review->tag(['reviews', 'products', 'product-'.$productId]);
+
+                  $cache->invalidateTags('products');
+
+                  $cache->invalidateTags('product-123');
+
+                  $cache->invalidateTags(['products', 'reviews']);
+
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-tagged-cache
+        notes: |
+            C'est un exemple dans un e-commerce avec des reviews de produits.
+
+            Une fois le cache invalidé, la méthode `->isHit()` d'un nouveau `CacheItem` récupéré renverra `false`.
+
+    3-2-console-improvements-part-1:
+        title: '3.2: Alias de commandes'
+        sections:
+            - content: |
+                  Les alias ne sont plus affichés comme des commandes à part entière.
+            - type: code
+              code_language: shell
+              content: |
+                  $ bin/console list
+
+
+                  # Avant
+                  Available commands:
+                      foo                      Lorem Ipsum...  (ceci est un alias...)
+                    app:
+                      app:very:long:name       Lorem Ipsum...
+
+
+                  # Après
+                  Available commands:
+                    app:
+                      app:very:long:name       [foo] Lorem Ipsum...
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-1
+
+    3-2-console-improvements-part-1-2:
+        title: '3.2: Améliorations de la console'
+        sections:
+            - content: |
+                  * Même avec l'option `-q`, les erreurs s'affichent désormais.
+                  * Nouveau paramètre dans `Application::setDefaultCommand('name', true)` pour les applications mono-commandes.
+                  * Une interface `StreamableInputInterface` pour faciliter le flux d'entrée en console.
+                  * Un trait `LockableTrait` pour lock une exécution.
+                  * Commandes masquées dans `bin/console list`.
+            - htmlattr: 'style="font-size: 0.6em;text-align: right;margin-right: 50px;"'
+              content: |
+                Sources:
+
+                * https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-1
+                * https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-2
+                * https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-3
+        notes: |
+            L'interface `StreamableInputInterface` est notamment utilisée pour le QuestionHelper
+
+            Le trait `LockableTrait` est amélioré en 3.4 grâce au composant Lock.
+
+            Méthode `->setHidden(true)` dans la méthode `configure()` des commandes.
+
+    3-2-console-improvements-part-1-3:
+        title: '3.2: Améliorations du `CommandTester`'
+        title_htmlattr: data-markdown
+        sections:
+            - type: code
+              code_language: php
+              htmlattr: >
+                  style="width: 55%; float: left;"
+              content: |
+                  // Avant
+
+                  use Symfony\Component\Console\Tester\CommandTester;
+
+                  $commandTester = new CommandTester($command);
+                  $helper = $command->getHelper('question');
+                  $helper->setInputStream($this->getInputStream("123\nfoo\nbar\n"));
+
+                  protected function getInputStream($input)
+                  {
+                      $stream = fopen('php://memory', 'r+', false);
+                      fputs($stream, $input);
+                      rewind($stream);
+                      return $stream;
+                  }
+
+            - type: code
+              htmlattr: >
+                  style="width: 45%; float: right;"
+              content: |
+                  // Après
+
+                  use Symfony\Component\Console\Tester\CommandTester;
+
+                  $commandTester = new CommandTester($command);
+                  $commandTester->setInputs(['123', 'foo', 'bar'])
+            - htmlattr: 'style="clear:both;"'
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-1
+
+    3-2-console-improvements-part-2:
+        title: '3.2: Console : la phase `Terminal`'
+        title_htmlattr: data-markdown
+        sections:
+            - type: code
+              content: |
+                  class Terminal
+                  {
+                      public function getWidth();
+                      public function getHeight();
+                  }
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-2
+        notes: |
+            En plus de ça, utilise les variables d'env `COLUMNS` et `LINES` définies par certains terminaux, et est
+            compatible avec ANSICON (outil pour Windows).
+
+            Très utile pour les progress-bar.
+
+    3-2-console-improvements-part-2-2:
+        title: '3.2: Améliorations de la console'
+        title_htmlattr: data-markdown
+        sections:
+            - type: code
+              content: |
+                  class Terminal
+                  {
+                      public function getWidth();
+                      public function getHeight();
+                  }
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-2
+        notes: |
+            En plus de ça, utilise les variables d'env `COLUMNS` et `LINES` définies par certains terminaux, et est
+            compatible avec ANSICON (outil pour Windows).
+
+            Très utile pour les progress-bar.
+
+    3-2-console-improvements-part-3:
+        title: >
+            3.2:
+            <span style="color:#ff0000;">D</span>
+            <span style="color:#ff1900;">e</span>
+            <span style="color:#ff3300;">s</span>
+            <span style="color:#ff4c00;">█</span>
+            <span style="color:#ff6600;">c</span>
+            <span style="color:#ff7f00;">o</span>
+            <span style="color:#ff9f00;">u</span>
+            <span style="color:#ffbf00;">l</span>
+            <span style="color:#ffdf00;">e</span>
+            <span style="color:#ffff00;">u</span>
+            <span style="color:#ccff00;">r</span>
+            <span style="color:#99ff00;">s</span>
+            <span style="color:#66ff00;">█</span>
+            <span style="color:#33ff00;">e</span>
+            <span style="color:#00ff00;">n</span>
+            <span style="color:#00ff40;">█</span>
+            <span style="color:#00ff80;">c</span>
+            <span style="color:#00ffbf;">o</span>
+            <span style="color:#00ffff;">n</span>
+            <span style="color:#00ccff;">s</span>
+            <span style="color:#0099ff;">o</span>
+            <span style="color:#0066ff;">l</span>
+            <span style="color:#0033ff;">e</span>
+            <span style="color:#0000ff;">!</span>
+        sections:
+            - type: code
+              content: |
+                  $output->writeln('<fg=green;options=bold,underscore>Test</>');
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-3
+        notes: |
+            En réalité on pouvait déjà le faire mais il fallait imbriquer plusieurs tags de style pour que ça fonctionne.
+
+    3-2-lazy-loading-of-form-choices:
+        title: '3.2: Chargement _lazy_ pour les `ChoiceType`'
+        title_htmlattr: data-markdown
+        sections:
+            - type: code
+              content: |
+                  $builder->add('constants', ChoiceType::class, [
+                      'choice_loader' => new CallbackChoiceLoader(function() {
+                              return StaticClass::getConstants();
+                      },
+                  ]);
+
+                  $builder->add('values_from_another_world', ChoiceType::class, [
+                      'choice_loader' => new CallbackChoiceLoader(function() use ($externalService) {
+                              return $externalService->fetchChoicesValues();
+                      },
+                  ]);
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-lazy-loading-of-form-choices
+        notes: |
+            Le `ChoiceType` étant utilisé dans d'autres, cette feature est aussi dispo pour CountryType, CurrencyType,
+            LanguageType, LocaleType et TimezoneType.
+
+    3-2-user-value-resolver-for-controllers:
+        title: '3.2: User value resolver for controllers'
+        sections:
+            - type: code
+              content: |
+                  use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+                  use Symfony\Component\Security\Core\User\UserInterface;
+
+                  class DefaultController extends Controller
+                  {
+                      // when the user is mandatory
+                      public function fooAction(UserInterface $user) { ... }
+
+                      // when the user is optional (e.g. can be anonymous)
+                      public function barAction(UserInterface $user = null) { ... }
+                  }
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-user-value-resolver-for-controllers
+        notes: |
+            Ne fonctionne qu'avec `UserInterface` du composant Security.
+
+            Permet de ne plus avoir à utiliser `$this->getUser()`.
+
+            Attention : si vous utilisez les `service_arguments`, vous aurez un problème si vous avez un seul utilisateur
+            dans un provider de type `memory`.
+
+    3-2-httpfoundation-improvements:
+        title: '3.2: Cookies `same-site`'
+        title_htmlattr: data-markdown
+        sections:
+            - type: code
+              content: |
+                  $cookie = new Cookie(..., Cookie::SAMESITE_LAX);
+                  $cookie = new Cookie(..., Cookie::SAMESITE_STRICT);
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-httpfoundation-improvements
+        notes: |
+            Fait partie de la RFC 6265 du 6 avril 2016 qui n'est pas encore acceptée.
+
+            Protège des attaques CSRF car permet aux applications de désactiver les cookies qui n'auraient pas la même
+            origine.
+
+            Le mode laxiste permet de prendre en compte certains cookies pour des requêtes GET, comme des clics de liens.
+
+    3-2-httpfoundation-improvements-2:
+        title: '3.2: En-têtes de cache corrigées'
+        sections:
+            - content: |
+                  * Les réponses de code 301 n'ajoutent plus automatiquement l'en-tête `no-cache`.
+                  * Les réponses avec l'en-tête `no-cache` se voient ajouter `private` si ce n'est pas précisé.
+
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-httpfoundation-improvements
+        notes: |
+            Rappel : les 301 sont toujours mises en cache par le browser, même en dev, donc on peut utiliser le
+            paramètre `intercept_redirects: false` du web profiler de Symfony au cas où.
+
+    3-2-httpfoundation-improvements-3:
+        title: '3.2: Méthodes _idempotent_'
+        title_htmlattr: data-markdown
+        sections:
+            - type: code
+              content: |
+                  $request->isMethodIdempotent();
+
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-httpfoundation-improvements
+        notes: |
+            Méthodes HEAD, GET, PUT, DELETE, TRACE, OPTIONS, PURGE.
+
+            Méthode safe = méthode qui ne modifie pas la ressource (GET & HEAD).
+
+            Idempotent = qui renvoie le même résultat après 2 requêtes identiques.
+
+            Par ex:
+
+            PUT est idempotent car la 2e requête va remplacer la précédente, donc même ressource.
+
+            POST crée une 2e ressource, donc pas idempotent.
+
+    3-2-workflow-component:
+        title: '3.2: Composant Workflow'
+        sections:
+            - type: raw
+              content: |
+                  <img class="noborder" src="{{ asset('img/workflow_states_transitions.png') }}">
+            - type: quote
+              quote_source: https://symfony.com/doc/current/components/workflow.html
+
+    3-2-improved-private-services:
+        title: '3.2: Services privés'
+        sections:
+            - type: code
+              code_language: yaml
+              content: |
+                  services:
+                      app.manager.user:
+                          class: AppBundle\Manager\User
+                          public: false
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-improved-private-services
+        notes: |
+            * Service privé pas injecté = supprimé du container.
+            * Si injecté une seule fois = _inliné_
+            * Si injecté plusieurs fois = comme un service public.
+
+            La version "pseudo-publique" est dépréciée et sera supprimée en 4.0.
+
+    3-2-filesystem-improvements:
+        title: '3.2: Liens symboliques avec `Filesystem`'
+        title_htmlattr: data-markdown
+        sections:
+            - type: code
+              content: |
+                  public function readlink($path, $canonicalize = false);
+                  public function hardlink($originFile, string|array $targetFiles);
+
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-filesystem-improvements
+        notes: |
+            "canonicalize" à true vérifie l'existence du fichier avant, et si le fichier final résolu existe.
+
+            Sous windows, tout lien résolu va forcément résoudre tous les liens jusqu'au fichier final.
+
+            Sous mac & linux, cela résoud uniquement le "prochain" lien.
+
+            `hardlink()` crée un lien en dur qui pointe vers exactement le même "inode" que le fichier, rendant le
+            filesystem plus performant, et on peut du coup renommer le fichier cible sans casser le lien symbolique.
+
+    3-2-runtime-environment-variables:
+        title: '3.2: Runtime Environment Variables'
+        sections:
+            - type: code
+              code_language: yaml
+              content: |
+                  parameters:
+                      # Utilisation :
+                      database_url: '%env(DATABASE_URL)%'
+
+                      # Valeur par défaut si la variable d'env n'est pas définie
+                      env(DATABASE_URL): 'mysql://db_user:db_password@127.0.0.1:3306/db_name'
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-runtime-environment-variables
+        notes: |
+            Les variables d'env `SYMFONY__...` seront dépréciées en 3.3, et en 3.3 on a aussi le composant Dotenv.
+
+    # TODO
+
+    3-2-web-debug-toolbar-and-profiler-improvements:
+        title: '3.2: Web Debug Toolbar and Profiler Improvements'
+        sections:
+            - content: |
+                  #
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-web-debug-toolbar-and-profiler-improvements
+
+    3-2-csv-and-yaml-encoders-for-serializer:
+        title: '3.2: CSV and YAML encoders for Serializer'
+        sections:
+            - content: |
+                  #
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-csv-and-yaml-encoders-for-serializer
+
+    3-2-cache-improvements:
+        title: '3.2: Cache improvements'
+        sections:
+            - content: |
+                  #
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-cache-improvements
+
+    3-2-firewall-config-class-and-profiler:
+        title: '3.2: Firewall config class and profiler'
+        sections:
+            - content: |
+                  #
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-firewall-config-class-and-profiler
+
+    3-2-dx-improvements:
+        title: '3.2: DX improvements'
+        sections:
+            - content: |
+                  #
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-dx-improvements
+
+    3-2-misc-improvements:
+        title: '3.2: Misc. improvements'
+        sections:
+            - content: |
+                  #
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-misc-improvements
+
 
     3-2-wat:
         title: '3.2: Improvements'
