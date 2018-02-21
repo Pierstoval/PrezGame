@@ -31,7 +31,8 @@ const config = {
             "node_modules/reveal.js/plugin/**/*",
         ],
         "js/": [
-            "node_modules/socket.io-client/dist/socket.io.js"
+            "node_modules/socket.io-client/dist/socket.io.js",
+            "node_modules/socket.io-client/dist/socket.io.js.map"
         ]
     },
 
@@ -871,7 +872,8 @@ gulp.task('watch', gulp.series('dump', gulp.parallel(function(done) {
     if (hasJs) {
         gulp.watch(files_js, gulp.parallel('js')).on('change', callback);
     }
-    gulp.watch(__dirname+'/slides/*.yaml', gulp.parallel('dump-slides')).on('change', callback);
+    gulp.watch('slides/*.yaml', gulp.parallel('dump-slides')).on('change', callback);
+
 
     done();
 })));
