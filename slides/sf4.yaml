@@ -1177,31 +1177,53 @@ sf4:
         title: '3.3: WebLink component'
         sections:
             - content: |
-                  # Todo
+                  Nouvelles fonctions dans Twig :
+
+                  * `link()`, rajoute un en-tête HTTP `Link`
+                  * `preload()`, Link pour pré-charger une ressource d'après une URL
+                  * `dns_prefetch()`, Link pour résoudre les DNS d'une ressource le plus tôt possible
+                  * `preconnect()`, Link pour faire une connexion initiale avant de fetch d'autres ressources
+                  * `prefetch()`, Link pour récupérer une ressource optionelle, sans pré-processing
+                  * `prerender()`, Link pour récupérer une ressource & faire du pré-processing
+
+                  Exemple :
+
+            - type: code
+              code_language: raw
+              content: |
+                  Link: </css/app.css>; rel=preload,</cjs/app.js>; rel=preload
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-weblink-component
+        notes: |
+            Relatif à la RFC 5988 qui date d'Octobre 2010 et sa mise à jour la RFC 8288 d'Octobre 2017.
+            Lié aux RFC de HTML 5.2 et de HTTP/2.
 
-    3-3-securitybundle-improvements:
-        title: '3.3: SecurityBundle improvements'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-securitybundle-improvements
+            `link` et `preload` nécessitent tous deux des paramètres additionnels sur la façon de charger une ressource.
+            (d'où le preconnect & prefetch...)
+
+            `preconnect`: permet de faire un premier lookup DNS, un handshake TCP et une négociation TLS pour pouvoir
+            garder une connexion ouverte vers le serveur pour fetch d'autres ressources.
+
+            `prefetch` charge une ressource facultative
+
+            `prerender` va charger une ressource (genre "next page") et il peut éventuellement charger des ressources
+            connexes, comme des scripts, assets, etc.
 
     3-3-redesigned-exception-pages:
-        title: '3.3: Redesigned exception pages'
+        title: '3.3: Nouveau design des pages d''exceptions'
         sections:
             - content: |
-                  # Todo
+                  ![Redesign exception]({{ asset('img/exceptions_redesign.jpg') }})
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-redesigned-exception-pages
 
     3-3-faster-routing:
-        title: '3.3: Faster routing'
+        title: '3.3: Routing plus rapide'
         sections:
             - content: |
-                  # Todo
+                  Avec 900 routes, on passe de 7.5ms à 2.5ms.
+
+                  De façon générale, c'est entre 30% et 340% plus rapide.
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-faster-routing
 
@@ -1209,145 +1231,148 @@ sf4:
         title: '3.3: A simpler way to get the project root directory'
         sections:
             - content: |
-                  # Todo
+                  `%kernel.root_dir%` désormait désuet : place à `%kernel.project_dir%` !
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-a-simpler-way-to-get-the-project-root-directory
+        notes: |
+            Correspond au dossier dans lequel se situe votre fichier `composer.json`
 
     3-3-improved-flash-messages:
-        title: '3.3: Improved flash messages'
+        title: '3.3: Messages flash'
         sections:
-            - content: |
-                  # Todo
+            - type: code
+              code_language: twig
+              content: |
+                  {# Avant #}
+
+                  {% for label, messages in app.session.flashbag.all %}{% endfor %}
+
+                  {% for message in app.session.flashbag.get('notice') %}{% endfor %}
+
+
+
+                  {# Après #}
+
+                  {% for label, messages in app.flashes %}{% endfor %}
+
+                  {% for message in app.flashes('notice') %}{% endfor %}
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-improved-flash-messages
 
-    3-3-workflow-improvements:
-        title: '3.3: Workflow improvements'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-workflow-improvements
-
     3-3-deprecated-the-special-symfony-environment-variables:
-        title: '3.3: Deprecated the special SYMFONY__ environment variables'
+        title: '3.3: Dépréciation des variables d''environnement `SYMFONY__`'
+        title_htmlattr: data-markdown
         sections:
             - content: |
-                  # Todo
+                  Avant :
+
+                  `SYMFONY__APP__CHARSET` définit le paramètre `%app.charset%`
+
+                  Après :
+
+                  On utilise des variables d'environnement 😉
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-deprecated-the-special-symfony-environment-variables
 
     3-3-about-command:
-        title: '3.3: "about" command'
+        title: '3.3: Commande `about`'
+        title_htmlattr: data-markdown
         sections:
-            - content: |
-                  # Todo
+            - type: terminal
+              htmlattr: 'style="font-size: 0.8em;"'
+              content: |
+                  $ ./bin/console about
+
+                   -------------------- ------------------------------------------
+                    Symfony
+                   -------------------- ------------------------------------------
+                    Version              3.3.16
+                    End of maintenance   01/2018 Expired
+                    End of life          07/2018
+                   -------------------- ------------------------------------------
+                    Kernel
+                   -------------------- ------------------------------------------
+                    Type                 AppKernel
+                    Name                 app
+                    Environment          dev
+                    Debug                true
+                    Charset              UTF-8
+                    Root directory       .\app
+                    Cache directory      ./var/cache/dev (558 KiB)
+                    Log directory        ./var/logs (0 B)
+                   -------------------- ------------------------------------------
+                    PHP
+                   -------------------- ------------------------------------------
+                    Version              7.2.2
+                    Architecture         64 bits
+                    Intl locale          fr_FR
+                    Timezone             Europe/Paris (2018-02-21T21:20:23+01:00)
+                    OPcache              true
+                    APCu                 true
+                    Xdebug               true
+                   -------------------- ------------------------------------------
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-about-command
 
     3-3-manifest-based-asset-versioning:
-        title: '3.3: Manifest-based asset versioning'
+        title: '3.3: Versioning d''assets avec un manifest'
         sections:
-            - content: |
-                  # Todo
+            - type: code
+              code_language: json
+              content: |
+                  {
+                      "css/app.css": "build/css/app.b916426ea1d10021f3f17ce8031f93c2.css",
+                      "js/app.js": "build/js/app.13630905267b809161e71d0f8a0c017b.js"
+                      "...": "..."
+                  }
+            - type: code
+              code_language: yaml
+              content: |
+                  # app/config/config.yml
+                  framework:
+                      # ...
+                      assets:
+                          json_manifest_path: '%kernel.project_dir%/build/manifest.json'
+
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-manifest-based-asset-versioning
-
-    3-3-better-handling-of-command-exceptions:
-        title: '3.3: Better handling of command exceptions'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-better-handling-of-command-exceptions
-
-    3-3-lock-component:
-        title: '3.3: Lock component'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-lock-component
+        notes: |
+            Utilisable avec des générateurs de manifests comme certains plugins pour Webpack ou Gulp
 
     3-3-load-config-files-with-glob-patterns:
-        title: '3.3: Load config files with glob patterns'
+        title: '3.3: Recherches de fichiers de config "glob"'
         sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-load-config-files-with-glob-patterns
+            - type: code
+              content: |
+                  protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
+                  {
+                      $confDir = dirname($this->getRootDir()).'/etc';
+                      $loader->import($confDir.'/packages/*.yaml', 'glob');
+                      $loader->import($confDir.'/packages/'.$this->getEnvironment().'/**/*.yaml', 'glob');
+                      $loader->import($confDir.'/container.yaml', 'glob');
+                  }
+            - type: code
+              code_language: yaml
+              content: |
+                  imports:
+                      - { resource: '../common/' }
+                      - { resource: 'acme/*.yaml' }
 
-    3-3-deprecated-cache-clear-with-warmup:
-        title: '3.3: Deprecated cache clear with warmup'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-deprecated-cache-clear-with-warmup
+            - htmlattr: 'style="font-size: 0.6em;text-align: right;margin-right: 50px;"'
+              content: |
+                Sources:
+
+                * https://symfony.com/blog/new-in-symfony-3-3-load-config-files-with-glob-patterns
+                * https://symfony.com/blog/new-in-symfony-3-3-import-config-files-with-glob-patterns
 
     3-3-kernel-build-method:
-        title: '3.3: Kernel Build Method'
+        title: '3.3: Méthode `Kernel::build()`'
+        title_htmlattr: data-markdown
         sections:
             - content: |
-                  # Todo
+                  `Kernel::build()` fonctionne comme `Bundle::build()`
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-kernel-build-method
-
-    3-3-deprecated-x-status-code:
-        title: '3.3: Deprecated X-Status-Code'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-deprecated-x-status-code
-
-    3-3-deprecated-the-classloader-component:
-        title: '3.3: Deprecated the ClassLoader component'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-deprecated-the-classloader-component
-
-    3-3-asset-preloading-with-http-2-push:
-        title: '3.3: Asset preloading with HTTP/2 Push'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-asset-preloading-with-http-2-push
-
-    3-3-xliff-linter:
-        title: '3.3: XLIFF linter'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-xliff-linter
-
-    3-3-getter-injection:
-        title: '3.3: Getter injection'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-getter-injection
-
-    3-3-deprecated-the-autowiring-types:
-        title: '3.3: Deprecated the autowiring types'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-deprecated-the-autowiring-types
-
-    3-3-import-config-files-with-glob-patterns:
-        title: '3.3: Import config files with glob patterns'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-import-config-files-with-glob-patterns
 
     3-3-custom-yaml-tags:
         title: '3.3: Custom YAML tags'
@@ -1484,6 +1509,18 @@ sf4:
                 | _Features_ | Sortie | Fin de maintenance | Fin de vie |
                 | --- | --- | --- | --- |
                 | 215 | 11/2017 | 11/2020 | 11/2021 |
+
+    3-4-lock-component:
+        title: '3.4: Lock component'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-lock-component
+        notes: |
+            Fait suite au LockableTrait créé en 3.2 pour la console.
+
+            Il avait été ajouté en 3.3 mais rajouté en 3.4 car il était incomplet.
 
     3-4-session-improvements:
         title: '3.4: session improvements'
