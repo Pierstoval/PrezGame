@@ -958,62 +958,110 @@ sf4:
         notes: |
             Les variables d'env `SYMFONY__...` seront dépréciées en 3.3, et en 3.3 on a aussi le composant Dotenv.
 
-    # TODO
-
-    3-2-web-debug-toolbar-and-profiler-improvements:
-        title: '3.2: Web Debug Toolbar and Profiler Improvements'
+    3-2-csv-encoder-for-serializer:
+        title: '3.2: Encodeur CSV dans le Serializer'
         sections:
-            - content: |
-                  #
+            - type: code
+              content: |
+                  $data = [
+                      'foo' => 'aaa',
+                      'bar' => [
+                          ['id' => 111, 1 => 'bbb'],
+                          ['lorem' => 'ipsum'],
+                      ]
+                  ];
+
+                  $csvString = $container->get('serializer')->encode($data, 'csv');
+            - type: code
+              code_language: csv
+              content: |
+                  foo,bar.0.id,bar.0.1,bar.1.lorem
+                  aaa,111,bbb,ipsum
             - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-2-web-debug-toolbar-and-profiler-improvements
+              quote_source: https://symfony.com/blog/new-in-symfony-3-2-csv-and-yaml-encoders-for-serializer
+        notes: |
+            Utilise la fonction `fputcsv()` dans un stream.
 
-    3-2-csv-and-yaml-encoders-for-serializer:
-        title: '3.2: CSV and YAML encoders for Serializer'
+    3-2-yaml-encoder-for-serializer:
+        title: '3.2: Encodeur Yaml dans le Serializer'
         sections:
-            - content: |
-                  #
+            - type: code
+              content: |
+                  $obj = new \stdClass();
+                  $obj->bar = 2;
+
+                  $yamlString = $this->container->get('serializer')->encode(
+                      [
+                          'foo' => $obj,
+                          'bar' => 'Such wow',
+                      ],
+                      'yaml',
+                      ['yaml_inline' => 1, 'yaml_indent' => 4, 'yaml_flags' => Yaml::DUMP_OBJECT]
+                  );
+            - type: code
+              code_language: yaml
+              content: |
+                foo: !php/object 'O:8:"stdClass":1:{s:3:"bar";i:2;}'
+                bar: 'Such wow'
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-2-csv-and-yaml-encoders-for-serializer
 
     3-2-cache-improvements:
-        title: '3.2: Cache improvements'
+        title: '3.2: Nouveautés du Cache'
         sections:
             - content: |
-                  #
+                  * `Symfony\Component\Cache\Adapter\NullAdapter`
+                  * `Symfony\Component\Cache\Adapter\PhpFilesAdapter`
+                  * `Symfony\Component\Cache\Adapter\PdoAdapter`
+                  * `Symfony\Component\Cache\Adapter\TagAwareAdapter`
+                  * Commande `cache:pool:clear`
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-2-cache-improvements
+        notes: |
+            NullAdapter est surtout pour les tests.
+
+            Le PhpFilesAdapter peut être plus de 3 fois plus rapide que le FilesystemAdapter parce qu'il va pouvoir
+            utiliser l'OPCache.
+
+            Le PdoAdapter utilise Doctrine DBAL, on peut donc avoir du cache dans mysql, postgresql ou sqlite.
+
+            Le TagAwareAdapter décore un autre Adapter pour lui permettre de gérer des tags de cache.
+
+            La commande permet de vider le cache d'un service précis (ou d'un adapter précis).
 
     3-2-firewall-config-class-and-profiler:
-        title: '3.2: Firewall config class and profiler'
+        title: '3.2: Config du Firewall exposée'
         sections:
             - content: |
-                  #
+                  * `Symfony\Bundle\SecurityBundle\Security\FirewallConfig`
+                  * La config du firewall est aussi affichée dans la debug toolbar & le profiler
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-2-firewall-config-class-and-profiler
+        notes: |
+            Permet d'appeler `getFirewallConfig(Request $request)` sur le service `FirewallMap` afin de récupérer la
+            configuration du firewall détecté durant l'event `kernel.request`.
 
     3-2-dx-improvements:
-        title: '3.2: DX improvements'
+        title: '3.2: DX'
         sections:
             - content: |
-                  #
+                  * `$progress->advance()` permet les valeurs négatives.
+                  * `framework.ide: phpstorm` pour des liens de debug
+                  * Constructeur statique `JsonResponse::fromJsonString($jsonString)`
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-2-dx-improvements
 
     3-2-misc-improvements:
-        title: '3.2: Misc. improvements'
+        title: '3.2: Autres améliorations'
         sections:
             - content: |
-                  #
+                  * Moins de dépendances dans le FrameworkBundle
+                  * Un _dumper_ AST pour ExpressionLanguage
+                  * Perfs accrues avec un chargement sélectif pour les extensions Twig
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-2-misc-improvements
-
-
-    3-2-wat:
-        title: '3.2: Improvements'
-        sections:
-            - type: quote
-              quote_source: https://
+        notes: |
+            Les extensions Twig ne sont pas toutes chargées si le composant associé n'est pas installé via Composer.
 
     start_3.3:
         title: 'Symfony 3.3'
@@ -1023,6 +1071,412 @@ sf4:
                 | --- | --- | --- | --- |
                 | 267 | 05/2017 | 01/2018 | 07/2018 |
 
+    3-3-optional-class-for-named-services:
+        title: '3.3: FQCN pour le nom d''un service'
+        sections:
+            - type: code
+              htmlattr: 'style="width: 49%; float: left;"'
+              code_language: yaml
+              content: |
+                  services:
+                      # Avant
+                      app.manager.user:
+                          class: AppBundle\EventListener\UserManager
+                          tags:  ['kernel.event_subscriber']
+
+                      # Après
+                      AppBundle\EventListener\UserManager:
+                          tags:  ['kernel.event_subscriber']
+            - type: code
+              htmlattr: 'style="width: 49%; float: right;"'
+              content: |
+                    // Avant
+                    $this->get('app.manager.user')->save($user);
+
+                    // Après
+                    $this->get(UserManager::class)->save($user);
+            - htmlattr: 'style="clear:both;"'
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-optional-class-for-named-services
+
+    3-3-simpler-constructor-configuration:
+        title: '3.3: Arguments de service'
+        sections:
+            - type: code
+              code_language: yaml
+              content: |
+                  # Avant
+                  services:
+                      App\Foo\Bar:
+                          arguments: ['@baz', 'foo', '%qux%']
+
+                  # Après
+                  services:
+                      App\Foo\Bar: ['@baz', 'foo', '%qux%']
+
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-simpler-service-configuration
+
+    3-3-simpler-auto-configuration:
+        title: '3.3: Auto-configuration de services'
+        sections:
+            - type: code
+              code_language: yaml
+              content: |
+                services:
+                    _instanceof:
+                        Symfony\Component\Console\Command\Command:
+                            tags: ['console.command']
+                            public: true # needed because commands must be public
+
+                        Twig_ExtensionInterface:
+                            tags: ['twig.extension']
+
+                        Symfony\Component\EventDispatcher\EventSubscriberInterface:
+                            tags: ['kernel.event_subscriber']
+
+                    App\EventListener\MyListener:
+                        autoconfigure: true
+
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-service-autoconfiguration
+        notes: |
+            Les règles sont définies dans les extensions de bundles ou les compiler pass.
+
+    3-3-simpler-services-configuration:
+        title: '3.3: Config par défaut de services'
+        sections:
+            - type: code
+              code_language: yaml
+              content: |
+                  services:
+                      _defaults:
+                          autowire: true
+                          autoconfigure: true
+                          public: false
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-simpler-service-configuration
+
+    3-3-psr-4-based-service-discovery:
+        title: '3.3: Découverte de services via PSR-4'
+        sections:
+            - type: code
+              code_language: yaml
+              content: |
+                  services:
+                      App\:
+                          resource: ../src/{Command}
+                      App\:
+                          resource: ../src/{Controller}
+                          public: true
+
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-psr-4-based-service-discovery
+
+    3-3-weblink-component:
+        title: '3.3: WebLink component'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-weblink-component
+
+    3-3-securitybundle-improvements:
+        title: '3.3: SecurityBundle improvements'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-securitybundle-improvements
+
+    3-3-redesigned-exception-pages:
+        title: '3.3: Redesigned exception pages'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-redesigned-exception-pages
+
+    3-3-faster-routing:
+        title: '3.3: Faster routing'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-faster-routing
+
+    3-3-a-simpler-way-to-get-the-project-root-directory:
+        title: '3.3: A simpler way to get the project root directory'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-a-simpler-way-to-get-the-project-root-directory
+
+    3-3-improved-flash-messages:
+        title: '3.3: Improved flash messages'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-improved-flash-messages
+
+    3-3-workflow-improvements:
+        title: '3.3: Workflow improvements'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-workflow-improvements
+
+    3-3-deprecated-the-special-symfony-environment-variables:
+        title: '3.3: Deprecated the special SYMFONY__ environment variables'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-deprecated-the-special-symfony-environment-variables
+
+    3-3-about-command:
+        title: '3.3: "about" command'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-about-command
+
+    3-3-manifest-based-asset-versioning:
+        title: '3.3: Manifest-based asset versioning'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-manifest-based-asset-versioning
+
+    3-3-better-handling-of-command-exceptions:
+        title: '3.3: Better handling of command exceptions'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-better-handling-of-command-exceptions
+
+    3-3-lock-component:
+        title: '3.3: Lock component'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-lock-component
+
+    3-3-load-config-files-with-glob-patterns:
+        title: '3.3: Load config files with glob patterns'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-load-config-files-with-glob-patterns
+
+    3-3-deprecated-cache-clear-with-warmup:
+        title: '3.3: Deprecated cache clear with warmup'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-deprecated-cache-clear-with-warmup
+
+    3-3-kernel-build-method:
+        title: '3.3: Kernel Build Method'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-kernel-build-method
+
+    3-3-deprecated-x-status-code:
+        title: '3.3: Deprecated X-Status-Code'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-deprecated-x-status-code
+
+    3-3-deprecated-the-classloader-component:
+        title: '3.3: Deprecated the ClassLoader component'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-deprecated-the-classloader-component
+
+    3-3-asset-preloading-with-http-2-push:
+        title: '3.3: Asset preloading with HTTP/2 Push'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-asset-preloading-with-http-2-push
+
+    3-3-xliff-linter:
+        title: '3.3: XLIFF linter'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-xliff-linter
+
+    3-3-getter-injection:
+        title: '3.3: Getter injection'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-getter-injection
+
+    3-3-deprecated-the-autowiring-types:
+        title: '3.3: Deprecated the autowiring types'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-deprecated-the-autowiring-types
+
+    3-3-import-config-files-with-glob-patterns:
+        title: '3.3: Import config files with glob patterns'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-import-config-files-with-glob-patterns
+
+    3-3-custom-yaml-tags:
+        title: '3.3: Custom YAML tags'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-custom-yaml-tags
+
+    3-3-getter-autowiring:
+        title: '3.3: Getter autowiring'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-getter-autowiring
+
+    3-3-psr-11-containers:
+        title: '3.3: PSR-11 containers'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-psr-11-containers
+
+    3-3-automatic-console-logging:
+        title: '3.3: Automatic Console logging'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-automatic-console-logging
+
+    3-3-simple-cache:
+        title: '3.3: Simple Cache'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-simple-cache
+
+    3-3-dotenv-component:
+        title: '3.3: Dotenv component'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-dotenv-component
+
+    3-3-dependency-injection-deprecations:
+        title: '3.3: Dependency Injection deprecations'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-dependency-injection-deprecations
+
+    3-3-memcached-cache-adapter:
+        title: '3.3: Memcached Cache Adapter'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-memcached-cache-adapter
+
+    3-3-search-in-dumped-contents:
+        title: '3.3: Search in dumped contents'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-search-in-dumped-contents
+
+    3-3-webserverbundle:
+        title: '3.3: WebServerBundle'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-webserverbundle
+
+    3-3-cookie-improvements:
+        title: '3.3: Cookie improvements'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-cookie-improvements
+
+    3-3-improved-command-descriptors:
+        title: '3.3: Improved command descriptors'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-improved-command-descriptors
+
+    3-3-added-new-shortcut-methods:
+        title: '3.3: Added new shortcut methods'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-added-new-shortcut-methods
+
+    3-3-improved-the-profiler-configuration-panel:
+        title: '3.3: Improved the Profiler configuration panel'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-improved-the-profiler-configuration-panel
+
+    3-3-added-support-for-formaction-and-formmethod-attributes:
+        title: '3.3: Added support for formaction and formmethod attributes'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-added-support-for-formaction-and-formmethod-attributes
+
+    3-3-json-authentication:
+        title: '3.3: JSON authentication'
+        sections:
+            - content: |
+                  # Todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-3-json-authentication
+
     start_3.4:
         title: 'Symfony 3.4 (LTS)'
         sections:
@@ -1030,6 +1484,262 @@ sf4:
                 | _Features_ | Sortie | Fin de maintenance | Fin de vie |
                 | --- | --- | --- | --- |
                 | 215 | 11/2017 | 11/2020 | 11/2021 |
+
+    3-4-session-improvements:
+        title: '3.4: session improvements'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-session-improvements
+
+    3-4-debug-autowiring-command:
+        title: '3.4: debug:autowiring command'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-debug-autowiring-command
+
+    3-4-disable-global-form-themes:
+        title: '3.4: Disable global form themes'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-disable-global-form-themes
+
+    3-4-guard-authentication-improvements:
+        title: '3.4: Guard authentication improvements'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-guard-authentication-improvements
+
+    3-4-debug-form-command:
+        title: '3.4: debug:form command'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-debug-form-command
+
+    3-4-local-service-binding:
+        title: '3.4: Local service binding'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-local-service-binding
+
+    3-4-services-are-private-by-default:
+        title: '3.4: Services are private by default'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-services-are-private-by-default
+
+    3-4-minimalist-psr-3-logger:
+        title: '3.4: Minimalist PSR-3 logger'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-minimalist-psr-3-logger
+
+    3-4-improved-the-overriding-of-templates:
+        title: '3.4: Improved the overriding of templates'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-improved-the-overriding-of-templates
+
+    3-4-simpler-injection-of-tagged-services:
+        title: '3.4: Simpler injection of tagged services'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-simpler-injection-of-tagged-services
+
+    3-4-form-improvements:
+        title: '3.4: Form improvements'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-form-improvements
+
+    3-4-defining-compiler-passes-in-the-kernel:
+        title: '3.4: Defining compiler passes in the kernel'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-defining-compiler-passes-in-the-kernel
+
+    3-4-bootstrap-4-form-theme:
+        title: '3.4: Bootstrap 4 form theme'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-bootstrap-4-form-theme
+
+    3-4-argon2i-password-hasher:
+        title: '3.4: Argon2i password hasher'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-argon2i-password-hasher
+
+    3-4-default-request-context-for-assets:
+        title: '3.4: Default request context for assets'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-default-request-context-for-assets
+
+    3-4-deprecated-bundle-inheritance:
+        title: '3.4: Deprecated bundle inheritance'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-deprecated-bundle-inheritance
+
+    3-4-better-code-coverage-reports:
+        title: '3.4: Better code coverage reports'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-better-code-coverage-reports
+
+    3-4-php-based-configuration-for-services-and-routes:
+        title: '3.4: PHP-based configuration for services and routes'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-php-based-configuration-for-services-and-routes
+
+    3-4-advanced-environment-variables:
+        title: '3.4: Advanced environment variables'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-advanced-environment-variables
+
+    3-4-improved-comparison-constraints:
+        title: '3.4: Improved comparison constraints'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-improved-comparison-constraints
+
+    3-4-subscribing-to-events-in-the-micro-kernel:
+        title: '3.4: Subscribing to events in the micro kernel'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-subscribing-to-events-in-the-micro-kernel
+
+    3-4-deprecate-configuration-options:
+        title: '3.4: Deprecate configuration options'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-deprecate-configuration-options
+
+    3-4-http-immutable-responses:
+        title: '3.4: HTTP Immutable Responses'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-http-immutable-responses
+
+    3-4-groups-support-for-the-valid-constraint:
+        title: '3.4: Groups support for the Valid constraint'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-groups-support-for-the-valid-constraint
+
+    3-4-better-console-exceptions:
+        title: '3.4: Better console exceptions'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-better-console-exceptions
+
+    3-4-user-impersonation-improvements:
+        title: '3.4: User impersonation improvements'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-user-impersonation-improvements
+
+    3-4-improved-security-listeners:
+        title: '3.4: Improved security listeners'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-improved-security-listeners
+
+    3-4-added-support-for-xliff-2-0-notes:
+        title: '3.4: Added support for XLIFF 2.0 notes'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-added-support-for-xliff-2-0-notes
+
+    3-4-prefix-all-controller-route-names:
+        title: '3.4: Prefix all controller route names'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-prefix-all-controller-route-names
+
+    3-4-lazy-commands:
+        title: '3.4: Lazy commands'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-lazy-commands
+
+    3-4-stopwatch-improvements:
+        title: '3.4: Stopwatch improvements'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-stopwatch-improvements
+
+    3-4-validator-information-in-the-symfony-profiler:
+        title: '3.4: Validator information in the Symfony profiler'
+        sections:
+            - content: |
+                  # todo
+            - type: quote
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-validator-information-in-the-symfony-profiler
 
     start_4.0:
         title: 'Symfony 4.0'
