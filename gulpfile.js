@@ -428,7 +428,7 @@ gulp.task('dump-slides', function (done) {
                                 break;
 
                             case 'terminal':
-                                slideData.content += "<div class=\"highlight-terminal"+(sectionData.is_fragment ? ' fragment' : '')+"\">";
+                                slideData.content += "<div class=\"highlight-terminal"+(sectionData.is_fragment ? ' fragment' : '')+'" '+sectionData.htmlattr+">";
                                 slideData.content += "    <table class=\"highlighttable\">";
                                 slideData.content += "        <tbody>";
 
@@ -449,7 +449,7 @@ gulp.task('dump-slides', function (done) {
                                 slideData.content += "</pre></div>";
                                 slideData.content += "                </td>";
                                 slideData.content += "                <td class=\"code\">";
-                                slideData.content += "                    <div class=\"highlight\"><pre"+sectionData.htmlattr+">"+sectionData.content+"</pre></div>";
+                                slideData.content += "                    <div class=\"highlight\"><pre>"+sectionData.content+"</pre></div>";
                                 slideData.content += "                </td>";
                                 slideData.content += "            </tr>";
                                 slideData.content += "        </tbody>";
