@@ -389,7 +389,7 @@ sf4:
               quote_source: https://symfony.com/blog/new-in-symfony-3-1-customizable-yaml-parsing-and-dumping
 
     3-1-cache-component:
-        title: '3.1: Composant Cache'
+        title: '3.1: Composant Cache PSR-6'
         sections:
             - type: code
               content: |
@@ -1374,125 +1374,170 @@ sf4:
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-kernel-build-method
 
-    3-3-custom-yaml-tags:
-        title: '3.3: Custom YAML tags'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-custom-yaml-tags
-
-    3-3-getter-autowiring:
-        title: '3.3: Getter autowiring'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-getter-autowiring
-
     3-3-psr-11-containers:
-        title: '3.3: PSR-11 containers'
+        title: '3.3: Conteneur PSR-11 & _service locators_'
+        title_htmlattr: data-markdown
         sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-psr-11-containers
+            - type: code
+              content: |
+                  interface ContainerInterface
+                  {
+                      public function get($id);
+                      public function has($id);
+                  }
+            - type: code
+              code_language: yaml
+              content: |
+                services:
+                    app.command_handler_locator:
+                        class: Symfony\Component\DependencyInjection\ServiceLocator
+                        tags: ['container.service_locator']
+                        arguments:
+                            -
+                                AppBundle\FooCommand: '@app.command_handler.foo'
+                                AppBundle\BarCommand: '@app.command_handler.bar'
 
-    3-3-automatic-console-logging:
-        title: '3.3: Automatic Console logging'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-automatic-console-logging
+                    AppBundle\CommandBus:
+                        arguments: ['@app.command_handler_locator']
+
+            - htmlattr: 'style="font-size: 0.6em;text-align: right;margin-right: 50px;"'
+              content: |
+                Sources:
+
+                * https://symfony.com/blog/new-in-symfony-3-3-psr-11-containers
+                * https://symfony.com/blog/new-in-symfony-3-3-service-locators
+        notes: |
+            C'est un pattern qui encapsule le processus d'obtention d'un service à partir d'un registre : le service
+            locator.
+
+            Il y a aussi `ServiceSubscriberInterface::getSubscribedServices()`.
 
     3-3-simple-cache:
-        title: '3.3: Simple Cache'
+        title: '3.3: Cache PSR-16'
         sections:
-            - content: |
-                  # Todo
+            - type: code
+              content: |
+                  use Symfony\Component\Cache\Simple\FilesystemCache;
+
+                  $cache = new FilesystemCache();
+
+                  $cache->set('stats.num_products', 4711); // Save
+
+                  if (!$cache->has('stats.num_products')) { // Fetch
+                      // ... item does not exist in the cache
+                  } else {
+                      $total = $cache->get('stats.num_products');
+                  }
+
+                  $cache->delete('stats.num_products');
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-simple-cache
+        notes: |
+            PSR-6 : Cache, gestion d'items, pools, etc.
+
+            PSR-16 : _Common interface for caching libraries_, version simple
 
     3-3-dotenv-component:
-        title: '3.3: Dotenv component'
+        title: '3.3: Composant Dotenv'
         sections:
-            - content: |
-                  # Todo
+            - type: code
+              code_language: bash
+              content: |
+                  # .env
+
+                  DATABASE_URL="mysql://root@127.0.0.1/app_db?serverVersion=5.7"
+
+            - type: code
+              content: |
+                  use Symfony\Component\Dotenv\Dotenv;
+
+                  (new Dotenv())->load(__DIR__.'/.env');
+
+                  $dbPassword = $_ENV['DATABASE_URL'];
+
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-dotenv-component
-
-    3-3-dependency-injection-deprecations:
-        title: '3.3: Dependency Injection deprecations'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-dependency-injection-deprecations
-
-    3-3-memcached-cache-adapter:
-        title: '3.3: Memcached Cache Adapter'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-memcached-cache-adapter
-
-    3-3-search-in-dumped-contents:
-        title: '3.3: Search in dumped contents'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-search-in-dumped-contents
 
     3-3-webserverbundle:
         title: '3.3: WebServerBundle'
         sections:
             - content: |
-                  # Todo
+                  Surtout pour DX et pour faciliter l'installation du bundle en dehors de `symfony/symfony`
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-webserverbundle
 
     3-3-cookie-improvements:
         title: '3.3: Cookie improvements'
         sections:
-            - content: |
-                  # Todo
+            - type: code
+              content: |
+                  // "max-age" attribute
+                  $cookie = new Cookie('foo', 'bar', strtotime('now + 10 minutes'));
+
+                  // "set" instead of using a Cookie object
+                  $response->headers->set('set-cookie', 'foo=bar', false);
+
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-cookie-improvements
+        notes: |
+            "max-age" a une plus haute précédence que "expires".
 
-    3-3-improved-command-descriptors:
-        title: '3.3: Improved command descriptors'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-improved-command-descriptors
+            Et c'est un nombre de secondes, plus facile pour éviter d'avoir à adapter la timezone du serveur à celle du
+            client.
 
     3-3-added-new-shortcut-methods:
-        title: '3.3: Added new shortcut methods'
+        title: '3.3: Quelques raccourcis DX'
         sections:
-            - content: |
-                  # Todo
+            - type: code
+              content: |
+                  // Avant
+                  $container->register('app.twig_extension', AppExtension::class)
+                      ->setAutowired(true)
+                  ;
+
+                  // Après
+                  $container->autowire('app.twig_extension', AppExtension::class)
+            - type: code
+              content: |
+                  $node = new ArrayNodeDefinition('name');
+
+                  // Avant
+                  $node->prototype('integer')->max(10);
+
+                  // Après
+                  $node->integerPrototype()->max(10);
+            - type: code
+              code_language: yaml
+              content: |
+                  services:
+                      AppBundle\Twig\AppExtension
+                          # Avant
+                          tags:
+                              - { name: twig.extension }
+
+                          # Après
+                          tags: ['twig.extension']
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-added-new-shortcut-methods
+        notes: |
+            Le `integerPrototype()` permet notamment de pouvoir utiliser l'auto-complétion de l'IDE
 
     3-3-improved-the-profiler-configuration-panel:
-        title: '3.3: Improved the Profiler configuration panel'
+        title: '3.3: Infos sur Symfony dans le _profiler_'
+        title_htmlattr: data-markdown
         sections:
-            - content: |
-                  # Todo
+            - htmlattr: 'style="width: 50%; float: left;"'
+              content: |
+                  ![profiler upgrade]({{ asset('img/profiler_1.jpg') }})
+
+            - htmlattr: 'style="width: 50%; text-align: center;float: right;"'
+              content: |
+                  ![profiler upgrade]({{ asset('img/profiler_2.jpg') }})
+
+                  ![profiler upgrade]({{ asset('img/profiler_3.jpg') }})
+            - htmlattr: 'style="clear:both;"'
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-improved-the-profiler-configuration-panel
-
-    3-3-added-support-for-formaction-and-formmethod-attributes:
-        title: '3.3: Added support for formaction and formmethod attributes'
-        sections:
-            - content: |
-                  # Todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-added-support-for-formaction-and-formmethod-attributes
 
     3-3-json-authentication:
         title: '3.3: JSON authentication'
