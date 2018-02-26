@@ -1,22 +1,10 @@
 const spawn = require('child_process').spawn;
 const http = require('http');
-const httpProxy = require('http-proxy');
 const socketio = require('socket.io');
 const fs = require('fs');
 const dateFormat = require('dateformat');
-const envToShare = {
-    'SOCKET_PORT': process.env.SOCKET_PORT || 80,
-};
-if (process.env.APP_ENV) {
-    envToShare.APP_ENV = process.env.APP_ENV;
-}
-if (process.env.APP_SECRET) {
-    envToShare.APP_SECRET = process.env.APP_SECRET;
-}
 
-console.info('envToShare', envToShare);
-
-if (process.env.NODE_ENV !== 'production' || envToShare.APP_ENV === 'dev') {
+if (process.env.NODE_ENV !== 'production') {
     log('process', 'Starting Gulp process');
     const gulpscript = spawn('node', ['./node_modules/gulp4/bin/gulp', 'watch'], {stdio: 'inherit'});
     const exitGulp = () => {
@@ -29,11 +17,9 @@ if (process.env.NODE_ENV !== 'production' || envToShare.APP_ENV === 'dev') {
     process.on('disconnect', exitGulp);
 }
 
-/** HTTP Proxy to PHP **/
-var proxy = httpProxy.createProxyServer({});
-const httpServer = http.createServer(function(req, res) {
-    proxy.web(req, res, {target: 'http://127.0.0.1:9999'});
-}).listen(process.env.PORT || 8080);
+/** HTTP server**/
+const httpServer = http.createServer();
+httpServer.listen(process.env.PORT || 8080);
 /** ***************** **/
 
 

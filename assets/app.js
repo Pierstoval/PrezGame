@@ -32,7 +32,7 @@
     }
 
     function initPresentation(d) {
-        if (!Reveal || !io) {
+        if (!Reveal || !io || !w.SOCKET_URL) {
             throw 'This app needs Reveal and socket.io to be available.';
         }
 
@@ -42,7 +42,7 @@
         /**
          * Socket interactions
          */
-        var socket = io.connect(window.location.protocol+'//'+window.location.hostname+':'+(window.SOCKET_PORT || 80));
+        var socket = io.connect(w.SOCKET_URL);
         socket.emit('subscribe', 'login');
         socket.on('message', message);
         socket.on('broadcast', message);
@@ -76,11 +76,11 @@
     }
 
     function initButtonInteraction(d) {
-        if (!io) {
+        if (!io || !w.SOCKET_URL) {
             throw 'This app needs Reveal and socket.io to be available.';
         }
 
-        var socket = io.connect(window.location.protocol+'//'+window.location.hostname+':'+(window.SOCKET_PORT || 80));
+        var socket = io.connect(w.SOCKET_URL);
         d.getElementById('help-me').addEventListener('click', function(){
             var helped = localStorage.getItem('help') || [];
             socket.emit('help', JSON.stringify(helped) || []);

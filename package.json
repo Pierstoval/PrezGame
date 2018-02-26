@@ -19,7 +19,6 @@
         "gulp-uglify": "^3.0",
         "gulp-watch": "^4.3",
         "gulp4": "^4.0.3",
-        "http-proxy": "^1.16.2",
         "js-yaml": "^3.10.0",
         "nodemon": "^1.15.1",
         "pump": "^1.0",
