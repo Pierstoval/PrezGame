@@ -1540,10 +1540,25 @@ sf4:
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-improved-the-profiler-configuration-panel
 
     3-3-json-authentication:
-        title: '3.3: JSON authentication'
+        title: '3.3: Authentification JSON'
         sections:
-            - content: |
-                  # Todo
+            - type: code
+              code_language: yaml
+              content: |
+                  security:
+                      firewalls:
+                          main:
+                              json_login:
+                                  check_path: /login
+            - type: code
+              code_language: raw
+              content: |
+                  GET /login HTTP/1.1
+                  Host: localhost
+                  ...
+
+                  { "username": "foo", "password": "bar1234" }
+
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-json-authentication
 
@@ -1556,10 +1571,25 @@ sf4:
                 | 215 | 11/2017 | 11/2020 | 11/2021 |
 
     3-4-lock-component:
-        title: '3.4: Lock component'
+        title: '3.4: Composant Lock'
         sections:
-            - content: |
-                  # Todo
+            - type: code
+              content: |
+                $lock = $lockFactory->createLock('pdf-invoice-generation');
+
+                if ($lock->acquire()) {
+                    // Do stuff
+
+                    $lock->release();
+                }
+
+            - type: code
+              content: |
+                $lock->isAcquired();
+                $lock->refresh();
+                $lock->release();
+
+
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-lock-component
         notes: |
@@ -1567,259 +1597,424 @@ sf4:
 
             Il avait été ajouté en 3.3 mais rajouté en 3.4 car il était incomplet.
 
-    3-4-session-improvements:
-        title: '3.4: session improvements'
-        sections:
-            - content: |
-                  # todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-4-session-improvements
+            LockFactory correspond au service `lock` dans le DIC.
+
+            Il y a des adapters pour Redis, Memcached, Semaphore ou `flock()`.
 
     3-4-debug-autowiring-command:
-        title: '3.4: debug:autowiring command'
+        title: '3.4: Commande `debug:autowiring`'
+        title_htmlattr: data-markdown
         sections:
-            - content: |
-                  # todo
+            - type: code
+              code_language: shell
+              content: |
+                  $ ./bin/console debug:autowiring
+
+                  Autowirable Services
+                  ====================
+
+                  The following classes & interfaces can be used as type-hints when autowiring:
+
+                    App\Command\AddUserCommand
+                    App\Command\DeleteUserCommand
+                    App\Command\ListUsersCommand
+                    App\Controller\Admin\BlogController
+                    App\Controller\BlogController
+                    App\Controller\SecurityController
+                    App\EventSubscriber\CheckRequirementsSubscriber
+                    App\EventSubscriber\CommentNotificationSubscriber
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-debug-autowiring-command
 
     3-4-disable-global-form-themes:
-        title: '3.4: Disable global form themes'
+        title: '3.4: Désactiver les form themes globaux'
         sections:
-            - content: |
-                  # todo
+            - type: code
+              code_language: twig
+              content: |
+                  {% form_theme form with ['common.html.twig', 'form/fields.html.twig'] only %}
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-disable-global-form-themes
 
     3-4-guard-authentication-improvements:
-        title: '3.4: Guard authentication improvements'
+        title: '3.4: Déprécations & améliorations du Guard'
         sections:
             - content: |
-                  # todo
+                  * Déprécations de `GuardAuthenticatorInterface` au profit de `AuthenticatorInterface`.
+                  * `getCredentials()` doit soit renvoyer des credentials, soit une exception.
+                  * Ajout d'une méthode `supports()` pour compenser le changement de `getCredentials()`.
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-guard-authentication-improvements
+        notes: |
+            Avant avec `getCredentials()` on pouvait renvoyer `null`. Désormais il faut utiliser `supports()`
 
     3-4-debug-form-command:
-        title: '3.4: debug:form command'
+        title: '3.4: Commande `debug:form`'
+        title_htmlattr: data-markdown
         sections:
-            - content: |
-                  # todo
+            - type: code
+              code_language: shell
+              htmlattr: 'style="font-size: 0.64393em;"'
+              content: |
+                  $ ./bin/console debug:form
+
+                  Built-in form types (Symfony\Component\Form\Extension\Core\Type)
+                  ----------------------------------------------------------------
+                   BirthdayType, ButtonType, CheckboxType, ChoiceType, CollectionType
+                   ...
+                   TextareaType, TimeType, TimezoneType, UrlType
+
+                  Service form types
+                  ------------------
+                   * App\Form\CommentType
+                   * ...
+                   * Symfony\Bridge\Doctrine\Form\Type\EntityType
+
+                  Type extensions
+                  ---------------
+                   * Symfony\Component\Form\Extension\Csrf\Type\FormTypeCsrfExtension
+                   * ...
+
+                  Type guessers
+                  -------------
+                   * Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser
+                   * ...
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-debug-form-command
 
     3-4-local-service-binding:
-        title: '3.4: Local service binding'
+        title: '3.4: _"Service bindings"_'
+        title_htmlattr: data-markdown
         sections:
-            - content: |
-                  # todo
+            - type: code
+              htmlattr: 'style="width: 49%; float: left;"'
+              code_language: yaml
+              content: |
+                  # Avant
+                  services:
+                      _defaults:
+                          autowire: true
+                          autoconfigure: true
+                          public: false
+
+                      App\Some\Service1:
+                          $projectDir: '%kernel.project_dir%'
+
+                      App\Some\Service2:
+                          $projectDir: '%kernel.project_dir%'
+
+                      App\Some\Service3:
+                          $projectDir: '%kernel.project_dir%'
+
+            - type: code
+              htmlattr: 'style="width: 49%; float: left;"'
+              code_language: yaml
+              content: |
+                  # Après
+                  services:
+                      _defaults:
+                          autowire: true
+                          autoconfigure: true
+                          public: false
+                          bind:
+                              $projectDir: '%kernel.project_dir%'
+
+                      App\Some\Service1: ~
+                      App\Some\Service2: ~
+                      App\Some\Service3: ~
+            - htmlattr: 'style="clear:both;"'
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-local-service-binding
 
     3-4-services-are-private-by-default:
-        title: '3.4: Services are private by default'
+        title: '3.4: Services privés par défaut'
         sections:
-            - content: |
-                  # todo
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-services-are-private-by-default
+        notes: |
+            Services publics obligatoires pour les contrôleurs et uniquement dans certains rares cas, comme le
+            _"bootstrapping"_ de l'appli.
 
     3-4-minimalist-psr-3-logger:
-        title: '3.4: Minimalist PSR-3 logger'
+        title: '3.4: Logs PSR-3 intégrés au framework'
         sections:
             - content: |
-                  # todo
+                  * Logger minimaliste, toujours dispo, avec le nom de service `logger`.
+                  * Pas besoin d'installer d'autre lib de logs.
+                  * Autowiring possible via `Psr\Log\LoggerInterface`.
+                  * Écrit sur `php://stderr` par défaut.
+                  * `level: warning` par défaut.
+                  * Même API que Monolog
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-minimalist-psr-3-logger
 
     3-4-improved-the-overriding-of-templates:
-        title: '3.4: Improved the overriding of templates'
+        title: '3.4: Surcharge de templates'
         sections:
             - content: |
-                  # todo
+                  Avant :
+
+                  `app/Resources/TwigBundle/views/Exception/error404.html.twig`
+
+                  Après :
+
+                  `templates/bundles/TwigBundle/Exception/error404.html.twig`
+
+                  Rajout de `@!` pour forcer l'utilisation du template original non surchargé :
+
+                  `{﻿% extends '@!EasyAdmin/layout.html.twig' %﻿}`
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-improved-the-overriding-of-templates
 
     3-4-simpler-injection-of-tagged-services:
-        title: '3.4: Simpler injection of tagged services'
+        title: '3.4: Injection de services tagués'
         sections:
-            - content: |
-                  # todo
+            - type: code
+              code_language: yaml
+              content: |
+                  services:
+                      App\Manager\TwigManager:
+                          arguments: [!tagged twig.extension]
+            - type: code
+              content: |
+                  namespace App\Manager;
+
+                  class TwigManager
+                  {
+                      public function __construct(iterable $twigExtensions)
+                      {
+                          // ...
+                      }
+                  }
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-simpler-injection-of-tagged-services
-
-    3-4-form-improvements:
-        title: '3.4: Form improvements'
-        sections:
-            - content: |
-                  # todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-4-form-improvements
+        notes: |
+            `iterable` vient de PHP 7.1
 
     3-4-defining-compiler-passes-in-the-kernel:
-        title: '3.4: Defining compiler passes in the kernel'
+        title: '3.4: Auto-configuration du Kernel'
         sections:
             - content: |
-                  # todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-4-defining-compiler-passes-in-the-kernel
+                  Permet au kernel d'implémenter `EventSubscriberInterface` et `CompilerPassInterface`.
+            - htmlattr: 'style="font-size: 0.6em;text-align: right;margin-right: 50px;"'
+              content: |
+                Sources:
+                * https://symfony.com/blog/new-in-symfony-3-4-simpler-injection-of-tagged-services
+                * https://symfony.com/blog/new-in-symfony-3-4-subscribing-to-events-in-the-micro-kernel
 
     3-4-bootstrap-4-form-theme:
-        title: '3.4: Bootstrap 4 form theme'
+        title: '3.4: Form theme pour Bootstrap 4'
         sections:
-            - content: |
-                  # todo
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-bootstrap-4-form-theme
+        notes: |
+            Un thème pour Bootstrap 3 était déjà dispo.
 
     3-4-argon2i-password-hasher:
-        title: '3.4: Argon2i password hasher'
+        title: '3.4: Encoder Argon2i'
         sections:
-            - content: |
-                  # todo
+            - type: code
+              code_language: yaml
+              content: |
+                  security:
+                      encoders:
+                          Symfony\Component\Security\Core\User\User:
+                              algorithm: 'argon2i'
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-argon2i-password-hasher
+        notes: |
+            Pour les versions antérieures à PHP 7.2 il faudra installer `paragonie/sodium_compat` via Composer ou
+            `libsodium` via pecl.
 
     3-4-default-request-context-for-assets:
-        title: '3.4: Default request context for assets'
+        title: '3.4: Contexte de requête pour les assets'
         sections:
-            - content: |
-                  # todo
+            - type: code
+              code_language: yaml
+              content: |
+                  asset.request_context.base_path: '/subfolder'
+                  asset.request_context.secure: true
+            - type: code
+              code_language: twig
+              content: |
+                  {{ asset('/foo/image.jpg') }}
+                  {# /subfolder/foo/image.jpg #}
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-default-request-context-for-assets
+        notes: |
+            Pour le routing on a déjà quelque chose de similaire `router.request_context.base_url: 'http://localhost'`.
 
     3-4-deprecated-bundle-inheritance:
-        title: '3.4: Deprecated bundle inheritance'
+        title: '3.4: Dépréciation de l''héritage de bundles'
         sections:
-            - content: |
-                  # todo
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-deprecated-bundle-inheritance
+        notes: |
+            Surcharges :
 
-    3-4-better-code-coverage-reports:
-        title: '3.4: Better code coverage reports'
+            * Controllers: Définir une route avec le même nom.
+            * Templates: Utiliser nouveau système d'héritage.
+            * Routing: Ne pas charger les routes du bundle.
+            * Services and Configuration: Utiliser un compiler pass ou _service decorator_.
+            * Entities: Pas possible, sauf si le bundle utilise une "mapped superclass.
+            * Forms: Utiliser extensions de forms.
+            * Validation: Pas possible, sauf si validation groups.
+            * Translations: Surcharger les domaines de traduction.
+
+    3-4-php-based-configuration-for-services:
+        title: '3.4: Config PHP _fluent_ pour les services'
+        title_htmlattr: data-markdown
         sections:
-            - content: |
-                  # todo
+            - type: code
+              htmlattr: 'style="font-size: 0.79em;"'
+              content: |
+                  return function (ContainerConfigurator $container) {
+                      $container->import('legacy_services.php');
+
+                      $params = $container->parameters();
+                      $params->set('app.foo_param', 'param_value');
+
+                      $container = $container->services()->defaults()
+                          ->private()
+                          ->autoconfigure()
+                          ->autowire();
+
+                      $container->load('App\\', '../src/*')
+                          ->exclude('../src/{Entity,Repository,Tests}');
+
+                      $container->load('App\\Controller\\', '../src/Controller')
+                          ->tag('controller.service_arguments');
+
+                      $container->alias('foo', FooClass::class)->public();
+                  };
             - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-4-better-code-coverage-reports
+              quote_source: https://symfony.com/blog/new-in-symfony-3-4-php-based-configuration-for-services-and-routes
 
-    3-4-php-based-configuration-for-services-and-routes:
-        title: '3.4: PHP-based configuration for services and routes'
+    3-4-php-based-configuration-for-routes:
+        title: '3.4: Config PHP _fluent_ pour les routes'
+        title_htmlattr: data-markdown
         sections:
-            - content: |
-                  # todo
+            - type: code
+              content: |
+                  return function (RoutingConfigurator $routes) {
+                      $routes->import('legacy_routes.php')
+                          ->prefix('/legacy')
+                      ;
+
+                      $routes->add('product', '/products/{id}')
+                          ->controller('App\Controller\ProductController::show')
+                          ->schemes(['https'])
+                          ->requirements(['id' => '\d+'])
+                          ->defaults(['id' => 0]);
+
+                      $routes->add('homepage', '/')
+                          ->controller('App\Controller\DefaultController::index');
+                  };
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-php-based-configuration-for-services-and-routes
 
     3-4-advanced-environment-variables:
-        title: '3.4: Advanced environment variables'
+        title: '3.4: Variables d''environnement avancées'
         sections:
-            - content: |
-                  # todo
+            - type: code
+              code_language: yaml
+              content: |
+                  parameters:
+                      project_dir: '/foo/bar'
+                      env(DB): 'sqlite://%%project_dir%%/var/data.db'
+                      db_dsn: '%env(resolve:DB)%'
+
+                      app.connection.port: '%env(int:DATABASE_PORT)%'
+
+                      env(SECRETS_FILE): '/etc/secure/example.com/secrets.json'
+                      app.secrets: '%env(json:file:SECRETS_FILE)%'
+
+                      env(SOME_VALUE): 'NWE3OWExYzg2NmVmZWY5Y2ExODAwZjk3MWQ2ODlmM2U='
+                      app.some_value: '%env(base64:SOME_VALUE)%'
+
+                      env(NUM_ITEMS): 'App\\Entity\\BlogPost::NUM_ITEMS'
+                      app.num_items: '%env(constant:NUM_ITEMS)%'
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-advanced-environment-variables
 
     3-4-improved-comparison-constraints:
-        title: '3.4: Improved comparison constraints'
+        title: '3.4: Ajout de `propertyPath` dans les contraintes'
+        title_htmlattr: data-markdown
         sections:
-            - content: |
-                  # todo
+            - type: code
+              content: |
+                  /*
+                   * Avant
+                   * @Assert\Expression("value > this.startDate")
+                   *
+                   * Après
+                   * @Assert\GreaterThan(propertyPath="startDate")
+                   */
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-improved-comparison-constraints
-
-    3-4-subscribing-to-events-in-the-micro-kernel:
-        title: '3.4: Subscribing to events in the micro kernel'
-        sections:
-            - content: |
-                  # todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-4-subscribing-to-events-in-the-micro-kernel
-
-    3-4-deprecate-configuration-options:
-        title: '3.4: Deprecate configuration options'
-        sections:
-            - content: |
-                  # todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-4-deprecate-configuration-options
-
-    3-4-http-immutable-responses:
-        title: '3.4: HTTP Immutable Responses'
-        sections:
-            - content: |
-                  # todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-4-http-immutable-responses
-
-    3-4-groups-support-for-the-valid-constraint:
-        title: '3.4: Groups support for the Valid constraint'
-        sections:
-            - content: |
-                  # todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-4-groups-support-for-the-valid-constraint
-
-    3-4-better-console-exceptions:
-        title: '3.4: Better console exceptions'
-        sections:
-            - content: |
-                  # todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-4-better-console-exceptions
-
-    3-4-user-impersonation-improvements:
-        title: '3.4: User impersonation improvements'
-        sections:
-            - content: |
-                  # todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-4-user-impersonation-improvements
-
-    3-4-improved-security-listeners:
-        title: '3.4: Improved security listeners'
-        sections:
-            - content: |
-                  # todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-4-improved-security-listeners
-
-    3-4-added-support-for-xliff-2-0-notes:
-        title: '3.4: Added support for XLIFF 2.0 notes'
-        sections:
-            - content: |
-                  # todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-4-added-support-for-xliff-2-0-notes
+        notes: |
+            Dispo pour les contraintes de comparaison.
 
     3-4-prefix-all-controller-route-names:
-        title: '3.4: Prefix all controller route names'
+        title: '3.4: Préfixe de nom pour les routes d''un contrôleur'
         sections:
+            - type: code
+              htmlattr: 'style="font-size: 0.9em;"'
+              content: |
+                  use Symfony\Component\Routing\Annotation\Route;
+
+                  /** @Route("/blog", name="blog_") */
+                  class BlogController extends Controller
+                  {
+                      /**
+                       * @Route("/", defaults={"page": "1"}, name="index")
+                       * @Route("/page/{page}", name="index_paginated")
+                       */
+                      public function indexAction($page, $_format) { ... }
+
+                      /**
+                       * @Route("/posts/{slug}", name="post")
+                       */
+                      public function showAction(Post $post) { ... }
+                  }
             - content: |
-                  # todo
+                  Routes : `blog_index`, `blog_index_paginated`, `blog_post`.
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-prefix-all-controller-route-names
 
     3-4-lazy-commands:
-        title: '3.4: Lazy commands'
+        title: '3.4: Commandes chargées en mode _lazy_'
+        title_htmlattr: data-markdown
         sections:
-            - content: |
-                  # todo
+            - type: code
+              title: Dans la config
+              content: |
+                  app.command.complex_command:
+                      tags:
+                          - { name: console.command, command: app:my-command }
+            - type: code
+              title: Dans la classe directement
+              content: |
+                use Symfony\Component\Console\Command\Command;
+
+                class MySuperCommand extends Command
+                {
+                    protected static $defaultName = 'app:my-command';
+
+                    // ...
+                }
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-lazy-commands
 
-    3-4-stopwatch-improvements:
-        title: '3.4: Stopwatch improvements'
-        sections:
-            - content: |
-                  # todo
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-4-stopwatch-improvements
-
     3-4-validator-information-in-the-symfony-profiler:
-        title: '3.4: Validator information in the Symfony profiler'
+        title: '3.4: Validator dans le profiler'
         sections:
             - content: |
-                  # todo
+                  ![Redesign exception]({{ asset('img/validator_profiler_1.png') }})
+            - type: raw
+              content: |
+                  <img src="{{ asset('img/validator_profiler_2.jpg') }}" style="width: 30%;vertical-align: top;">
+                  <img src="{{ asset('img/validator_profiler_3.jpg') }}" style="width: 30%;vertical-align: top;">
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-validator-information-in-the-symfony-profiler
 
