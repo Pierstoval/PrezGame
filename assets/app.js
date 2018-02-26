@@ -42,7 +42,7 @@
         /**
          * Socket interactions
          */
-        var socket = io.connect(window.location.protocol+'//'+window.location.hostname+':'+(window.PORT || 80));
+        var socket = io.connect(window.location.protocol+'//'+window.location.hostname+':'+(window.SOCKET_PORT || 80));
         socket.emit('subscribe', 'login');
         socket.on('message', message);
         socket.on('broadcast', message);
@@ -80,7 +80,7 @@
             throw 'This app needs Reveal and socket.io to be available.';
         }
 
-        var socket = io.connect(window.location.protocol+'//'+window.location.hostname+':'+(window.PORT || 80));
+        var socket = io.connect(window.location.protocol+'//'+window.location.hostname+':'+(window.SOCKET_PORT || 80));
         d.getElementById('help-me').addEventListener('click', function(){
             var helped = localStorage.getItem('help') || [];
             socket.emit('help', JSON.stringify(helped) || []);

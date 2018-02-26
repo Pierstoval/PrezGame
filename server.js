@@ -5,7 +5,7 @@ const socketio = require('socket.io');
 const fs = require('fs');
 const dateFormat = require('dateformat');
 const envToShare = {
-    'PORT': process.env.PORT || 80,
+    'SOCKET_PORT': process.env.SOCKET_PORT || 80,
 };
 if (process.env.APP_ENV) {
     envToShare.APP_ENV = process.env.APP_ENV;
@@ -46,7 +46,7 @@ if (process.env.NODE_ENV !== 'production' || envToShare.APP_ENV === 'dev') {
 var proxy = httpProxy.createProxyServer({});
 const httpServer = http.createServer(function(req, res) {
     proxy.web(req, res, {target: 'http://127.0.0.1:9999'});
-}).listen(process.env.PORT || 80);
+}).listen(process.env.PORT || 8080);
 /** ***************** **/
 
 
