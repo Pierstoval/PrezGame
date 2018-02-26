@@ -31,7 +31,7 @@
         }
     }
 
-    var autoSlide = 10000;
+    const autoSlide = 10000;
     var internalTimer = autoSlide;
     var timerStartedAt = Date.now();
     var amount = 0;
@@ -71,11 +71,10 @@
          */
         var socket = io.connect(window.location.protocol+'//'+window.location.hostname+':'+(window.SOCKET_PORT || 80));
         socket.emit('subscribe', 'login');
-        socket.on('message', function(msg) {
-            message(msg);
-        });
+        socket.on('message', message);
+        socket.on('broadcast', message);
         socket.on('stats', function(msg) {
-            message('Stats: '+msg, false);
+            message('Stats: '+msg);
         });
 
         /**
@@ -123,11 +122,21 @@
             var helped = localStorage.getItem('help') || [];
             socket.emit('help', JSON.stringify(helped) || []);
         });
+        d.getElementById('cool').addEventListener('click', function(){
+            var helped = localStorage.getItem('cool') || [];
+            socket.emit('cool', JSON.stringify(helped) || []);
+        });
         socket.on('helpReturn', function(slideName){
             var item = localStorage.getItem('help');
             var helped = (item ? item.split(',') : []) || [];
             helped.push(slideName);
             localStorage.setItem('help', helped.join(','));
+        });
+        socket.on('coolReturn', function(slideName){
+            var item = localStorage.getItem('cool');
+            var cooled = (item ? item.split(',') : []) || [];
+            cooled.push(slideName);
+            localStorage.setItem('cool', helped.join(','));
         });
         socket.on('message', function(msg) {
             message(msg);

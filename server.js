@@ -58,15 +58,21 @@ const sessionData = {
     date: dateFormat(new Date(), 'yyyy-mm-dd HH-MM-ss'),
     sessions: {}
 };
+let connected = 0;
 
 io.on('connection', function(socket){
-    log('ws', 'A user connected');
+    connected++;
+    log('ws', `A user connected! Now there are ${connected} users.`);
+    if (hostingSocket) {
+        hostingSocket.emit('message', `Une personne supplémentaire ! Il y a maintenant ${connected} personnes connectées !.`);
+    }
 
     updatePresentationSession();
 
     sessionData.sessions[socket.id] = {
         host: false,
-        helpWantedForSlides: []
+        helpWantedForSlides: [],
+        coolSlides: []
     };
 
     /**
@@ -86,7 +92,8 @@ io.on('connection', function(socket){
             socket.emit('message', 'Tu te paies VRAIMENT ma tête ou quoi ?');
             return;
         }
-        log('ws', 'Presentation host connected!');
+        log('ws', 'L\'hôte est connecté!');
+        socket.emit('message', 'Vous êtes bien l\'hôte de la présentation ☺');
         hostingSocket = socket;
         sessionData.sessions[socket.id].host = true;
         updatePresentationSession();
@@ -109,7 +116,7 @@ io.on('connection', function(socket){
         msg = msg.replace(/^"|"$/gi, '');
         msg = (msg ? msg.split(',') : []) || [];
         if (hostingSocket === null || currentSlide === null) {
-            socket.emit('message', 'Attendez que l\'hôte ait créé une session de présentation, ne soyez pas trop pressé•e :)');
+            socket.emit('message', 'Attendez que l\'hôte ait créé démarré la présentation, ne soyez pas trop pressé•e :)');
             return;
         }
         if (hostingSocket.id === socket.id) {
@@ -133,17 +140,60 @@ io.on('connection', function(socket){
             let message = 'Uh ?';
             switch (nb) {
                 case 0:
-                    message = 'Tout le monde a compris ♥ (même si je n\'y crois pas…)'
+                    message = 'Tout le monde a compris ♥ (même si je n\'y crois pas…)';
                     break;
                 case 1:
                     message = 'Quelqu\'un n\'a pas compris…';
                     break;
                 default:
-                    message = `${nb} personnes n'ont pas compris…`
+                    message = `${nb} personnes n'ont pas compris…`;
                     break;
             }
             hostingSocket.emit('message', message);
             socket.emit('helpReturn', currentSlide);
+            updatePresentationSession();
+        }
+    });
+
+    socket.on('cool', async function (msg) {
+        msg = msg.replace(/^"|"$/gi, '');
+        msg = (msg ? msg.split(',') : []) || [];
+        if (hostingSocket === null || currentSlide === null) {
+            socket.emit('message', 'Attendez que l\'hôte ait créé démarré la présentation, ne soyez pas trop pressé•e :)');
+            return;
+        }
+        if (hostingSocket.id === socket.id) {
+            socket.emit('message', 'Trop de coolitude tue la coolitude B-)🕶️🕶️');
+            return;
+        }
+
+        let alreadyAsked = await msg.find(function (element) {
+            return currentSlide === element;
+        });
+
+        let found = await sessionData.sessions[socket.id].coolSlides.find(function (element) {
+            return currentSlide === element;
+        });
+
+        if (found || alreadyAsked) {
+            socket.emit('message', 'Oui, on le sait, c\'est cool :D');
+        } else {
+            sessionData.sessions[socket.id].coolSlides.push(currentSlide);
+            let nb = await personWhoFindThisCool();
+            let message = 'Uh ?';
+            switch (nb) {
+                case 0:
+                    message = 'Personne ne trouve ça cool :\'(';
+                    break;
+                case 1:
+                    message = 'Quelqu\'un trouve ça cool !';
+                    break;
+                default:
+                    message = `${nb} personnes trouvent ça cool \\o/`;
+                    break;
+            }
+            hostingSocket.emit('message', message);
+            socket.emit('coolReturn', currentSlide);
             updatePresentationSession();
         }
     });
@@ -160,6 +210,7 @@ io.on('connection', function(socket){
     });
 
     socket.on('disconnect', function(){
+        connected--;
         log('ws', 'Disconnect');
         if (hostingSocket && socket.id === hostingSocket.id) {
             hostingSocket = null;
@@ -195,6 +246,25 @@ async function personWhoDidNotUnderstand() {
 
     await Object.keys(sessionData.sessions).forEach(function (socketId) {
         let found = sessionData.sessions[socketId].helpWantedForSlides.find(function(element){
+            return element === currentSlide;
+        });
+        if (found) {
+            number++;
+        }
+    });
+
+    return number;
+}
+
+async function personWhoFindThisCool() {
+    if (!currentSlide) {
+        return 0;
+    }
+
+    let number = 0;
+
+    await Object.keys(sessionData.sessions).forEach(function (socketId) {
+        let found = sessionData.sessions[socketId].coolSlides.find(function(element){
             return element === currentSlide;
         });
         if (found) {
