@@ -26,9 +26,9 @@ try {
         phpscript.stdin.pause();
         phpscript.kill('SIGINT');
     };
-    process.on('exit', exitPHP);
-    process.on('beforeExit', exitPHP);
-    process.on('disconnect', exitPHP);
+    process.on('exit', function(){ log('process', 'exit'); exitPHP.call(this, arguments);});
+    process.on('beforeExit', function(){ log('process', 'beforeExit'); exitPHP.call(this, arguments);});
+    process.on('disconnect', function(){ log('process', 'disconnect'); exitPHP.call(this, arguments);});
 } catch (e) {
     log('ERROR', e);
 }
