@@ -16,24 +16,6 @@ if (process.env.APP_SECRET) {
 
 console.info('envToShare', envToShare);
 
-/** PHP SCRIPT **/
-log('process', 'Starting PHP process');
-try {
-    const phpscript = spawn('php', ['bin/console', 'server:run', '9999', '-vvv', '--no-ansi'], {stdio: 'inherit', env: envToShare});
-    const exitPHP = () => {
-        log('process', 'Exiting PHP process');
-        console.info(arguments);
-        phpscript.stdin.pause();
-        phpscript.kill('SIGINT');
-    };
-    process.on('exit', function(){ log('process', 'exit'); exitPHP.call(this, arguments);});
-    process.on('beforeExit', function(){ log('process', 'beforeExit'); exitPHP.call(this, arguments);});
-    process.on('disconnect', function(){ log('process', 'disconnect'); exitPHP.call(this, arguments);});
-} catch (e) {
-    log('ERROR', e);
-}
-/** ********** **/
-
 if (process.env.NODE_ENV !== 'production' || envToShare.APP_ENV === 'dev') {
     log('process', 'Starting Gulp process');
     const gulpscript = spawn('node', ['./node_modules/gulp4/bin/gulp', 'watch'], {stdio: 'inherit'});
