@@ -4,8 +4,6 @@ cd "`dirname $0`/.."
 
 pwd
 
-env
-
 if [[ ${PROC_TYPE} == 'node' ]]; then
     node server.js
 elif [[ ${PROC_TYPE} == 'php' ]]; then
