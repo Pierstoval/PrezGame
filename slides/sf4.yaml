@@ -31,7 +31,7 @@ sf4:
             - content: |
                 Pour participer, accédez à cette url:
 
-                https://piers.ovh/sf4
+                [piers.ovh/sf4](https://piers.ovh/sf4)
 
     start_3.0:
         title: 'Symfony 3.0'

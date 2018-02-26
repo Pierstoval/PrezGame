@@ -1,3 +1,5 @@
+@import url(//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700);
+
 * {
     margin: 0;
     padding: 0;
@@ -6,6 +8,9 @@
     box-sizing: border-box;
 }
 
+body, html, * {
+    font-family: "Open Sans", sans-serif;
+}
 body {
     &#button {
         background: black;
@@ -69,6 +74,10 @@ body {
 }
 
 .reveal {
+    .slide-number {
+        background-color: transparent;
+        color: black;
+    }
     p {
         pre code {
             display: block;
@@ -81,13 +90,35 @@ body {
             color: #a9b7c6;
         }
     }
-    section img {
-        border-color: #222;
-        &.noborder {
-            border: none transparent;
-            max-width: 100%;
-            background: transparent;
-            box-shadow: none;
+    section {
+        &:before, &:after {
+            display: block;
+            position: fixed;
+            top: 5px;
+            right: 15px;
+            font-size: 0.4em;
+            opacity: 0;
+        }
+        &.show {
+            &:before, &:after {
+                opacity: 1;
+            }
+        }
+        &:before {
+            content: "Cool : " attr(data-cool);
+        }
+        &:after {
+            top: 25px;
+            content: "Rien pigé : " attr(data-help);
+        }
+        img {
+            border-color: #222;
+            &.noborder {
+                border: none transparent;
+                max-width: 100%;
+                background: transparent;
+                box-shadow: none;
+            }
         }
     }
     .quote-source {

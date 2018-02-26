@@ -5,7 +5,7 @@ const socketio = require('socket.io');
 const fs = require('fs');
 const dateFormat = require('dateformat');
 const envToShare = {
-    'SOCKET_PORT': process.env.PORT || 80,
+    'PORT': process.env.PORT || 80,
 };
 if (process.env.APP_ENV) {
     envToShare.APP_ENV = process.env.APP_ENV;
@@ -112,7 +112,7 @@ io.on('connection', function(socket){
     /**
      * VISITOR socket interactions
      */
-    socket.on('help', async function (msg) {
+    socket.on('help', function (msg) {
         msg = msg.replace(/^"|"$/gi, '');
         msg = (msg ? msg.split(',') : []) || [];
         if (hostingSocket === null || currentSlide === null) {
@@ -124,19 +124,19 @@ io.on('connection', function(socket){
             return;
         }
 
-        let alreadyAsked = await msg.find(function (element) {
+        let alreadyAsked = msg.find(function (element) {
             return currentSlide === element;
         });
 
-        let found = await sessionData.sessions[socket.id].helpWantedForSlides.find(function (element) {
+        let found = sessionData.sessions[socket.id].helpWantedForSlides.find(function (element) {
             return currentSlide === element;
         });
 
         if (found || alreadyAsked) {
-            await socket.emit('message', 'Vous avez déjà demandé de l\'aide pour ce sujet…');
+            socket.emit('message', 'Vous avez déjà demandé de l\'aide pour ce sujet…');
         } else {
             sessionData.sessions[socket.id].helpWantedForSlides.push(currentSlide);
-            let nb = await personWhoDidNotUnderstand();
+            let nb = personWhoDidNotUnderstand();
             let message = 'Uh ?';
             switch (nb) {
                 case 0:
@@ -150,12 +150,13 @@ io.on('connection', function(socket){
                     break;
             }
             hostingSocket.emit('message', message);
+            hostingSocket.emit('helpSlide', nb);
             socket.emit('helpReturn', currentSlide);
             updatePresentationSession();
         }
     });
 
-    socket.on('cool', async function (msg) {
+    socket.on('cool', function (msg) {
         msg = msg.replace(/^"|"$/gi, '');
         msg = (msg ? msg.split(',') : []) || [];
         if (hostingSocket === null || currentSlide === null) {
@@ -167,11 +168,11 @@ io.on('connection', function(socket){
             return;
         }
 
-        let alreadyAsked = await msg.find(function (element) {
+        let alreadyAsked = msg.find(function (element) {
             return currentSlide === element;
         });
 
-        let found = await sessionData.sessions[socket.id].coolSlides.find(function (element) {
+        let found = sessionData.sessions[socket.id].coolSlides.find(function (element) {
             return currentSlide === element;
         });
 
@@ -179,7 +180,7 @@ io.on('connection', function(socket){
             socket.emit('message', 'Oui, on le sait, c\'est cool :D');
         } else {
             sessionData.sessions[socket.id].coolSlides.push(currentSlide);
-            let nb = await personWhoFindThisCool();
+            let nb = personWhoFindThisCool();
             let message = 'Uh ?';
             switch (nb) {
                 case 0:
@@ -193,6 +194,7 @@ io.on('connection', function(socket){
                     break;
             }
             hostingSocket.emit('message', message);
+            hostingSocket.emit('coolSlide', nb);
             socket.emit('coolReturn', currentSlide);
             updatePresentationSession();
         }
@@ -204,7 +206,7 @@ io.on('connection', function(socket){
     socket.on('stats', async function() {
         log('ws', `Seeking for statistics`);
 
-        let stats = await getStats();
+        let stats = getStats();
 
         socket.emit('stats', JSON.stringify(stats));
     });
@@ -237,14 +239,14 @@ function updatePresentationSession() {
     });
 }
 
-async function personWhoDidNotUnderstand() {
+function personWhoDidNotUnderstand() {
     if (!currentSlide) {
         return 0;
     }
 
     let number = 0;
 
-    await Object.keys(sessionData.sessions).forEach(function (socketId) {
+    Object.keys(sessionData.sessions).forEach(function (socketId) {
         let found = sessionData.sessions[socketId].helpWantedForSlides.find(function(element){
             return element === currentSlide;
         });
@@ -256,14 +258,14 @@ async function personWhoDidNotUnderstand() {
     return number;
 }
 
-async function personWhoFindThisCool() {
+function personWhoFindThisCool() {
     if (!currentSlide) {
         return 0;
     }
 
     let number = 0;
 
-    await Object.keys(sessionData.sessions).forEach(function (socketId) {
+    Object.keys(sessionData.sessions).forEach(function (socketId) {
         let found = sessionData.sessions[socketId].coolSlides.find(function(element){
             return element === currentSlide;
         });
@@ -275,13 +277,13 @@ async function personWhoFindThisCool() {
     return number;
 }
 
-async function getStats() {
+function getStats() {
     let stats = {};
 
-    await Object.keys(sessionData.sessions).forEach(async function (socketId) {
+    Object.keys(sessionData.sessions).forEach(function (socketId) {
         let slides = sessionData.sessions[socketId].helpWantedForSlides;
 
-        await slides.forEach(function(e){
+        slides.forEach(function(e){
             if (!stats[e]) {
                 stats[e] = 0;
             }

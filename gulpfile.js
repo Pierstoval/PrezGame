@@ -274,7 +274,7 @@ gulp.task('dump-slides', function (done) {
 
                 if (slideData.htmlattr) { slideData.htmlattr = ' '+slideData.htmlattr; }
 
-                slideData.content += "<section"+slideData.htmlattr+">\n";
+                slideData.content += "<section"+slideData.htmlattr+" data-cool=\"0\" data-help=\"0\">\n";
                 slideData.content += content_to_prepend;
 
                 /**
