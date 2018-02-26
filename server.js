@@ -18,22 +18,27 @@ console.info('envToShare', envToShare);
 
 /** PHP SCRIPT **/
 log('process', 'Starting PHP process');
-const phpscript = spawn('php', ['bin/console', 'server:run', '9999', '-vvv', '--no-ansi'], {stdio: 'inherit', env: envToShare});
-const exitPHP = () => {
-    log('process', 'Exitting PHP process');
-    phpscript.stdin.pause();
-    phpscript.kill('SIGINT');
-};
-process.on('exit', exitPHP);
-process.on('beforeExit', exitPHP);
-process.on('disconnect', exitPHP);
+try {
+    const phpscript = spawn('php', ['bin/console', 'server:run', '9999', '-vvv', '--no-ansi'], {stdio: 'inherit', env: envToShare});
+    const exitPHP = () => {
+        log('process', 'Exiting PHP process');
+        console.info(arguments);
+        phpscript.stdin.pause();
+        phpscript.kill('SIGINT');
+    };
+    process.on('exit', exitPHP);
+    process.on('beforeExit', exitPHP);
+    process.on('disconnect', exitPHP);
+} catch (e) {
+    log('ERROR', e);
+}
 /** ********** **/
 
 if (process.env.NODE_ENV !== 'production' || envToShare.APP_ENV === 'dev') {
     log('process', 'Starting Gulp process');
     const gulpscript = spawn('node', ['./node_modules/gulp4/bin/gulp', 'watch'], {stdio: 'inherit'});
     const exitGulp = () => {
-        log('process', 'Exitting Gulp process');
+        log('process', 'Exiting Gulp process');
         gulpscript.stdin.pause();
         gulpscript.kill('SIGINT');
     };
