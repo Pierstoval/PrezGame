@@ -33,21 +33,42 @@ sf4:
 
                 [piers.ovh/sf4](https://piers.ovh/sf4)
 
-    start_3.0:
-        title: 'Symfony 3.0'
+    reminder:
+        title: 'Petit rappel'
         sections:
             - content: |
-                | _Features_ | Sortie | Fin de maintenance | Fin de vie |
-                | --- | --- | --- | --- |
-                | 0 | 11/2015 | 07/2016 | 01/2017 |
+                Symfony c'est :
+
+                * Ses créateurs : [SensioLabs](https://sensiolabs.com)
+                * Ses contributeurs : Symfony [core team](https://symfony.com/doc/current/contributing/code/core_team.html) et la [communauté](https://symfony.com/contributors)
+                * Un framework full-stack (50 packages)
+                * Des packages stand-alones : 36 composants, 6 bundles et 5 bridges
+                * Des outils externes au framework comme Flex et Webpack Encore
+                * Vous ! ☺
+
+    start_summary:
+        title: 'Résumé'
+        sections:
+            - content: |
+                | Version | _Features_ | Sortie | Fin de maintenance | Fin de vie |
+                | :---: | :---: | :---: | :---: | :---: |
+                | 3.0 | 0 | 11/2015 | 07/2016 | 01/2017 |
+                | 3.1 | 131 | 05/2016 | 01/2017 | 07/2017 |
+                | 3.2 | 66 | 11/2016 | 07/2017 | 01/2018 |
+                | 3.3 | 267 | 05/2017 | 01/2018 | 07/2018 |
+                | 3.4 | 215 | 11/2017 | 11/2020 | 11/2021 |
+                | 4.0 | 0 | 11/2017 | 07/2018 | 01/2019 |
+        notes: |
+            _"Features"_ concerne aussi les dépréciations.
 
     start_3.1:
         title: 'Symfony 3.1'
-        sections:
-            - content: |
-                | _Features_ | Sortie | Fin de maintenance | Fin de vie |
-                | --- | --- | --- | --- |
-                | 131 | 05/2016 | 01/2017 | 07/2017 |
+        notes: |
+            16 slides
+
+            | Version | _Features_ | Sortie | Fin de maintenance | Fin de vie |
+            | :---: | :---: | :---: | :---: | :---: |
+            | 3.1 | 131 | 05/2016 | 01/2017 | 07/2017 |
 
     3-1-strict-image:
         title: '3.1: Validation d''image stricte'
@@ -432,11 +453,12 @@ sf4:
 
     start_3.2:
         title: 'Symfony 3.2'
-        sections:
-            - content: |
-                | _Features_ | Sortie | Fin de maintenance | Fin de vie |
-                | --- | --- | --- | --- |
-                | 166 | 11/2016 | 07/2017 | 01/2018 |
+        notes: |
+            28 slides
+
+            | Version | _Features_ | Sortie | Fin de maintenance | Fin de vie |
+            | :---: | :---: | :---: | :---: | :---: |
+            | 3.2 | 66 | 11/2016 | 07/2017 | 01/2018 |
 
     3-2-file-controller-helper:
         title: '3.1: Méthode `->file()` dans le contrôleur'
@@ -1065,11 +1087,12 @@ sf4:
 
     start_3.3:
         title: 'Symfony 3.3'
-        sections:
-            - content: |
-                | _Features_ | Sortie | Fin de maintenance | Fin de vie |
-                | --- | --- | --- | --- |
-                | 267 | 05/2017 | 01/2018 | 07/2018 |
+        notes: |
+            23 slides
+
+            | Version | _Features_ | Sortie | Fin de maintenance | Fin de vie |
+            | :---: | :---: | :---: | :---: | :---: |
+            | 3.3 | 267 | 05/2017 | 01/2018 | 07/2018 |
 
     3-3-optional-class-for-named-services:
         title: '3.3: FQCN pour le nom d''un service'
@@ -1564,11 +1587,12 @@ sf4:
 
     start_3.4:
         title: 'Symfony 3.4 (LTS)'
-        sections:
-            - content: |
-                | _Features_ | Sortie | Fin de maintenance | Fin de vie |
-                | --- | --- | --- | --- |
-                | 215 | 11/2017 | 11/2020 | 11/2021 |
+        notes: |
+            22 slides
+
+            | Version | _Features_ | Sortie | Fin de maintenance | Fin de vie |
+            | :---: | :---: | :---: | :---: | :---: |
+            | 3.4 | 215 | 11/2017 | 11/2020 | 11/2021 |
 
     3-4-lock-component:
         title: '3.4: Composant Lock'
@@ -1637,10 +1661,10 @@ sf4:
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-disable-global-form-themes
 
     3-4-guard-authentication-improvements:
-        title: '3.4: Déprécations & améliorations du Guard'
+        title: '3.4: Dépréciations & améliorations du Guard'
         sections:
             - content: |
-                  * Déprécations de `GuardAuthenticatorInterface` au profit de `AuthenticatorInterface`.
+                  * Dépréciations de `GuardAuthenticatorInterface` au profit de `AuthenticatorInterface`.
                   * `getCredentials()` doit soit renvoyer des credentials, soit une exception.
                   * Ajout d'une méthode `supports()` pour compenser le changement de `getCredentials()`.
             - type: quote
@@ -2019,10 +2043,27 @@ sf4:
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-validator-information-in-the-symfony-profiler
 
     start_4.0:
-        title: 'Symfony 4.0'
         sections:
             - content: |
-                | _Features_ | Sortie | Fin de maintenance | Fin de vie |
-                | --- | --- | --- | --- |
-                | 0 | 11/2017 | 07/2018 | 01/2019 |
+                  # Symfony 4.0
+                  # Flex
+        notes: |
+            | Version | _Features_ | Sortie | Fin de maintenance | Fin de vie |
+            | :---: | :---: | :---: | :---: | :---: |
+            | 4.0 | 0 | 11/2017 | 07/2018 | 01/2019 |
+            | Flex | - | 05/2017 | - | - |
+
+    thanks:
+        sections:
+            - type: raw
+              content: |
+
+                <h1>Merci !</h1>
+
+                <br>
+                <br>
+                <br>
+                <br>
+
+                <code>@pierstoval</code>
 
