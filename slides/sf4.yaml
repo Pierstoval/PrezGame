@@ -46,6 +46,26 @@ sf4:
                 * Des outils externes au framework comme Flex et Webpack Encore
                 * Vous ! ☺
 
+    sf4_fake:
+        title: Symfony 4.0
+
+    sf4_fake_thanks:
+        sections:
+            - type: raw
+              content: |
+
+                <h1>Merci !</h1>
+                <br>
+                <br>
+                <br>
+                <code>@pierstoval</code>
+                <br>
+                <br>
+                <br>
+            - is_fragment: true
+              content: |
+                Je plaisante 😉. On continue &rarr;
+
     start_summary:
         title: 'Résumé'
         sections:
@@ -179,19 +199,19 @@ sf4:
             Désormais, `Process` implémente `IteratorAggregate`, et l'iterator renvoyé renvoie un générateur (PHP5.5)
             qui récupère le flux de sortie à chaque itération.
 
-    3-1-wtd_and_toolbar:
-        title: '3.1: Améliorations de la _debug toolbar_ et du _profiler_'
-        title_htmlattr: data-markdown
-        sections:
-            - content: |
-                  * Affichage des erreurs "silencieuses" dans un onglet à part.
-                  * Recherche d'un profil par code HTTP.
-                  * Un contexte plus verbeux est ajouté dans certaines instructions dans les logs.
-                  * Affiche le code de réponse HTTP pour les requêtes AJAX.
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-1-web-debug-toolbar-and-profiler-enhancements
-        notes: |
-            Les erreurs silencieuses sont celles qui sont mises en sourdine avec un `@`.
+#    3-1-wtd_and_toolbar:
+#        title: '3.1: Améliorations de la _debug toolbar_ et du _profiler_'
+#        title_htmlattr: data-markdown
+#        sections:
+#            - content: |
+#                  * Affichage des erreurs "silencieuses" dans un onglet à part.
+#                  * Recherche d'un profil par code HTTP.
+#                  * Un contexte plus verbeux est ajouté dans certaines instructions dans les logs.
+#                  * Affiche le code de réponse HTTP pour les requêtes AJAX.
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-1-web-debug-toolbar-and-profiler-enhancements
+#        notes: |
+#            Les erreurs silencieuses sont celles qui sont mises en sourdine avec un `@`.
 
     3-1-data_uri_normalizer:
         title: '3.1: Data URI Normalizer'
@@ -302,41 +322,59 @@ sf4:
         notes: |
             Lorsqu'on utilise une regex, le helper va stopper les tests, pour faciliter la découverte de ce test.
 
+#    3-1-frameworkbundle-improvements:
+#        title: '3.1: Améliorations du `FrameworkBundle`'
+#        title_htmlattr: data-markdown
+#        sections:
+#            - content: |
+#                  * Les `FormType` du framework définis en tant que services sont dépréciés.
+#                  * Rajouté une méthode `json()` dans le contrôleur de base:
+#                    ```
+#                    public function indexAction()
+#                    {
+#                        // Avant
+#                        return new JsonResponse($data);
+#
+#                        // Après
+#                        return $this->json($data);
+#                    }
+#                    ```
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-1-frameworkbundle-improvements
+#        notes: |
+#            Pour les forms, cela ne concerne que ceux du framework. C'est pour migrer les services "aliasés" vers
+#            l'utilisation du FQCN.
+#
+#            La méthode `json()` accepte aussi les codes HTTP et les en-têtes de réponse.
+
     3-1-frameworkbundle-improvements:
-        title: '3.1: Améliorations du `FrameworkBundle`'
+        title: '3.1: Méthode `json()` dans le contrôleur'
         title_htmlattr: data-markdown
         sections:
-            - content: |
-                  * Les `FormType` du framework définis en tant que services sont dépréciés.
-                  * Rajouté une méthode `json()` dans le contrôleur de base:
-                    ```
-                    public function indexAction()
-                    {
-                        // Avant
-                        return new JsonResponse($data);
+            - type: code
+              content: |
+                public function indexAction()
+                {
+                    // Avant
+                    return new JsonResponse($data);
 
-                        // Après
-                        return $this->json($data);
-                    }
-                    ```
+                    // Après
+                    return $this->json($data);
+                }
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-1-frameworkbundle-improvements
         notes: |
-            Pour les forms, cela ne concerne que ceux du framework. C'est pour migrer les services "aliasés" vers
-            l'utilisation du FQCN.
-
             La méthode `json()` accepte aussi les codes HTTP et les en-têtes de réponse.
 
-
-    3-1-forwards-and-redirects-in-the-toolbar-and-profiler:
-        title: '3.1: Améliorations de la _debug toolbar_ et du _profiler_'
-        title_htmlattr: data-markdown
-        sections:
-            - content: |
-                  * Les redirections et les `forward` sont visibles dans la toolbar et dans le profiler.
-                  * Les sous-requêtes sont désormais affichées dans un onglet dédié du profiler.
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-1-forwards-and-redirects-in-the-toolbar-and-profiler
+#    3-1-forwards-and-redirects-in-the-toolbar-and-profiler:
+#        title: '3.1: Améliorations de la _debug toolbar_ et du _profiler_'
+#        title_htmlattr: data-markdown
+#        sections:
+#            - content: |
+#                  * Les redirections et les `forward` sont visibles dans la toolbar et dans le profiler.
+#                  * Les sous-requêtes sont désormais affichées dans un onglet dédié du profiler.
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-1-forwards-and-redirects-in-the-toolbar-and-profiler
 
     3-1-yaml-deprecations:
         title: '3.1: Dépréciations YAML'
@@ -381,33 +419,33 @@ sf4:
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-1-yaml-deprecations
 
-    3-1-customizable-yaml-parsing-and-dumping:
-        title: '3.1: Configuration du composant Yaml'
-        sections:
-            - content: |
-                  Introduction de flags de configuration.
-
-            - htmlattr: 'style="width: 49%; float: left;"'
-              content: |
-                  Dumper :
-
-                  * `Yaml::DUMP_OBJECT`
-                  * `Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE`
-                  * `Yaml::DUMP_OBJECT_AS_MAP`
-                  * `Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK`
-
-            - htmlattr: 'style="width: 49%; float: right;"'
-              content: |
-                  Parser :
-
-                  * `Yaml::PARSE_EXCEPTION_ON_INVALID_TYPE`
-                  * `Yaml::PARSE_OBJECT`
-                  * `Yaml::PARSE_OBJECT_FOR_MAP`
-                  * `Yaml::PARSE_DATETIME`
-
-            - htmlattr: 'style="clear:both;"'
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-1-customizable-yaml-parsing-and-dumping
+#    3-1-customizable-yaml-parsing-and-dumping:
+#        title: '3.1: Configuration du composant Yaml'
+#        sections:
+#            - content: |
+#                  Introduction de flags de configuration.
+#
+#            - htmlattr: 'style="width: 49%; float: left;"'
+#              content: |
+#                  Dumper :
+#
+#                  * `Yaml::DUMP_OBJECT`
+#                  * `Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE`
+#                  * `Yaml::DUMP_OBJECT_AS_MAP`
+#                  * `Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK`
+#
+#            - htmlattr: 'style="width: 49%; float: right;"'
+#              content: |
+#                  Parser :
+#
+#                  * `Yaml::PARSE_EXCEPTION_ON_INVALID_TYPE`
+#                  * `Yaml::PARSE_OBJECT`
+#                  * `Yaml::PARSE_OBJECT_FOR_MAP`
+#                  * `Yaml::PARSE_DATETIME`
+#
+#            - htmlattr: 'style="clear:both;"'
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-1-customizable-yaml-parsing-and-dumping
 
     3-1-cache-component:
         title: '3.1: Composant Cache PSR-6'
@@ -436,20 +474,20 @@ sf4:
 
             Le cache respecte PSR-6 et plein de composants l'utilisent (Serializer, Validator...)
 
-    3-1-misc:
-        title: '3.1: Autres'
-        sections:
-            - content: |
-                  * Amélioration du composant Ldap
-                  * Amélioration des traductions au format XLIFF
-                  * Optimisations des composants DoctrineBridge, Serializer, Process
-                  * Création de l'event `kernel.controller_arguments`
-                  * Dépréciation de `AbstractFormLoginAuthenticator::onAuthenticationSuccess()`
-                  * Dépréciation des chemins de templates absolus
-                  * Dépréciation de `choices_as_values` dans les `FormType`
-        notes: |
-            Pour `AbstractFormLoginAuthenticator::onAuthenticationSuccess`, il faut désormais l'implémenter soi-même et
-            utilise le `TargetPathTrait`, créé pour l'occasion.
+#    3-1-misc:
+#        title: '3.1: Autres'
+#        sections:
+#            - content: |
+#                  * Amélioration du composant Ldap
+#                  * Amélioration des traductions au format XLIFF
+#                  * Optimisations des composants DoctrineBridge, Serializer, Process
+#                  * Création de l'event `kernel.controller_arguments`
+#                  * Dépréciation de `AbstractFormLoginAuthenticator::onAuthenticationSuccess()`
+#                  * Dépréciation des chemins de templates absolus
+#                  * Dépréciation de `choices_as_values` dans les `FormType`
+#        notes: |
+#            Pour `AbstractFormLoginAuthenticator::onAuthenticationSuccess`, il faut désormais l'implémenter soi-même et
+#            utilise le `TargetPathTrait`, créé pour l'occasion.
 
     start_3.2:
         title: 'Symfony 3.2'
@@ -529,7 +567,7 @@ sf4:
             Si on utilise le composant de façon standalone, il faut rajouter le flag `Yaml::PARSE_CONSTANT` au parser.
 
     3-2-better-readability-for-yaml-numeric-literals:
-        title: '3.2: Better readability for YAML numeric literals'
+        title: '3.2: Meilleure lisibilité pour les nombres en Yaml'
         sections:
             - type: code
               code_language: yaml
@@ -560,48 +598,48 @@ sf4:
             Si on veut échapper le `_`, il suffit d'utiliser des guillemets simples ou doubles pour que ce soit traité
             comme une chaîne de caractères.
 
-    3-2-compiler-passes-improvements:
-        title: '3.2: Amélioration des passes de compilation'
-        sections:
-            - content: |
-                  Ajouté une priorité :
-            - type: code
-              content: |
-                  public function addCompilerPass(CompilerPassInterface $pass, $type = PassConfig::TYPE_BEFORE_OPTIMIZATION, int $priority = 0);
-            - content: |
-                  Tri des services tagués par un champ `priority` :
-            - type: code
-              code_language: yaml
-              htmlattr: >
-                  style="width: 37%; float: left;"
-              content: |
-                  services:
-                      App\Test\MonthlyTest:
-                          tags:
-                              - { name: app.test, priority: 2 }
-                      App\Test\DailyTest:
-                          tags:
-                              - { name: app.test, priority: 1 }
-            - type: code
-              htmlattr: >
-                  style="width: 63%; float: right;"
-              content: |
-                  class CustomPass implements CompilerPassInterface
-                  {
-                      use PriorityTaggedServiceTrait;
-
-                      public function process(ContainerBuilder $container)
-                      {
-                          $tests = $this->findAndSortTaggedServices('app.test', $container);
-
-                          // ...
-                      }
-                  }
-            - htmlattr: 'style="clear: both;"'
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-2-compiler-passes-improvements
-        notes: |
-            Chiffre plus élevé = plus haut dans la liste.
+#    3-2-compiler-passes-improvements:
+#        title: '3.2: Amélioration des passes de compilation'
+#        sections:
+#            - content: |
+#                  Ajouté une priorité :
+#            - type: code
+#              content: |
+#                  public function addCompilerPass(CompilerPassInterface $pass, $type = PassConfig::TYPE_BEFORE_OPTIMIZATION, int $priority = 0);
+#            - content: |
+#                  Tri des services tagués par un champ `priority` :
+#            - type: code
+#              code_language: yaml
+#              htmlattr: >
+#                  style="width: 37%; float: left;"
+#              content: |
+#                  services:
+#                      App\Test\MonthlyTest:
+#                          tags:
+#                              - { name: app.test, priority: 2 }
+#                      App\Test\DailyTest:
+#                          tags:
+#                              - { name: app.test, priority: 1 }
+#            - type: code
+#              htmlattr: >
+#                  style="width: 63%; float: right;"
+#              content: |
+#                  class CustomPass implements CompilerPassInterface
+#                  {
+#                      use PriorityTaggedServiceTrait;
+#
+#                      public function process(ContainerBuilder $container)
+#                      {
+#                          $tests = $this->findAndSortTaggedServices('app.test', $container);
+#
+#                          // ...
+#                      }
+#                  }
+#            - htmlattr: 'style="clear: both;"'
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-2-compiler-passes-improvements
+#        notes: |
+#            Chiffre plus élevé = plus haut dans la liste.
 
     3-2-dateinterval-form-type:
         title: '3.2: `DateIntervalType`'
@@ -625,139 +663,120 @@ sf4:
 
             Le format d'intervalle est ISO 8601.
 
-    3-2-tagged-cache:
-        title: '3.2: Tags dans le cache'
-        sections:
-            - type: code
-              content: |
+#    3-2-tagged-cache:
+#        title: '3.2: Tags dans le cache'
+#        sections:
+#            - type: code
+#              content: |
+#
+#                  $review = $cacheAdapter->getItem('reviews-'.$reviewId);
+#
+#                  $review->set('...');
+#
+#                  $review->tag(['reviews', 'products', 'product-'.$productId]);
+#
+#                  $cache->invalidateTags('products');
+#
+#                  $cache->invalidateTags('product-123');
+#
+#                  $cache->invalidateTags(['products', 'reviews']);
+#
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-2-tagged-cache
+#        notes: |
+#            C'est un exemple dans un e-commerce avec des reviews de produits.
+#
+#            Une fois le cache invalidé, la méthode `->isHit()` d'un nouveau `CacheItem` récupéré renverra `false`.
 
-                  $review = $cacheAdapter->getItem('reviews-'.$reviewId);
+#    3-2-console-improvements-part-1:
+#        title: '3.2: Alias de commandes'
+#        sections:
+#            - content: |
+#                  Les alias ne sont plus affichés comme des commandes à part entière.
+#            - type: code
+#              code_language: shell
+#              content: |
+#                  $ bin/console list
+#
+#
+#                  # Avant
+#                  Available commands:
+#                      foo                      Lorem Ipsum...  (ceci est un alias...)
+#                    app:
+#                      app:very:long:name       Lorem Ipsum...
+#
+#
+#                  # Après
+#                  Available commands:
+#                    app:
+#                      app:very:long:name       [foo] Lorem Ipsum...
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-1
 
-                  $review->set('...');
+#    3-2-console-improvements-part-1-2:
+#        title: '3.2: Améliorations de la console'
+#        sections:
+#            - content: |
+#                  * Même avec l'option `-q`, les erreurs s'affichent désormais.
+#                  * Nouveau paramètre dans `Application::setDefaultCommand('name', true)` pour les applications mono-commandes.
+#                  * Une interface `StreamableInputInterface` pour faciliter le flux d'entrée en console.
+#                  * Un trait `LockableTrait` pour lock une exécution.
+#                  * Commandes masquées dans `bin/console list`.
+#            - htmlattr: 'style="font-size: 0.6em;text-align: right;margin-right: 50px;"'
+#              content: |
+#                Sources:
+#
+#                * https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-1
+#                * https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-2
+#                * https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-3
+#        notes: |
+#            L'interface `StreamableInputInterface` est notamment utilisée pour le QuestionHelper
+#
+#            Le trait `LockableTrait` est amélioré en 3.4 grâce au composant Lock.
+#
+#            Méthode `->setHidden(true)` dans la méthode `configure()` des commandes.
 
-                  $review->tag(['reviews', 'products', 'product-'.$productId]);
-
-                  $cache->invalidateTags('products');
-
-                  $cache->invalidateTags('product-123');
-
-                  $cache->invalidateTags(['products', 'reviews']);
-
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-2-tagged-cache
-        notes: |
-            C'est un exemple dans un e-commerce avec des reviews de produits.
-
-            Une fois le cache invalidé, la méthode `->isHit()` d'un nouveau `CacheItem` récupéré renverra `false`.
-
-    3-2-console-improvements-part-1:
-        title: '3.2: Alias de commandes'
-        sections:
-            - content: |
-                  Les alias ne sont plus affichés comme des commandes à part entière.
-            - type: code
-              code_language: shell
-              content: |
-                  $ bin/console list
-
-
-                  # Avant
-                  Available commands:
-                      foo                      Lorem Ipsum...  (ceci est un alias...)
-                    app:
-                      app:very:long:name       Lorem Ipsum...
-
-
-                  # Après
-                  Available commands:
-                    app:
-                      app:very:long:name       [foo] Lorem Ipsum...
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-1
-
-    3-2-console-improvements-part-1-2:
-        title: '3.2: Améliorations de la console'
-        sections:
-            - content: |
-                  * Même avec l'option `-q`, les erreurs s'affichent désormais.
-                  * Nouveau paramètre dans `Application::setDefaultCommand('name', true)` pour les applications mono-commandes.
-                  * Une interface `StreamableInputInterface` pour faciliter le flux d'entrée en console.
-                  * Un trait `LockableTrait` pour lock une exécution.
-                  * Commandes masquées dans `bin/console list`.
-            - htmlattr: 'style="font-size: 0.6em;text-align: right;margin-right: 50px;"'
-              content: |
-                Sources:
-
-                * https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-1
-                * https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-2
-                * https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-3
-        notes: |
-            L'interface `StreamableInputInterface` est notamment utilisée pour le QuestionHelper
-
-            Le trait `LockableTrait` est amélioré en 3.4 grâce au composant Lock.
-
-            Méthode `->setHidden(true)` dans la méthode `configure()` des commandes.
-
-    3-2-console-improvements-part-1-3:
-        title: '3.2: Améliorations du `CommandTester`'
-        title_htmlattr: data-markdown
-        sections:
-            - type: code
-              code_language: php
-              htmlattr: >
-                  style="width: 55%; float: left;"
-              content: |
-                  // Avant
-
-                  use Symfony\Component\Console\Tester\CommandTester;
-
-                  $commandTester = new CommandTester($command);
-                  $helper = $command->getHelper('question');
-                  $helper->setInputStream($this->getInputStream("123\nfoo\nbar\n"));
-
-                  protected function getInputStream($input)
-                  {
-                      $stream = fopen('php://memory', 'r+', false);
-                      fputs($stream, $input);
-                      rewind($stream);
-                      return $stream;
-                  }
-
-            - type: code
-              htmlattr: >
-                  style="width: 45%; float: right;"
-              content: |
-                  // Après
-
-                  use Symfony\Component\Console\Tester\CommandTester;
-
-                  $commandTester = new CommandTester($command);
-                  $commandTester->setInputs(['123', 'foo', 'bar'])
-            - htmlattr: 'style="clear:both;"'
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-1
+#    3-2-console-improvements-part-1-3:
+#        title: '3.2: Améliorations du `CommandTester`'
+#        title_htmlattr: data-markdown
+#        sections:
+#            - type: code
+#              code_language: php
+#              htmlattr: >
+#                  style="width: 55%; float: left;"
+#              content: |
+#                  // Avant
+#
+#                  use Symfony\Component\Console\Tester\CommandTester;
+#
+#                  $commandTester = new CommandTester($command);
+#                  $helper = $command->getHelper('question');
+#                  $helper->setInputStream($this->getInputStream("123\nfoo\nbar\n"));
+#
+#                  protected function getInputStream($input)
+#                  {
+#                      $stream = fopen('php://memory', 'r+', false);
+#                      fputs($stream, $input);
+#                      rewind($stream);
+#                      return $stream;
+#                  }
+#
+#            - type: code
+#              htmlattr: >
+#                  style="width: 45%; float: right;"
+#              content: |
+#                  // Après
+#
+#                  use Symfony\Component\Console\Tester\CommandTester;
+#
+#                  $commandTester = new CommandTester($command);
+#                  $commandTester->setInputs(['123', 'foo', 'bar'])
+#            - htmlattr: 'style="clear:both;"'
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-1
 
     3-2-console-improvements-part-2:
         title: '3.2: Console : la phase `Terminal`'
-        title_htmlattr: data-markdown
-        sections:
-            - type: code
-              content: |
-                  class Terminal
-                  {
-                      public function getWidth();
-                      public function getHeight();
-                  }
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-2-console-improvements-part-2
-        notes: |
-            En plus de ça, utilise les variables d'env `COLUMNS` et `LINES` définies par certains terminaux, et est
-            compatible avec ANSICON (outil pour Windows).
-
-            Très utile pour les progress-bar.
-
-    3-2-console-improvements-part-2-2:
-        title: '3.2: Améliorations de la console'
         title_htmlattr: data-markdown
         sections:
             - type: code
@@ -835,7 +854,7 @@ sf4:
             LanguageType, LocaleType et TimezoneType.
 
     3-2-user-value-resolver-for-controllers:
-        title: '3.2: User value resolver for controllers'
+        title: '3.2: Injection de l''utilisateur dans les contrôleurs'
         sections:
             - type: code
               content: |
@@ -844,10 +863,10 @@ sf4:
 
                   class DefaultController extends Controller
                   {
-                      // when the user is mandatory
+                      // Quand l'utilisateur est obligatoire
                       public function fooAction(UserInterface $user) { ... }
 
-                      // when the user is optional (e.g. can be anonymous)
+                      // Quand l'utilisateur est facultatif (recommandé, dans le doute)
                       public function barAction(UserInterface $user = null) { ... }
                   }
             - type: quote
@@ -860,36 +879,38 @@ sf4:
             Attention : si vous utilisez les `service_arguments`, vous aurez un problème si vous avez un seul utilisateur
             dans un provider de type `memory`.
 
-    3-2-httpfoundation-improvements:
-        title: '3.2: Cookies `same-site`'
-        title_htmlattr: data-markdown
-        sections:
-            - type: code
-              content: |
-                  $cookie = new Cookie(..., Cookie::SAMESITE_LAX);
-                  $cookie = new Cookie(..., Cookie::SAMESITE_STRICT);
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-2-httpfoundation-improvements
-        notes: |
-            Fait partie de la RFC 6265 du 6 avril 2016 qui n'est pas encore acceptée.
+            Dans certains cas, une simple annotation `@IsGranted()` ou `@Security()` suffit.
 
-            Protège des attaques CSRF car permet aux applications de désactiver les cookies qui n'auraient pas la même
-            origine.
+#    3-2-httpfoundation-improvements:
+#        title: '3.2: Cookies `same-site`'
+#        title_htmlattr: data-markdown
+#        sections:
+#            - type: code
+#              content: |
+#                  $cookie = new Cookie(..., Cookie::SAMESITE_LAX);
+#                  $cookie = new Cookie(..., Cookie::SAMESITE_STRICT);
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-2-httpfoundation-improvements
+#        notes: |
+#            Fait partie de la RFC 6265 du 6 avril 2016 qui n'est pas encore acceptée.
+#
+#            Protège des attaques CSRF car permet aux applications de désactiver les cookies qui n'auraient pas la même
+#            origine.
+#
+#            Le mode laxiste permet de prendre en compte certains cookies pour des requêtes GET, comme des clics de liens.
 
-            Le mode laxiste permet de prendre en compte certains cookies pour des requêtes GET, comme des clics de liens.
-
-    3-2-httpfoundation-improvements-2:
-        title: '3.2: En-têtes de cache corrigées'
-        sections:
-            - content: |
-                  * Les réponses de code 301 n'ajoutent plus automatiquement l'en-tête `no-cache`.
-                  * Les réponses avec l'en-tête `no-cache` se voient ajouter `private` si ce n'est pas précisé.
-
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-2-httpfoundation-improvements
-        notes: |
-            Rappel : les 301 sont toujours mises en cache par le browser, même en dev, donc on peut utiliser le
-            paramètre `intercept_redirects: false` du web profiler de Symfony au cas où.
+#    3-2-httpfoundation-improvements-2:
+#        title: '3.2: En-têtes de cache corrigées'
+#        sections:
+#            - content: |
+#                  * Les réponses de code 301 n'ajoutent plus automatiquement l'en-tête `no-cache`.
+#                  * Les réponses avec l'en-tête `no-cache` se voient ajouter `private` si ce n'est pas précisé.
+#
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-2-httpfoundation-improvements
+#        notes: |
+#            Rappel : les 301 sont toujours mises en cache par le browser, même en dev, donc on peut utiliser le
+#            paramètre `intercept_redirects: false` du web profiler de Symfony au cas où.
 
     3-2-httpfoundation-improvements-3:
         title: '3.2: Méthodes _idempotent_'
@@ -924,7 +945,7 @@ sf4:
               quote_source: https://symfony.com/doc/current/components/workflow.html
 
     3-2-improved-private-services:
-        title: '3.2: Services privés'
+        title: '3.2: Services privés améliorés'
         sections:
             - type: code
               code_language: yaml
@@ -942,26 +963,26 @@ sf4:
 
             La version "pseudo-publique" est dépréciée et sera supprimée en 4.0.
 
-    3-2-filesystem-improvements:
-        title: '3.2: Liens symboliques avec `Filesystem`'
-        title_htmlattr: data-markdown
-        sections:
-            - type: code
-              content: |
-                  public function readlink($path, $canonicalize = false);
-                  public function hardlink($originFile, string|array $targetFiles);
-
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-2-filesystem-improvements
-        notes: |
-            "canonicalize" à true vérifie l'existence du fichier avant, et si le fichier final résolu existe.
-
-            Sous windows, tout lien résolu va forcément résoudre tous les liens jusqu'au fichier final.
-
-            Sous mac & linux, cela résoud uniquement le "prochain" lien.
-
-            `hardlink()` crée un lien en dur qui pointe vers exactement le même "inode" que le fichier, rendant le
-            filesystem plus performant, et on peut du coup renommer le fichier cible sans casser le lien symbolique.
+#    3-2-filesystem-improvements:
+#        title: '3.2: Liens symboliques avec `Filesystem`'
+#        title_htmlattr: data-markdown
+#        sections:
+#            - type: code
+#              content: |
+#                  public function readlink($path, $canonicalize = false);
+#                  public function hardlink($originFile, string|array $targetFiles);
+#
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-2-filesystem-improvements
+#        notes: |
+#            "canonicalize" à true vérifie l'existence du fichier avant, et si le fichier final résolu existe.
+#
+#            Sous windows, tout lien résolu va forcément résoudre tous les liens jusqu'au fichier final.
+#
+#            Sous mac & linux, cela résoud uniquement le "prochain" lien.
+#
+#            `hardlink()` crée un lien en dur qui pointe vers exactement le même "inode" que le fichier, rendant le
+#            filesystem plus performant, et on peut du coup renommer le fichier cible sans casser le lien symbolique.
 
     3-2-runtime-environment-variables:
         title: '3.2: Runtime Environment Variables'
@@ -1063,27 +1084,27 @@ sf4:
             Permet d'appeler `getFirewallConfig(Request $request)` sur le service `FirewallMap` afin de récupérer la
             configuration du firewall détecté durant l'event `kernel.request`.
 
-    3-2-dx-improvements:
-        title: '3.2: DX'
-        sections:
-            - content: |
-                  * `$progress->advance()` permet les valeurs négatives.
-                  * `framework.ide: phpstorm` pour des liens de debug
-                  * Constructeur statique `JsonResponse::fromJsonString($jsonString)`
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-2-dx-improvements
+#    3-2-dx-improvements:
+#        title: '3.2: DX'
+#        sections:
+#            - content: |
+#                  * `$progress->advance()` permet les valeurs négatives.
+#                  * `framework.ide: phpstorm` pour des liens de debug
+#                  * Constructeur statique `JsonResponse::fromJsonString($jsonString)`
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-2-dx-improvements
 
-    3-2-misc-improvements:
-        title: '3.2: Autres améliorations'
-        sections:
-            - content: |
-                  * Moins de dépendances dans le FrameworkBundle
-                  * Un _dumper_ AST pour ExpressionLanguage
-                  * Perfs accrues avec un chargement sélectif pour les extensions Twig
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-2-misc-improvements
-        notes: |
-            Les extensions Twig ne sont pas toutes chargées si le composant associé n'est pas installé via Composer.
+#    3-2-misc-improvements:
+#        title: '3.2: Autres améliorations'
+#        sections:
+#            - content: |
+#                  * Moins de dépendances dans le FrameworkBundle
+#                  * Un _dumper_ AST pour ExpressionLanguage
+#                  * Perfs accrues avec un chargement sélectif pour les extensions Twig
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-2-misc-improvements
+#        notes: |
+#            Les extensions Twig ne sont pas toutes chargées si le composant associé n'est pas installé via Composer.
 
     start_3.3:
         title: 'Symfony 3.3'
@@ -1150,7 +1171,7 @@ sf4:
                     _instanceof:
                         Symfony\Component\Console\Command\Command:
                             tags: ['console.command']
-                            public: true # needed because commands must be public
+                            public: true
 
                         Twig_ExtensionInterface:
                             tags: ['twig.extension']
@@ -1192,12 +1213,11 @@ sf4:
                       App\:
                           resource: ../src/{Controller}
                           public: true
-
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-psr-4-based-service-discovery
 
     3-3-weblink-component:
-        title: '3.3: WebLink component'
+        title: '3.3: Composant WebLink'
         sections:
             - content: |
                   Nouvelles fonctions dans Twig :
@@ -1435,8 +1455,23 @@ sf4:
 
             Il y a aussi `ServiceSubscriberInterface::getSubscribedServices()`.
 
+            Ce container est utilisé pour le contrôleur de base.
+
+    3-3-abstract-controller:
+        title: '3.3: `AbstractController`'
+        title_htmlattr: data-markdown
+        sections:
+            - content: |
+                  `Symfony\Bundle\FrameworkBundle\Controller\Controller`
+
+                  devient
+
+                  `Symfony\Bundle\FrameworkBundle\Controller\AbstractController`
+        notes: |
+            Utilise un service locator, et pas `ContainerAwareInterface`.
+
     3-3-simple-cache:
-        title: '3.3: Cache PSR-16'
+        title: '3.3: Cache PSR-16 minimaliste'
         sections:
             - type: code
               content: |
@@ -1489,61 +1524,61 @@ sf4:
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-webserverbundle
 
-    3-3-cookie-improvements:
-        title: '3.3: Cookie improvements'
-        sections:
-            - type: code
-              content: |
-                  // "max-age" attribute
-                  $cookie = new Cookie('foo', 'bar', strtotime('now + 10 minutes'));
+#    3-3-cookie-improvements:
+#        title: '3.3: Cookie improvements'
+#        sections:
+#            - type: code
+#              content: |
+#                  // "max-age" attribute
+#                  $cookie = new Cookie('foo', 'bar', strtotime('now + 10 minutes'));
+#
+#                  // "set" instead of using a Cookie object
+#                  $response->headers->set('set-cookie', 'foo=bar', false);
+#
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-3-cookie-improvements
+#        notes: |
+#            "max-age" a une plus haute précédence que "expires".
+#
+#            Et c'est un nombre de secondes, plus facile pour éviter d'avoir à adapter la timezone du serveur à celle du
+#            client.
 
-                  // "set" instead of using a Cookie object
-                  $response->headers->set('set-cookie', 'foo=bar', false);
-
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-cookie-improvements
-        notes: |
-            "max-age" a une plus haute précédence que "expires".
-
-            Et c'est un nombre de secondes, plus facile pour éviter d'avoir à adapter la timezone du serveur à celle du
-            client.
-
-    3-3-added-new-shortcut-methods:
-        title: '3.3: Quelques raccourcis DX'
-        sections:
-            - type: code
-              content: |
-                  // Avant
-                  $container->register('app.twig_extension', AppExtension::class)
-                      ->setAutowired(true)
-                  ;
-
-                  // Après
-                  $container->autowire('app.twig_extension', AppExtension::class)
-            - type: code
-              content: |
-                  $node = new ArrayNodeDefinition('name');
-
-                  // Avant
-                  $node->prototype('integer')->max(10);
-
-                  // Après
-                  $node->integerPrototype()->max(10);
-            - type: code
-              code_language: yaml
-              content: |
-                  services:
-                      AppBundle\Twig\AppExtension
-                          # Avant
-                          tags:
-                              - { name: twig.extension }
-
-                          # Après
-                          tags: ['twig.extension']
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-3-added-new-shortcut-methods
-        notes: |
-            Le `integerPrototype()` permet notamment de pouvoir utiliser l'auto-complétion de l'IDE
+#    3-3-added-new-shortcut-methods:
+#        title: '3.3: Quelques raccourcis DX'
+#        sections:
+#            - type: code
+#              content: |
+#                  // Avant
+#                  $container->register('app.twig_extension', AppExtension::class)
+#                      ->setAutowired(true)
+#                  ;
+#
+#                  // Après
+#                  $container->autowire('app.twig_extension', AppExtension::class)
+#            - type: code
+#              content: |
+#                  $node = new ArrayNodeDefinition('name');
+#
+#                  // Avant
+#                  $node->prototype('integer')->max(10);
+#
+#                  // Après
+#                  $node->integerPrototype()->max(10);
+#            - type: code
+#              code_language: yaml
+#              content: |
+#                  services:
+#                      AppBundle\Twig\AppExtension
+#                          # Avant
+#                          tags:
+#                              - { name: twig.extension }
+#
+#                          # Après
+#                          tags: ['twig.extension']
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-3-added-new-shortcut-methods
+#        notes: |
+#            Le `integerPrototype()` permet notamment de pouvoir utiliser l'auto-complétion de l'IDE
 
     3-3-improved-the-profiler-configuration-panel:
         title: '3.3: Infos sur Symfony dans le _profiler_'
@@ -1578,10 +1613,8 @@ sf4:
               content: |
                   GET /login HTTP/1.1
                   Host: localhost
-                  ...
 
                   { "username": "foo", "password": "bar1234" }
-
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-json-authentication
 
@@ -1625,40 +1658,40 @@ sf4:
 
             Il y a des adapters pour Redis, Memcached, Semaphore ou `flock()`.
 
-    3-4-debug-autowiring-command:
-        title: '3.4: Commande `debug:autowiring`'
-        title_htmlattr: data-markdown
-        sections:
-            - type: code
-              code_language: shell
-              content: |
-                  $ ./bin/console debug:autowiring
+#    3-4-debug-autowiring-command:
+#        title: '3.4: Commande `debug:autowiring`'
+#        title_htmlattr: data-markdown
+#        sections:
+#            - type: code
+#              code_language: shell
+#              content: |
+#                  $ ./bin/console debug:autowiring
+#
+#                  Autowirable Services
+#                  ====================
+#
+#                  The following classes & interfaces can be used as type-hints when autowiring:
+#
+#                    App\Command\AddUserCommand
+#                    App\Command\DeleteUserCommand
+#                    App\Command\ListUsersCommand
+#                    App\Controller\Admin\BlogController
+#                    App\Controller\BlogController
+#                    App\Controller\SecurityController
+#                    App\EventSubscriber\CheckRequirementsSubscriber
+#                    App\EventSubscriber\CommentNotificationSubscriber
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-4-debug-autowiring-command
 
-                  Autowirable Services
-                  ====================
-
-                  The following classes & interfaces can be used as type-hints when autowiring:
-
-                    App\Command\AddUserCommand
-                    App\Command\DeleteUserCommand
-                    App\Command\ListUsersCommand
-                    App\Controller\Admin\BlogController
-                    App\Controller\BlogController
-                    App\Controller\SecurityController
-                    App\EventSubscriber\CheckRequirementsSubscriber
-                    App\EventSubscriber\CommentNotificationSubscriber
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-4-debug-autowiring-command
-
-    3-4-disable-global-form-themes:
-        title: '3.4: Désactiver les form themes globaux'
-        sections:
-            - type: code
-              code_language: twig
-              content: |
-                  {% form_theme form with ['common.html.twig', 'form/fields.html.twig'] only %}
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-4-disable-global-form-themes
+#    3-4-disable-global-form-themes:
+#        title: '3.4: Désactiver les form themes globaux'
+#        sections:
+#            - type: code
+#              code_language: twig
+#              content: |
+#                  {% form_theme form with ['common.html.twig', 'form/fields.html.twig'] only %}
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-4-disable-global-form-themes
 
     3-4-guard-authentication-improvements:
         title: '3.4: Dépréciations & améliorations du Guard'
@@ -1773,7 +1806,7 @@ sf4:
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-minimalist-psr-3-logger
 
     3-4-improved-the-overriding-of-templates:
-        title: '3.4: Surcharge de templates'
+        title: '3.4: Surcharge de templates de bundles'
         sections:
             - content: |
                   Avant :
@@ -1813,7 +1846,7 @@ sf4:
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-simpler-injection-of-tagged-services
         notes: |
-            `iterable` vient de PHP 7.1
+            `iterable` nécessite PHP 7.1
 
     3-4-defining-compiler-passes-in-the-kernel:
         title: '3.4: Auto-configuration du Kernel'
@@ -1823,50 +1856,53 @@ sf4:
             - htmlattr: 'style="font-size: 0.6em;text-align: right;margin-right: 50px;"'
               content: |
                 Sources:
+
                 * https://symfony.com/blog/new-in-symfony-3-4-simpler-injection-of-tagged-services
                 * https://symfony.com/blog/new-in-symfony-3-4-subscribing-to-events-in-the-micro-kernel
 
     3-4-bootstrap-4-form-theme:
         title: '3.4: Form theme pour Bootstrap 4'
         sections:
+            - content: |
+                  ![Bootstrap form]({{ asset('img/bootstrap_form.jpg') }})
             - type: quote
               quote_source: https://symfony.com/blog/new-in-symfony-3-4-bootstrap-4-form-theme
         notes: |
             Un thème pour Bootstrap 3 était déjà dispo.
 
-    3-4-argon2i-password-hasher:
-        title: '3.4: Encoder Argon2i'
-        sections:
-            - type: code
-              code_language: yaml
-              content: |
-                  security:
-                      encoders:
-                          Symfony\Component\Security\Core\User\User:
-                              algorithm: 'argon2i'
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-4-argon2i-password-hasher
-        notes: |
-            Pour les versions antérieures à PHP 7.2 il faudra installer `paragonie/sodium_compat` via Composer ou
-            `libsodium` via pecl.
+#    3-4-argon2i-password-hasher:
+#        title: '3.4: Encoder Argon2i'
+#        sections:
+#            - type: code
+#              code_language: yaml
+#              content: |
+#                  security:
+#                      encoders:
+#                          Symfony\Component\Security\Core\User\User:
+#                              algorithm: 'argon2i'
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-4-argon2i-password-hasher
+#        notes: |
+#            Pour les versions antérieures à PHP 7.2 il faudra installer `paragonie/sodium_compat` via Composer ou
+#            `libsodium` via pecl.
 
-    3-4-default-request-context-for-assets:
-        title: '3.4: Contexte de requête pour les assets'
-        sections:
-            - type: code
-              code_language: yaml
-              content: |
-                  asset.request_context.base_path: '/subfolder'
-                  asset.request_context.secure: true
-            - type: code
-              code_language: twig
-              content: |
-                  {{ asset('/foo/image.jpg') }}
-                  {# /subfolder/foo/image.jpg #}
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-4-default-request-context-for-assets
-        notes: |
-            Pour le routing on a déjà quelque chose de similaire `router.request_context.base_url: 'http://localhost'`.
+#    3-4-default-request-context-for-assets:
+#        title: '3.4: Contexte de requête pour les assets'
+#        sections:
+#            - type: code
+#              code_language: yaml
+#              content: |
+#                  asset.request_context.base_path: '/subfolder'
+#                  asset.request_context.secure: true
+#            - type: code
+#              code_language: twig
+#              content: |
+#                  {{ asset('/foo/image.jpg') }}
+#                  {# /subfolder/foo/image.jpg #}
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-4-default-request-context-for-assets
+#        notes: |
+#            Pour le routing on a déjà quelque chose de similaire `router.request_context.base_url: 'http://localhost'`.
 
     3-4-deprecated-bundle-inheritance:
         title: '3.4: Dépréciation de l''héritage de bundles'
@@ -1885,34 +1921,34 @@ sf4:
             * Validation: Pas possible, sauf si validation groups.
             * Translations: Surcharger les domaines de traduction.
 
-    3-4-php-based-configuration-for-services:
-        title: '3.4: Config PHP _fluent_ pour les services'
-        title_htmlattr: data-markdown
-        sections:
-            - type: code
-              htmlattr: 'style="font-size: 0.79em;"'
-              content: |
-                  return function (ContainerConfigurator $container) {
-                      $container->import('legacy_services.php');
-
-                      $params = $container->parameters();
-                      $params->set('app.foo_param', 'param_value');
-
-                      $container = $container->services()->defaults()
-                          ->private()
-                          ->autoconfigure()
-                          ->autowire();
-
-                      $container->load('App\\', '../src/*')
-                          ->exclude('../src/{Entity,Repository,Tests}');
-
-                      $container->load('App\\Controller\\', '../src/Controller')
-                          ->tag('controller.service_arguments');
-
-                      $container->alias('foo', FooClass::class)->public();
-                  };
-            - type: quote
-              quote_source: https://symfony.com/blog/new-in-symfony-3-4-php-based-configuration-for-services-and-routes
+#    3-4-php-based-configuration-for-services:
+#        title: '3.4: Config PHP _fluent_ pour les services'
+#        title_htmlattr: data-markdown
+#        sections:
+#            - type: code
+#              htmlattr: 'style="font-size: 0.79em;"'
+#              content: |
+#                  return function (ContainerConfigurator $container) {
+#                      $container->import('legacy_services.php');
+#
+#                      $params = $container->parameters();
+#                      $params->set('app.foo_param', 'param_value');
+#
+#                      $container = $container->services()->defaults()
+#                          ->private()
+#                          ->autoconfigure()
+#                          ->autowire();
+#
+#                      $container->load('App\\', '../src/*')
+#                          ->exclude('../src/{Entity,Repository,Tests}');
+#
+#                      $container->load('App\\Controller\\', '../src/Controller')
+#                          ->tag('controller.service_arguments');
+#
+#                      $container->alias('foo', FooClass::class)->public();
+#                  };
+#            - type: quote
+#              quote_source: https://symfony.com/blog/new-in-symfony-3-4-php-based-configuration-for-services-and-routes
 
     3-4-php-based-configuration-for-routes:
         title: '3.4: Config PHP _fluent_ pour les routes'
@@ -1941,7 +1977,7 @@ sf4:
         title: '3.4: Variables d''environnement avancées'
         sections:
             - type: code
-              code_language: yaml
+              code_language: bash
               content: |
                   parameters:
                       project_dir: '/foo/bar'
