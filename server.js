@@ -251,16 +251,26 @@ function personWhoFindThisCool() {
 }
 
 function getStats() {
-    let stats = {};
+    let stats = {
+        help: {},
+        cool: {},
+    };
 
     Object.keys(sessionData.sessions).forEach(function (socketId) {
-        let slides = sessionData.sessions[socketId].helpWantedForSlides;
+        let helpSlides = sessionData.sessions[socketId].helpWantedForSlides;
+        let coolSlides = sessionData.sessions[socketId].coolSlides;
 
-        slides.forEach(function(e){
+        helpSlides.forEach(function(e){
             if (!stats[e]) {
-                stats[e] = 0;
+                stats.help[e] = 0;
             }
-            stats[e] ++;
+            stats.help[e] ++;
+        });
+        coolSlides.forEach(function(e){
+            if (!stats[e]) {
+                stats.cool[e] = 0;
+            }
+            stats.cool[e] ++;
         });
     });
 
