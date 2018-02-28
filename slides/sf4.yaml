@@ -2110,6 +2110,17 @@ sf4:
             - is_fragment: true
               content: Les recettes (_recipes_) "contrib" ([symfony/recipes-contrib](https://github.com/symfony/recipes-contrib))
 
+    flex_so_old:
+        htmlattr: data-background-image="{{ asset('img/old_biff.gif') }}"
+        notes: |
+            Encore un autre outil...
+
+    flex_eminem_wrong:
+        title_htmlattr: 'style="color:white;text-shadow:0 0 10px #000;"'
+        sections:
+            - content: |
+                  ![]({{ asset('img/eminem_wrong.gif') }})
+
     flex_2:
         title: Comment on s'en sert ?
         sections:
@@ -2126,21 +2137,13 @@ sf4:
               content: |
                 ![]({{ asset('img/malabar.png') }})
 
-    flex_4:
+    flex_struct:
         title: Qu'est-ce que ça ~~cache~~ apporte ?
         title_htmlattr: data-markdown
         sections:
             - type: code
-              code_language: bash
-              content: |
-                  $ composer req server api admin orm behat cs-fixer cors annot twig
-
-    flex_struct:
-        title: 'Structure Flex & Symfony 4.0'
-        sections:
-            - type: code
-              htmlattr: 'style="width: 49%; float: left; font-size: 0.825em;"'
               code_language: text
+              htmlattr: 'style="width: 49%; float: left;"'
               content: |
                   ├── app
                   │   ├── config
@@ -2160,9 +2163,10 @@ sf4:
                   │   └── sessions
                   ├── vendor
                   └── web
+                  </pre>
             - type: code
-              htmlattr: 'style="width: 49%; float: right; font-size: 0.825em;"'
               code_language: text
+              htmlattr: 'style="width: 49%; float: right;"'
               content: |
                   ├── bin
                   ├── config
@@ -2176,6 +2180,136 @@ sf4:
                   │   ├── cache
                   │   └── log
                   └── vendor
+
+    flex_4:
+        title: Qu'est-ce que ça apporte d'autre ?
+        title_htmlattr: data-markdown
+        sections:
+            - type: code
+              code_language: bash
+              content: |
+                  $ composer req server api admin orm behat cs-fixer cors annot twig
+
+    flex_5:
+        title: Mais encore ?
+        title_htmlattr: data-markdown
+        sections:
+            - type: raw
+              content: |
+                  <pre class="p">
+                  $ composer req annot
+                  Using version ^5.1 for sensio/framework-extra-bundle
+                  ./composer.json has been updated
+                  Loading composer repositories with package information
+                  Updating dependencies (including require-dev)
+                  Package operations: 7 installs, 0 updates, 0 removals
+                    - Installing doctrine/lexer (v1.0.1): Loading from cache
+                    - Installing doctrine/inflector (v1.2.0): Loading from cache
+                    - Installing doctrine/collections (v1.5.0): Loading from cache
+                    - Installing doctrine/cache (v1.7.1): Loading from cache
+                    - Installing doctrine/annotations (v1.5.0): Loading from cache
+                    - Installing doctrine/common (v2.8.1): Loading from cache
+                    - Installing sensio/framework-extra-bundle (v5.1.2): Loading from cache
+                  Writing lock file
+                  Generating autoload files
+                  Symfony operations: 2 recipes (3ac0e3828e0167b379d5284080768bc5)
+                    - Configuring doctrine/annotations (>=1.0): From github.com/symfony/recipes:master
+                    - Configuring sensio/framework-extra-bundle (>=4.0): From github.com/symfony/recipes:master
+                  Executing script cache:clear [OK]
+                  Executing script assets:install --symlink --relative public [OK]
+                  </pre>
+
+    flex_6:
+        sections:
+            - content: |
+                  Diff :
+            - type: code
+              code_language: diff
+              content: |
+                  diff --git a/config/bundles.php b/config/bundles.php
+                  index 49d3fb6..0d71512 100644
+                  --- a/config/bundles.php
+                  +++ b/config/bundles.php
+                  @@ -2,4 +2,5 @@
+
+                   return [
+                       Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
+                  +    Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle::class => ['all' => true],
+                   ];
+                  diff --git a/config/routes/annotations.yaml b/config/routes/annotations.yaml
+                  new file mode 100644
+                  index 0000000..d49a502
+                  --- /dev/null
+                  +++ b/config/routes/annotations.yaml
+                  @@ -0,0 +1,3 @@
+                  +controllers:
+                  +    resource: ../../src/Controller/
+                  +    type: annotation
+
+    flex_recipes:
+        title: 'Recettes'
+        sections:
+            - type: code
+              code_language: json
+              content: |
+                  {
+                      "bundles": {
+                          "Symfony\\Bundle\\FrameworkBundle\\FrameworkBundle": ["all"]
+                      },
+                      "copy-from-recipe": {
+                          "config/": "%CONFIG_DIR%/",
+                          "public/": "%PUBLIC_DIR%/",
+                          "src/": "%SRC_DIR%/"
+                      },
+                      "composer-scripts": {
+                          "cache:clear": "symfony-cmd",
+                          "assets:install --symlink --relative %PUBLIC_DIR%": "symfony-cmd"
+                      },
+                      "env": {
+                          "APP_ENV": "dev",
+                          "APP_SECRET": "%generate(secret)%",
+                          "#TRUSTED_PROXIES": "127.0.0.1,127.0.0.2",
+                          "#TRUSTED_HOSTS": "localhost,example.com"
+                      },
+                      "gitignore": [
+                          ".env",
+                          "/public/bundles/",
+                          "/var/",
+                          "/vendor/"
+                      ]
+                  }
+
+    flex_create:
+        title: 'Création d''un projet'
+        sections:
+            - type: code
+              code_language: bash
+              content: |
+                  $ composer create symfony/website-skeleton monprojet
+                  # ...
+                  $ composer req admin api
+                  # ...
+                  $ php bin/console make:controller DefaultController
+                  $ php bin/console make:functional-test DefaultControllerTest
+                  $ php bin/console make:entity User
+                  $ php bin/console make:entity Post
+                  $ php bin/console make:command UpdateCommentsStatsCommand
+                  $ php bin/console make:voter BlogPostVoter
+                  $ php bin/console make:auth FormLoginAuthenticator
+                  $ php bin/console make:auth OAuthAuthenticator
+                  # ...
+                  # ...
+                  # Start coding !
+
+    flex_success:
+        htmlattr: data-background-image="{{ asset('img/flex_success.gif') }}"
+
+    demo:
+        sections:
+            - type: raw
+              content: |
+                  <h1 style="color:#eee;text-shadow:0 2px 10px #000,0 2px 10px #000,0 2px 10px #000,0 2px 10px #000;position: fixed; top: 50px; left: 0; display: block; text-align: center; width: 100%;">Demo</h1>
+        htmlattr: data-background-image="{{ asset('img/demo_zelda.gif') }}"
 
     thanks:
         sections:

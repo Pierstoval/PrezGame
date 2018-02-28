@@ -78,19 +78,26 @@ body {
         background-color: transparent;
         color: black;
     }
-    p {
+    section {
         pre code {
             display: block;
+            max-height: 700px;
         }
-        code {
+        pre {
             background: #2b2b2b;
+            color: #a9b7c6;
             border-radius: 8px;
             padding-left: 9px;
             padding-right: 9px;
-            color: #a9b7c6;
+            &.p {
+                padding: 5px 10px;
+            }
         }
-    }
-    section {
+        code {
+            border-radius: 8px;
+            padding-left: 9px;
+            padding-right: 9px;
+        }
         &:before, &:after {
             display: block;
             position: fixed;
