@@ -20,7 +20,7 @@
         "gulp-watch": "^4.3",
         "gulp4": "^4.0.3",
         "js-yaml": "^3.10.0",
-        "nodemon": "^1.15.1",
+        "nodemon": "^1.17.1",
         "pump": "^1.0",
         "reveal.js": "^3.6.0",
         "socket.io": "^2.0.4"
