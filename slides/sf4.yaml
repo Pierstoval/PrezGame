@@ -47,7 +47,7 @@ sf4:
                 * Vous ! ☺
 
     sf4_fake:
-        title: Symfony 4.0
+        content: '# Symfony 4.0'
 
     sf4_fake_thanks:
         sections:
@@ -82,7 +82,7 @@ sf4:
             _"Features"_ concerne aussi les dépréciations.
 
     start_3.1:
-        title: 'Symfony 3.1'
+        content: '# Symfony 3.1'
         notes: |
             16 slides
 
@@ -490,7 +490,7 @@ sf4:
 #            utilise le `TargetPathTrait`, créé pour l'occasion.
 
     start_3.2:
-        title: 'Symfony 3.2'
+        content: '# Symfony 3.2'
         notes: |
             28 slides
 
@@ -1107,7 +1107,7 @@ sf4:
 #            Les extensions Twig ne sont pas toutes chargées si le composant associé n'est pas installé via Composer.
 
     start_3.3:
-        title: 'Symfony 3.3'
+        content: '# Symfony 3.3'
         notes: |
             23 slides
 
@@ -1619,7 +1619,7 @@ sf4:
               quote_source: https://symfony.com/blog/new-in-symfony-3-3-json-authentication
 
     start_3.4:
-        title: 'Symfony 3.4 (LTS)'
+        content: '# Symfony 3.4 (LTS)'
         notes: |
             22 slides
 
@@ -2089,6 +2089,51 @@ sf4:
             | 4.0 | 0 | 11/2017 | 07/2018 | 01/2019 |
             | Flex | - | 05/2017 | - | - |
 
+    flex:
+        content: '# Flex'
+
+    flex_struct:
+        title: 'Structure Flex & Symfony 4.0'
+        sections:
+            - type: code
+              htmlattr: 'style="width: 49%; float: left; font-size: 0.825em;"'
+              code_language: text
+              content: |
+                  ├── app
+                  │   ├── config
+                  │   └── Resources
+                  │       └── views
+                  │           └── default
+                  ├── bin
+                  ├── src
+                  │   └── AppBundle
+                  │       └── Controller
+                  ├── tests
+                  │   └── AppBundle
+                  │       └── Controller
+                  ├── var
+                  │   ├── cache
+                  │   ├── logs
+                  │   └── sessions
+                  ├── vendor
+                  └── web
+            - type: code
+              htmlattr: 'style="width: 49%; float: right; font-size: 0.825em;"'
+              code_language: text
+              content: |
+                  ├── bin
+                  ├── config
+                  │   └── packages
+                  │       ├── dev
+                  │       └── test
+                  ├── public
+                  ├── src
+                  │   └── Controller
+                  ├── var
+                  │   ├── cache
+                  │   └── log
+                  └── vendor
+
     thanks:
         sections:
             - type: raw
@@ -2102,4 +2147,3 @@ sf4:
                 <br>
 
                 <code>@pierstoval</code>
-
