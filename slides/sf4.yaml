@@ -24,6 +24,7 @@ sf4:
 
     interact:
         title: 'Conférence INTERACTIVE'
+        title_htmlattr: 'style="color:#eee;text-shadow:0 2px 10px #000,0 2px 10px #000;"'
         htmlattr: data-background-image="{{ asset('img/interactive_wall.gif') }}"
 
     button_url:
@@ -2091,6 +2092,23 @@ sf4:
 
     flex:
         content: '# Flex'
+
+    flex_fail:
+        title: Avant Flex
+        title_htmlattr: 'style="color:white;text-shadow:0 0 10px #000;"'
+        htmlattr: data-background-image="{{ asset('img/flex_fail.gif') }}"
+
+    flex_1:
+        title: C'est quoi Flex ?
+        sections:
+            - is_fragment: true
+              content: Un plugin Composer
+            - is_fragment: true
+              content: Le serveur Flex
+            - is_fragment: true
+              content: Les recettes (_recipes_) officielles
+            - is_fragment: true
+              content: Les recettes (_recipes_) "contrib"
 
     flex_struct:
         title: 'Structure Flex & Symfony 4.0'
