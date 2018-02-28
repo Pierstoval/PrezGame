@@ -2102,13 +2102,38 @@ sf4:
         title: C'est quoi Flex ?
         sections:
             - is_fragment: true
-              content: Un plugin Composer
+              content: Un plugin Composer ([symfony/flex](https://packagist.org/packages/symfony/flex))
             - is_fragment: true
-              content: Le serveur Flex
+              content: Le serveur Flex ([symfony.sh](https://symfony.sh))
             - is_fragment: true
-              content: Les recettes (_recipes_) officielles
+              content: Les recettes (_recipes_) officielles ([symfony/recipes](https://github.com/symfony/recipes))
             - is_fragment: true
-              content: Les recettes (_recipes_) "contrib"
+              content: Les recettes (_recipes_) "contrib" ([symfony/recipes-contrib](https://github.com/symfony/recipes-contrib))
+
+    flex_2:
+        title: Comment on s'en sert ?
+        sections:
+            - type: code
+              is_fragment: true
+              code_language: bash
+              content: |
+                  composer require symfony/flex
+
+    flex_3:
+        title: Qu'est-ce que ça cache ?
+        sections:
+            - is_fragment: true
+              content: |
+                ![]({{ asset('img/malabar.png') }})
+
+    flex_4:
+        title: Qu'est-ce que ça ~~cache~~ apporte ?
+        title_htmlattr: data-markdown
+        sections:
+            - type: code
+              code_language: bash
+              content: |
+                  $ composer req server api admin orm behat cs-fixer cors annot twig
 
     flex_struct:
         title: 'Structure Flex & Symfony 4.0'
