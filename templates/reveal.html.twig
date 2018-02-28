@@ -33,9 +33,10 @@
                 maxScale: 1,
                 controls: true,
                 history: true,
+                autoSlide: 15000,
                 slideNumber: {{ app.debug ? '"c/t"' : 'false' }},
                 rollingLinks: true,
-                overview: {{ app.debug ? 'true' : 'false' }},
+                overview: false, //{{ app.debug ? 'true' : 'false' }},
                 transition: 'slide', // none/fade/slide/convex/concave/zoom
                 dependencies: [
                     { src: '{{ asset('reveal/lib/js/classList.js') }}', condition: function() { return !document.body.classList; } },

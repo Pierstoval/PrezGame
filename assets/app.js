@@ -1,5 +1,6 @@
 (function(w, d){
     var messageBlock = d.getElementById('messages');
+    var socket;
 
     function message(msg, waitAndDelete){
         if (typeof waitAndDelete === 'undefined') {
@@ -31,9 +32,10 @@
         }
     }
 
-    function initPresentation(d) {
-        if (!Reveal || !io || !w.SOCKET_URL) {
-            throw 'This app needs Reveal and socket.io to be available.';
+    function initSocket() {
+        if (socket) {
+            console.error('Already host of a presentation.');
+            return;
         }
 
         // In dev, allows resetting the list of asked help.
@@ -42,7 +44,7 @@
         /**
          * Socket interactions
          */
-        var socket = io.connect(w.SOCKET_URL);
+        socket = io.connect(w.SOCKET_URL);
         socket.emit('subscribe', 'login');
         socket.on('message', message);
         socket.on('broadcast', message);
@@ -65,6 +67,11 @@
          */
         Reveal.addEventListener('slidechanged', function () {
             socket.emit('update_slide', Reveal.getCurrentSlide().id);
+            setTimeout(function(){
+                if (!Reveal.isAutoSliding()) {
+                    Reveal.toggleAutoSlide();
+                }
+            }, 500);
         });
 
         d.addEventListener('keydown', function(event){
@@ -75,12 +82,29 @@
         });
     }
 
+    function initPresentation(d) {
+        if (!Reveal || !io || !w.SOCKET_URL) {
+            throw 'This app needs Reveal and socket.io to be available.';
+        }
+
+        d.addEventListener('keydown', function(event){
+            if (event.keyCode === 67) {
+                // key "c"
+                initSocket();
+            }
+        });
+    }
+
     function initButtonInteraction(d) {
+        if (socket) {
+            console.error('Already watching a presentation');
+            return;
+        }
         if (!io || !w.SOCKET_URL) {
             throw 'This app needs Reveal and socket.io to be available.';
         }
 
-        var socket = io.connect(w.SOCKET_URL);
+        socket = io.connect(w.SOCKET_URL);
         d.getElementById('help-me').addEventListener('click', function(){
             var helped = localStorage.getItem('help') || [];
             socket.emit('help', JSON.stringify(helped) || []);
