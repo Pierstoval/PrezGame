@@ -1,4 +1,4 @@
-sf4:
+sf4-kaliop:
     intro:
         sections:
             - content: |
@@ -500,7 +500,7 @@ sf4:
             | 3.2 | 66 | 11/2016 | 07/2017 | 01/2018 |
 
     3-2-file-controller-helper:
-        title: '3.1: Méthode `->file()` dans le contrôleur'
+        title: '3.2: Méthode `->file()` dans le contrôleur'
         title_htmlattr: data-markdown
         sections:
             - type: code
@@ -2083,15 +2083,26 @@ sf4:
         sections:
             - content: |
                   # Symfony 4.0
-                  # Flex
         notes: |
-            | Version | _Features_ | Sortie | Fin de maintenance | Fin de vie |
+            | Version | Sortie | Fin de maintenance | Fin de vie |
+            | :---: | :---: | :---: | :---: |
+            | 4.0 | 11/2017 | 07/2018 | 01/2019 |
+
+    start_4.1:
+        sections:
+            - content: |
+                  # Symfony 4.1
+        notes: |
+            | Version | Features | Sortie | Fin de maintenance | Fin de vie |
             | :---: | :---: | :---: | :---: | :---: |
-            | 4.0 | 0 | 11/2017 | 07/2018 | 01/2019 |
-            | Flex | - | 05/2017 | - | - |
+            | 4.1 | 17+ | 11/2017 | 07/2018 | 01/2019 |
 
     flex:
         content: '# Flex'
+        notes: |
+            | Version | Sortie | Fin de maintenance | Fin de vie |
+            | :---: | :---: | :---: | :---: |
+            | Flex | 05/2017 | - | - |
 
     flex_fail:
         title: Avant Flex
