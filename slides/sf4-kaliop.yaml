@@ -2107,6 +2107,9 @@ sf4-kaliop:
             - is_fragment: true
               content: |
                 ⇒ http://symfony.com/blog/category/living-on-the-edge
+            - is_fragment: true
+              content: |
+                ⇒ http://github.com/pierstoval/livingedge
 
     flex:
         content: '# Flex'
