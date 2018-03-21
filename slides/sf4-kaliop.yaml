@@ -2097,6 +2097,17 @@ sf4-kaliop:
             | :---: | :---: | :---: | :---: | :---: |
             | 4.1 | 17+ | 11/2017 | 07/2018 | 01/2019 |
 
+    explanation_4.1:
+        sections:
+            - content: |
+                  Mais au fait...
+            - is_fragment: true
+              content: |
+                Comment on fait pour savoir ce qu'il y a de nouveau dans Symfony 4.1?
+            - is_fragment: true
+              content: |
+                ⇒ http://symfony.com/blog/category/living-on-the-edge
+
     flex:
         content: '# Flex'
         notes: |
