@@ -8,24 +8,24 @@
         "server": "nodemon server.js -e js,twig,php,css,json"
     },
     "dependencies": {
-        "dateformat": "^3.0.3",
-        "glob": "^7.0",
-        "gulp-clean-css": "^3.7",
+        "dateformat": "^3.0",
+        "glob": "^7.1",
+        "gulp-clean-css": "^3.9",
         "gulp-concat": "^2.6",
         "gulp-if": "^2.0",
         "gulp-imagemin": "^4.1",
-        "gulp-less": "^4.0.0",
+        "gulp-less": "^4.0",
         "gulp-sass": "^4.0",
         "gulp-uglify": "^3.0",
-        "gulp-watch": "^4.3",
+        "gulp-watch": "^5.0",
         "gulp4": "^4.0.3",
-        "js-yaml": "^3.10.0",
-        "nodemon": "^1.17.1",
-        "pump": "^1.0",
-        "reveal.js": "^3.6.0",
-        "socket.io": "^2.0.4"
+        "js-yaml": "^3.11",
+        "nodemon": "^1.17",
+        "pump": "^3.0",
+        "reveal.js": "^3.6",
+        "socket.io": "^2.1"
     },
     "engines": {
-        "node": "^9.0"
+        "node": "^10.0"
     }
 }
