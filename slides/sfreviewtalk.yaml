@@ -1,0 +1,462 @@
+symfony-review:
+    slide_0:
+        content: |
+            ![AFUP]({{ asset('images/sfreview/afup-logo-full-color.svg') }})
+
+    slide_1:
+        sections:
+            - content: |
+                Alexandre Rock Ancelelet
+
+                PHP / Symfony trainer
+
+                Follow me `@pierstoval` **(everywhere)**
+
+    slide_2:
+        title: 'Quoi de neuf dans le monde de Symfony ?'
+        sections:
+            - content: |
+                Programme:
+
+            - { style: 'class="ll w50p"', content: "* Quelques rappels sur Symfony" }
+            - { style: 'class="ll w50p"', content: "* De Symfony 1 à Symfony 2" }
+            - { style: 'class="ll w50p"', content: "* La BC promise de Symfony 2.3" }
+            - { style: 'class="ll w50p"', content: "* De Symfony 2 à Symfony 3" }
+            - { style: 'class="ll w50p"', content: "* De Symfony 3 à l'avenir" }
+            - { style: 'class="ll w50p"', content: "* Flex & Symfony 4" }
+
+    slide_3:
+        title: Quelques rappels sur Symfony
+        sections:
+            - { style: 'class="ll w60p"', content: "* Framework PHP open-source" }
+            - { style: 'class="ll w60p"', content: "* Framework orienté HTTP" }
+            - { style: 'class="ll w60p"', content: "* Plus de 45 composants" }
+            - { style: 'class="ll w60p"', content: "* Licence MIT" }
+            - { style: 'class="ll w60p"', content: "* Entre 7 et 8% des entreprises dans le monde l'utilisent" }
+            - { style: 'class="ll w60p"', content: "* _Touche française_ 🥐" }
+
+    slide_4:
+        title: 'Symfony 1 (v1.0.0 : Octobre 2005)'
+        sections:
+            - { style: 'class="ll w75p"', content: "* PHP 5.2.4+" }
+            - { style: 'class="ll w75p"', content: "* Utilisation d'un contexte statique _(Singleton)_" }
+            - { style: 'class="ll w75p"', content: "* Plugins réutilisables _(mais assez fermés au reste de l'application)_" }
+            - { style: 'class="ll w75p"', content: "* Pas de gestion de dépendances _(Composer v1.0.0-alpha1 : Mars 2012, premier commit un an plus tôt)_" }
+            - { style: 'class="ll w75p"', content: "* Complexité parfois élevée _(formulaires, surcharge dans les plugins, etc.)_" }
+
+    slide_5:
+        title: 'Symfony 2 (v2.0.0 : Juillet 2011)'
+        sections:
+            - { style: 'class="ll w75p"', content: "* PHP 5.3.2+ (arrivée des namespaces & closures)" }
+            - { style: 'class="ll w75p"', content: "* Framework HTTP" }
+            - { style: 'class="ll w75p"', content: "* Remplacement du contexte par un DIC (Dependency Injection Container)" }
+            - { style: 'class="ll w75p"', content: '* "Plugins" deviennent "Bundles", beaucoup plus flexibles' }
+            - { style: 'class="ll w75p"', content: "* Simplification / réécriture d'une très grande partie du code de Symfony 1" }
+            - { style: 'class="ll w75p"', content: "* Gestion des dépendances avec des submodules `git` pour la v2.0" }
+            - { style: 'class="ll w75p"', content: "* Sortie de v2.1.0 en Septembre 2012 et intégration de Composer" }
+
+    slide_6:
+        title: 'La _"BC promise"_'
+        title_style: data-markdown
+        sections:
+            - { style: 'class="ll w75p"', content: "* Commence à la v2.3.0 (Juin 2013)" }
+            - { style: 'class="ll w75p"', content: "* BC (Backward compatibility) = Rétrocompatibilité" }
+            - { style: 'class="ll w75p"', content: "* Rétrocompatibilité systématique suivant [Semver](http://semver.org/)" }
+            - { style: 'class="ll w75p"', content: "* Les interfaces et l'annotation `@api` définissent le contrat de rétrocompatibilité" }
+            - { style: 'class="ll w75p"', content: "* Migrations vers des versions ultérieures simplifiées" }
+            - { style: 'class="ll w75p"', content: "* Déprécations visible dans le profiler & les logs" }
+            - { style: 'class="ll w75p"', content: "* À partir de la v2.7.0 (Mai 2015), le PHPUnitBridge affiche lui aussi les déprécations" }
+            - { type: quote, quote_source: ' http://symfony.com/doc/current/contributing/code/bc.html' }
+
+    slide_7:
+        title: 'Symfony 3 (v3.0.0 : Novembre 2015)'
+        sections:
+           - { style: 'class="ll w75p"', content: '* PHP 5.5.9+ (générateurs, syntaxe `MyClass::class`)' }
+           - { style: 'class="ll w75p"', content: '* Suppression de TOUTES les déprécations de la v2' }
+           - { style: 'class="ll w75p"', content: '* Optimisation de fonctionnalités pour les composants **Console**, **DependencyInjection**, **Yaml**, **Form**, **Translator**, **VarDumper**, **Security**, pour les tests...' }
+           - { style: 'class="ll w75p"', content: '* Grosse mise à jour du composant **Form**' }
+           - { style: 'class="ll w75p"', content: '* Nouvelle architecture de dossiers' }
+           - { style: 'class="ll w75p"', content: '* Nouveautés issues de la v2.8:' }
+           - { style: 'class="ll w75p"', content: '* Nouveaux composants: **PropertyInfo**, **Guard**, **LDAP** et les différents **Polyfills**.' }
+           - { style: 'class="ll w75p"', content: '* Nouveau design du profiler, de la debug toolbar et de la console' }
+           - { style: 'class="ll w75p"', content: '* **MicroKernel** (pour utiliser Symfony comme micro-framework)' }
+           - { style: 'class="ll w75p"', content: '* **Autowiring**' }
+
+    slide_8:
+        title: 'De Symfony 3 à l''avenir,<br>Les nouveautés de Symfony 3.1 et 3.2'
+        sections:
+            - { style: 'class="ll w75p"', content: '* Nouveaux composants: **Cache** (avec [PSR-6](http://www.php-fig.org/psr/psr-6/)), **Workflow**' }
+            - { style: 'class="ll w75p"', content: '* **DateTimeNormalizer** et **DataUriNormalizer** pour le Serializer' }
+            - { style: 'class="ll w75p"', content: '* Amélioration du composant Yaml (nouvelles specs Yaml 1.2)' }
+            - { style: 'class="ll w75p"', content: '* Améliorations générales de plusieurs composants: **Security**, **Console**, **Yaml**, **Cache**, **Filesystem**, **HttpFoundation**...' }
+            - { style: 'class="ll w75p"', content: '* Support d''Unicode dans le routing' }
+            - { style: 'class="ll w75p"', content: '* Variables d''environnement dans la configuration (Yaml : `my_param: %env(MY_ENV_VAR)%`)' }
+
+    slide_9:
+        title: |
+            De Symfony 3 à l'avenir, l'explosion de Symfony 3.3<br>
+            <small>(v3.3.0 : fin Mai 2017)</small>
+        sections:
+            - type: raw
+              content: |
+                La version qui comporte le plus de nouveautés depuis la 2.3 (plus de 40 !) :
+
+            -
+              style: 'style="text-align: left;font-size: 0.7em; color: #555; width: 33%; float:left;"'
+              content: |
+                    * Service locators
+                    * Service autoconfiguration
+                    * Persisted deprecation logs
+                    * **WebLink** component
+                    * **SecurityBundle** improvements
+                    * Redesigned exception pages
+                    * Faster routing
+                    * A simpler way to get the project root directory
+                    * Improved flash messages
+                    * **Workflow** improvements
+                    * Deprecated the special `SYMFONY__` env vars
+                    * `about` command
+                    * Better handling of command exceptions
+                    * `Lock` component
+
+            -
+              style: 'style="text-align: left;font-size: 0.7em; color: #555; width: 33%; float:left;"'
+              content: |
+                    * Load config files with glob patterns
+                    * Deprecated cache clear with warmup
+                    * Simpler service configuration
+                    * `Kernel::build()` Method
+                    * Deprecated `X-Status-Code`
+                    * Deprecated the `ClassLoader` component
+                    * Manifest-based asset versioning
+                    * Asset preloading with HTTP/2 Push
+                    * XLIFF linter
+                    * Getter injection
+                    * Deprecated the autowiring types
+                    * Import config files with glob patterns
+                    * Custom YAML tags
+                    * PSR-11 containers
+
+            -
+              style: 'style="text-align: left;font-size: 0.7em; color: #555; width: 33%; float:left;"'
+              content: |
+                    * Automatic `Console` logging
+                    * Simple Cache
+                    * `Dotenv` component
+                    * `Dependency Injection` deprecations
+                    * Memcached Cache Adapter
+                    * Search in dumped contents
+                    * Optional class for named services
+                    * WebServerBundle
+                    * Cookie improvements
+                    * Improved command descriptors
+                    * Added new shortcut methods
+                    * Improved the Profiler configuration panel
+                    * Support for form action & method attributes
+                    * JSON authentication
+
+    slide_10:
+        title: 'Nouveautés de Symfony 3.3<br><small>(parmi mes préférées)</small>'
+        sections:
+            - content: |
+            - { style: 'class="ll w75p"', content: '* Nouveaux composants : **DotEnv**, **Lock**, **WebLink**, **WebServerBundle**' }
+            - { style: 'class="ll w75p"', content: '* Authentification JSON' }
+            - { style: 'class="ll w75p"', content: '* Classe en tant qu''id de service' }
+            - { style: 'class="ll w75p"', content: '* Simple cache (avec [PSR-16](http://www.php-fig.org/psr/psr-16/))' }
+            - { style: 'class="ll w75p"', content: '* Assets preload & HTTP/2 Push' }
+            - { style: 'class="ll w75p"', content: '* Assets basés sur un "manifeste" JSON' }
+            - { style: 'class="ll w75p"', content: '* Paramètre `%kernel.project_dir%`' }
+            - { style: 'class="ll w75p"', content: '* Autoconfiguration de services' }
+
+    slide_11:
+        title: 'Symfony 4 (v4.0.0 : Novembre 2017)'
+        sections:
+            - content: |
+
+            -
+              style: 'class="ll w75p"'
+              content: |
+                * PHP 7.1+
+                  * 5.6 : args variadiques, const expr, `use function|const`
+                  * 7.0 : return types, scalar typehints
+                  * 7.1 : const visibility, nullables...
+            - { style: 'class="ll w75p"', content: '* Suppression de TOUTES les déprécations de la v3' }
+            - { style: 'class="ll w75p"', content: '* Intégration avec Flex' }
+            - { style: 'class="ll w75p"', content: '* Nouvelle architecture de dossiers' }
+            - { style: 'class="ll w75p"', content: '* L''édition Standard de Symfony ([`symfony/symfony-standard`](https://github.com/symfony/symfony-standard/)) sera (certainement) modifiée pour automatiquement utiliser Flex' }
+
+    slide_12:
+        title: 'Flex'
+        type: splash
+
+    slide_13:
+        title: 'Avant Flex'
+        sections:
+            -
+              type: terminal
+              content: |
+                $ composer create-project symfony/standard-edition my_project
+
+            -
+              type: terminal
+              content: |
+                $ symfony new 3.2 my_project
+
+            -
+              content: |
+                Situation :
+
+                * Tout est installé par défaut (Monolog, Twig, Swiftmailer)
+                * Pas de workflow frontend par défaut (avant, il y avait Assetic)
+                * Installation de dépendances fastidieuse (documentation, copier/coller)
+                * Appli web clé-en-main mais trop générique
+
+    slide_14:
+        title: 'L''idée derrière Flex'
+        sections:
+            - content: |
+                Mot d'ordre:
+
+                ## _Composition over inheritance_
+
+    slide_15:
+        title: 'Flex, c''est:'
+        sections:
+            - { style: 'class="ll w75p"', content: '* Un plugin Composer (`symfony/flex`)' }
+            - { style: 'class="ll w75p"', content: '* Lors d''un `composer require/remove`, Flex cherche une "recette"' }
+            - { style: 'class="ll w75p"', content: '* Si une recette existe sur le serveur de Symfony Flex, le plugin récupère son "manifeste"' }
+            - { style: 'class="ll w75p"', content: '* Flex exécute toutes les actions définies par le manifeste' }
+            - { style: 'class="ll w75p"', content: '* Bonus : S''il n''y a pas de recette mais que `"type": "symfony-bundle"` existe dans votre `composer.json`, celui-ci est ajouté au Kernel' }
+            - { style: 'class="ll w75p"', content: '* Bonus 2 : Symfony Flex va créer des alias comme `cli` pour `symfony/console` ou `orm` pour toute la suite Doctrine ORM' }
+
+    slide_16:
+        title: 'Testez !'
+        sections:
+            - type: terminal
+              content: |
+                $ composer create-project symfony/skeleton:3.3.x-dev demo
+                $ cd demo
+                $ composer req cli
+                $ composer req orm
+
+            -
+              content: |
+                Sources:
+
+                * https://github.com/symfony/skeleton
+                * https://github.com/symfony/recipes/blob/master/symfony/console/3.3/manifest.json
+                * https://github.com/symfony/recipes/blob/master/javiereguiluz/easyadmin-bundle/1.16/manifest.json
+                * https://github.com/symfony/recipes/blob/master/symfony/orm-pack/2.4/manifest.json
+                * https://packagist.org/packages/symfony/orm-pack
+
+    slide_17:
+        title: '"Flex recipes"'
+        sections:
+            - content: |
+                Deux projets où seront stockées les recettes avec leurs manifestes:
+
+                * https://github.com/symfony/recipes
+                * https://github.com/symfony/recipes-contrib
+
+                Ces projets sont utilisés par le serveur de Symfony Flex pour récupérer toutes les informations utiles
+                afin d'installer vos packages Composer associés à une recette.
+
+    slide_18:
+        title: 'Recettes "officielles"'
+        sections:
+            - content: |
+                * Gérées et déciées par l'équipe de Symfony
+                * Les seules à pouvoir définir un "alias"
+
+    slide_19:
+        title: 'Recettes "contributeurs"'
+        sections:
+            - content: |
+                * Gérées et déciées par la communauté (un bot peut même valider & merge les PR !)
+                * Pas d'alias possible
+                * Nécessite un petit ajustement à votre projet:
+                  ```
+                  composer config extra.symfony.allow-contrib true
+                  ```
+
+    slide_20:
+        title: 'Structure de base'
+        style: 'style="padding: 0;"'
+        sections:
+            - content: |
+                `symfony/skeleton` utilisant Flex permet l'utilisation de la nouvelle structure:
+
+            -
+              type: code
+              code_language: raw
+              style: 'style="width: 40%; float: left;font-size: 0.955em;"'
+              content: |
+                ./
+                ├── .env
+                ├── .env.dist
+                ├── .gitignore
+                ├── composer.json
+                ├── composer.lock
+                ├── etc
+                │   ├── packages
+                │   │   ├── dev/
+                │   │   │   └── framework.yaml
+                │   │   ├── prod
+                │   │   │   └── doctrine.yaml
+                │   │   ├── test
+                │   │   │   └── framework.yaml
+                │   │   ├── app.yaml
+                │   │   ├── doctrine.yaml
+                │   │   └── framework.yaml
+                ├── Makefile
+                ├── src
+                │   ├── Controller/
+                │   └── Kernel.php
+                ├── var
+                │   ├── cache/
+                │   └── logs/
+                ├── vendor
+                └── web
+                    ├── bundles/
+                    └── index.php
+
+            -
+              style: 'style="width: 55%; float: right;"'
+              content: |
+                ### Avantages et nouveautés :
+
+                * Utilisation de **variables d'environnement**
+                * Un **MicroKernel** au lieu d'un Kernel complet
+                * Configuration chargée par des chemins "glob"
+                * Plus de bundle par défaut, tout est dans `src/`
+                * Config des dépendances dans `etc/packages/`
+                * Un `Makefile` pour les commandes, Symfony ou autre
+                * Un seul point d'entrée web: `index.php`
+
+    slide_21:
+        title: 'Flex packs'
+        sections:
+            - content: |
+                Flex encourage la création de "packs" sur Packagist.
+
+            -
+              content: |
+                Un Pack est juste un fichier `composer.json` avec des instructions `require`, rien de plus.
+
+            -
+              content: |
+                Exemple : https://packagist.org/packages/symfony/orm-pack
+
+            -
+              type: code
+              code_language: json
+              content: |
+                {
+                    "name": "symfony/orm-pack",
+                    "type": "metapackage",
+                    "license": "MIT",
+                    "description": "A pack for the Doctrine ORM",
+                    "require": {
+                        "php": "^7.0",
+                        "doctrine/orm": "^2.4.5",
+                        "doctrine/doctrine-bundle": "^1.6"
+                    },
+                    "extra": {
+                        "branch-alias": {
+                            "dev-master": "2.4.x-dev"
+                        }
+                    }
+                }
+
+            -
+              content: |
+                Recette du DoctrineBundle :
+                https://github.com/symfony/recipes/tree/master/doctrine/doctrine-bundle/1.6
+
+    slide_22:
+        title: 'Avantages des packs'
+        sections:
+            - content: |
+                Comme d'habitude avec Flex, si un package possède une recette, elle sera récupérée.
+
+            -
+              content: |
+                Grâce au package `symfony/orm-pack` et à sa recette, pour installer Doctrine ORM & toute la config
+                nécessaire, il suffit d'exécuter cette commande :
+
+            -
+              type: terminal
+              content: |
+                composer req orm
+
+    slide_23:
+        title: 'Flex skeletons'
+        sections:
+            - content: |
+                Pour créer un projet Symfony, nous utilisons ce code avec Flex:
+
+                #### `composer create-project symfony/skeleton my_project`
+
+            -
+              content: |
+                `symfony/skeleton` n'est rien d'autre qu'un **pack** qui a Flex pour dépendance.
+
+            -
+              content: |
+                Chaque dépendance de ce projet sera installée et vu que Flex est la première, celle-ci va
+                automatiquement détecter les recettes de toutes les autres dépendances.
+
+            -
+              content: |
+                On peut ainsi imaginer tout un tas d'applications clé-en-main:
+
+            -
+              type: terminal
+              content: |
+                composer create-project symfony/skeleton-cms
+                composer create-project symfony/skeleton-ecommerce
+                composer create-project symfony/skeleton-blog
+                composer create-project symfony/skeleton-microservice
+                composer create-project symfony/skeleton-cli
+
+                (ces packages n'existent pas, mais l'idée est là)
+
+    slide_24:
+        title: 'Ce que permet donc Flex...'
+        sections:
+            -
+              content: |
+                Toujours ce même mot d'ordre :
+
+                _**Composition over inheritance**_
+
+            -
+              content: |
+                On **compose** notre application en fonction de nos besoins.
+
+            -
+              content: |
+                On ne crée plus une application "prête-à-l'emploi" contenant parfois trop de composants.
+
+            -
+              content: |
+                Flex est compatible avec **tout package Composer**, pas seulement avec Symfony.
+
+                On peut créer des recettes pour tout un tas d'autres projets !
+
+            -
+              content: |
+                Sauf Laravel
+
+                ![troll]({{ asset('images/sfreview/trollface.png') }})
+
+    slide_final:
+        sections:
+            - content: |
+                Merci à tous.
+
+                Questions?
+            - type: raw
+              content: |
+                <br>
+                <small><code>@pierstoval</code></small>
