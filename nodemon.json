@@ -1,4 +1,11 @@
 {
+    "verbose": true,
+    "watch": [
+        "config",
+        "src",
+        "templates",
+        "assets"
+    ],
     "ignore": [
         ".git",
         "node_modules",
@@ -6,10 +13,6 @@
         "public",
         "templates/slides",
         "vendor"
-    ],
-    "verbose": true,
-    "watch": [
-        "*.*"
     ],
     "env": {
         "NODE_ENV": "development"
