@@ -38,7 +38,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/presentation/{name}", name="presentation", methods={"GET"})
      */
-    public function presentation($name = 'sf4', Session $session): Response
+    public function presentation(Session $session, $name = 'sf4'): Response
     {
         $session->set('slide_id', 'first');
 
@@ -62,10 +62,8 @@ class DefaultController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        $cacheItem = $this->cache->getItem('current_slide');
+        $values = $this->cache->getItem('current_slide')->get();
 
-        $values = $cacheItem->get();
-
-        return new JsonResponse(($values['amount'] ?? 0));
+        return new JsonResponse($values['amount'] ?? 0);
     }
 }

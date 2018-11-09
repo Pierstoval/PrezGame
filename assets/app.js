@@ -49,7 +49,7 @@
         socket.on('message', message);
         socket.on('broadcast', message);
         socket.on('stats', function(msg) {
-            message('Stats: '+msg);
+            message('Stats:<br>'+msg.replace("\n", "<br>"));
         });
         socket.on('coolSlide', function(nb){
             var cur = Reveal.getCurrentSlide();
@@ -80,6 +80,8 @@
                 socket.emit('stats');
             }
         });
+
+        socket.emit('update_slide', Reveal.getCurrentSlide().id);
     }
 
     function initPresentation(d) {
@@ -118,12 +120,14 @@
             var helped = (item ? item.split(',') : []) || [];
             helped.push(slideName);
             localStorage.setItem('help', helped.join(','));
+            message('Vous avez envoyé un S.O.S. au speaker...');
         });
         socket.on('coolReturn', function(slideName){
             var item = localStorage.getItem('cool');
             var cooled = (item ? item.split(',') : []) || [];
             cooled.push(slideName);
             localStorage.setItem('cool', cooled.join(','));
+            message('Cool!');
         });
         socket.on('message', function(msg) {
             message(msg);

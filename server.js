@@ -33,6 +33,19 @@ const sessionData = {
 };
 let connected = 0;
 
+setInterval(() => {
+    let stats = getStats();
+    let fileName = __dirname+'/var/presentations/'+sessionData.date.replace(' ', '_')+'_stats.json';
+    console.info(stats);
+
+    fs.writeFile(fileName, JSON.stringify(stats, null, 4), function(err){
+        if (err) {
+            throw err;
+        }
+        log('log', `Saved presentation stats in ${fileName}`);
+    });
+}, 2000);
+
 io.on('connection', function(socket){
     connected++;
     log('ws', `A user connected! Now there are ${connected} users.`);
@@ -58,11 +71,6 @@ io.on('connection', function(socket){
         }
         if (message !== 'login') {
             socket.emit('message', 'Tu te paies ma tête ou quoi ?');
-            return;
-        }
-        let referer = socket.request.headers['referer'];
-        if (!referer.match(/\/presentation$/gi)) {
-            socket.emit('message', 'Tu te paies VRAIMENT ma tête ou quoi ?');
             return;
         }
         log('ws', 'L\'hôte est connecté!');
@@ -179,9 +187,7 @@ io.on('connection', function(socket){
     socket.on('stats', async function() {
         log('ws', `Seeking for statistics`);
 
-        let stats = getStats();
-
-        socket.emit('stats', JSON.stringify(stats));
+        socket.emit('stats', getFormattedStats());
     });
 
     socket.on('disconnect', function(){
@@ -275,4 +281,34 @@ function getStats() {
     });
 
     return stats;
+}
+
+function getFormattedStats() {
+    let stats = {};
+
+    Object.keys(sessionData.sessions).forEach(function (socketId) {
+        let helpSlides = sessionData.sessions[socketId].helpWantedForSlides;
+        let coolSlides = sessionData.sessions[socketId].coolSlides;
+
+        helpSlides.forEach(function(e){
+            if (!stats[e]) {
+                stats[e] = {help: 0, cool: 0};
+            }
+            stats[e].help ++;
+        });
+        coolSlides.forEach(function(e){
+            if (!stats[e]) {
+                stats[e] = {help: 0, cool: 0};
+            }
+            stats[e].cool ++;
+        });
+    });
+
+    let formattedStats = '';
+
+    Object.keys(stats).forEach((slideName) => {
+        formattedStats += slideName + ":&nbsp;"+stats[slideName].cool+"👍&nbsp;/&nbsp;"+stats[slideName].help+"🤔<br>";
+    });
+
+    return formattedStats;
 }
