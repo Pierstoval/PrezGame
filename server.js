@@ -36,7 +36,6 @@ let connected = 0;
 setInterval(() => {
     let stats = getStats();
     let fileName = __dirname+'/var/presentations/'+sessionData.date.replace(' ', '_')+'_stats.json';
-    console.info(stats);
 
     fs.writeFile(fileName, JSON.stringify(stats, null, 4), function(err){
         if (err) {
