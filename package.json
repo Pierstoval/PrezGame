@@ -23,7 +23,7 @@
         "nodemon": "^1.17",
         "pump": "^3.0",
         "reveal.js": "^3.6",
-        "socket.io": "^2.1"
+        "socket.io": "^2.5"
     },
     "engines": {
         "node": "^10.0",
